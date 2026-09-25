@@ -2,8 +2,9 @@
 <html lang="ru" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>АУП УМГ «Уральск» | Единый портал услуг и сервисов</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>АУП УМГ «Уральск» | Единый корпоративный портал сервисов</title>
   
   <!-- Apple Web App Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -47,22 +48,16 @@
           },
           animation: {
             'blob': 'blob 18s infinite ease-in-out',
-            'pulse-soft': 'pulseSoft 3s ease-in-out infinite',
-            'island-bounce': 'islandBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            'island-bounce': 'islandBounce 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
           },
           keyframes: {
             blob: {
               '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(30px, -50px) scale(1.15)' },
-              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' }
-            },
-            pulseSoft: {
-              '0%, 100%': { opacity: '1', transform: 'scale(1)' },
-              '50%': { opacity: '0.6', transform: 'scale(1.05)' }
+              '33%': { transform: 'translate(30px, -40px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.95)' }
             },
             islandBounce: {
-              '0%': { transform: 'scale(0.85)', opacity: '0' },
-              '60%': { transform: 'scale(1.04)', opacity: '1' },
+              '0%': { transform: 'scale(0.9)', opacity: '0' },
               '100%': { transform: 'scale(1)', opacity: '1' }
             }
           }
@@ -75,58 +70,72 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
+    /* Safe Area insets for iOS / Notch / Home Indicator */
+    :root {
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Light Theme Base */
+    html:not(.dark) body {
+      background-color: #F5F5F7;
+      color: #1D1D1F;
+    }
+    html.dark body {
+      background-color: #000000;
+      color: #FFFFFF;
+    }
+
     /* Apple Glassmorphism and Backdrop Blur */
     .glass-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.78);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
-    }
-    .light .glass-card {
-      background: rgba(255, 255, 255, 0.78);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.05);
+    }
+    .dark .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     }
 
     .glass-dock {
-      background: rgba(28, 28, 30, 0.72);
-      backdrop-filter: blur(35px);
-      -webkit-backdrop-filter: blur(35px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
-    }
-    .light .glass-dock {
-      background: rgba(255, 255, 255, 0.82);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(35px);
       -webkit-backdrop-filter: blur(35px);
       border: 1px solid rgba(0, 0, 0, 0.12);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
     }
+    .dark .glass-dock {
+      background: rgba(28, 28, 30, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+    }
 
     .glass-input {
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(0, 0, 0, 0.05);
       backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-    .light .glass-input {
-      background: rgba(0, 0, 0, 0.04);
       border: 1px solid rgba(0, 0, 0, 0.12);
+      color: #1D1D1F;
+    }
+    .dark .glass-input {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
     }
 
     /* Dynamic Island Styling */
     .dynamic-island {
-      background: #000000;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .light .dynamic-island {
-      background: #111111;
+      background: #1C1C1E;
       border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #ffffff;
+      color: #FFFFFF;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .dark .dynamic-island {
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     /* Custom Scrollbars */
@@ -134,18 +143,12 @@
       width: 6px;
       height: 6px;
     }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
     ::-webkit-scrollbar-thumb {
-      background: rgba(142, 142, 147, 0.3);
+      background: rgba(142, 142, 147, 0.35);
       border-radius: 9999px;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(142, 142, 147, 0.5);
-    }
 
-    /* Spring Hover */
+    /* Spring Hover Interactions */
     .spring-button {
       transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
     }
@@ -157,65 +160,68 @@
     }
   </style>
 </head>
-<body class="bg-black text-white font-sans antialiased min-h-screen selection:bg-apple-blue selection:text-white pb-32 transition-colors duration-500 overflow-x-hidden">
+<body class="font-sans antialiased min-h-screen selection:bg-apple-blue selection:text-white pb-36 transition-colors duration-300 overflow-x-hidden">
 
   <!-- Animated Apple Aurora Background Orbs -->
   <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
-    <div class="absolute -top-32 -left-32 w-96 h-96 bg-purple-600/25 rounded-full filter blur-[120px] animate-blob"></div>
-    <div class="absolute top-1/4 -right-32 w-[30rem] h-[30rem] bg-blue-600/20 rounded-full filter blur-[140px] animate-blob [animation-delay:4s]"></div>
-    <div class="absolute bottom-1/3 left-1/4 w-[28rem] h-[28rem] bg-emerald-600/15 rounded-full filter blur-[130px] animate-blob [animation-delay:8s]"></div>
-    <div class="absolute -bottom-20 right-1/4 w-80 h-80 bg-pink-600/20 rounded-full filter blur-[110px] animate-blob [animation-delay:12s]"></div>
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-purple-600/20 dark:bg-purple-600/25 rounded-full filter blur-[100px] animate-blob"></div>
+    <div class="absolute top-1/4 -right-32 w-[28rem] h-[28rem] bg-blue-600/15 dark:bg-blue-600/20 rounded-full filter blur-[120px] animate-blob [animation-delay:4s]"></div>
+    <div class="absolute bottom-1/3 left-1/4 w-[26rem] h-[26rem] bg-emerald-600/10 dark:bg-emerald-600/15 rounded-full filter blur-[110px] animate-blob [animation-delay:8s]"></div>
+    <div class="absolute -bottom-20 right-1/4 w-80 h-80 bg-pink-600/15 dark:bg-pink-600/20 rounded-full filter blur-[100px] animate-blob [animation-delay:12s]"></div>
   </div>
 
   <!-- Top Navigation & Apple Dynamic Island Header -->
-  <header class="fixed top-0 inset-x-0 z-50 pt-3 px-4 flex flex-col items-center pointer-events-none">
-    <div class="w-full max-w-7xl flex items-center justify-between pointer-events-auto">
+  <header class="fixed top-0 inset-x-0 z-50 pt-2.5 px-3 sm:px-6 flex flex-col items-center pointer-events-none" style="padding-top: max(0.6rem, var(--sat));">
+    <div class="w-full max-w-7xl flex items-center justify-between pointer-events-auto gap-2">
+      
       <!-- Organization Logo & Title -->
-      <div class="flex items-center space-x-3 bg-white/5 light:bg-black/5 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 light:border-black/10 shadow-lg">
+      <div class="flex items-center space-x-2.5 glass-card px-3 sm:px-4 py-2 rounded-2xl shrink-0">
         <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/25">
           <i data-lucide="layers" class="w-4 h-4"></i>
         </div>
         <div>
-          <h1 class="text-xs font-semibold tracking-wide uppercase text-white/90 light:text-black">УМГ «Уральск»</h1>
-          <p class="text-[10px] text-white/50 light:text-black/60 font-medium">АО «Интергаз Центральная Азия»</p>
+          <h1 class="text-xs font-semibold tracking-wide uppercase text-gray-900 dark:text-white/90">УМГ «Уральск»</h1>
+          <p class="text-[10px] text-gray-500 dark:text-white/50 font-medium hidden sm:block">АО «Интергаз Центральная Азия»</p>
         </div>
       </div>
 
       <!-- Center: Apple Dynamic Island -->
-      <div id="dynamicIsland" onclick="toggleIslandDetails()" class="pointer-events-auto cursor-pointer dynamic-island rounded-full px-4 py-2 flex items-center space-x-3 max-w-sm sm:max-w-md hover:scale-[1.02] active:scale-[0.98]">
-        <div id="islandDot" class="w-2.5 h-2.5 rounded-full bg-apple-green animate-pulse"></div>
+      <div id="dynamicIsland" onclick="toggleIslandDetails()" class="pointer-events-auto cursor-pointer dynamic-island rounded-full px-3.5 sm:px-4 py-2 flex items-center space-x-2.5 sm:space-x-3 min-w-0 max-w-xs sm:max-w-md hover:scale-[1.02] active:scale-[0.98]">
+        <div id="islandDot" class="w-2.5 h-2.5 rounded-full bg-apple-green animate-pulse shrink-0"></div>
         <div class="flex-1 min-w-0 pr-1">
           <p id="islandTitle" class="text-xs font-medium text-white truncate">Система активна • Все службы онлайн</p>
-          <p id="islandSubtitle" class="text-[10px] text-white/60 truncate">Нажмите для просмотра уведомлений</p>
+          <p id="islandSubtitle" class="text-[10px] text-white/60 truncate">Нажмите для уведомлений</p>
         </div>
-        <div id="islandBadge" class="bg-white/10 px-2 py-0.5 rounded-full text-[10px] font-mono text-apple-teal">
-          847 ОС
+        <div id="islandBadge" class="bg-white/10 px-2 py-0.5 rounded-full text-[10px] font-mono text-apple-teal shrink-0">
+          АУП
         </div>
       </div>
 
       <!-- Right: Search, Sound, Theme Toggle -->
-      <div class="flex items-center space-x-2 pointer-events-auto">
+      <div class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
         <!-- Spotlight Search Trigger -->
-        <button onclick="openSpotlight()" class="p-2.5 rounded-2xl bg-white/5 light:bg-black/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 light:border-black/10 text-white/80 light:text-black/80 transition-all spring-button flex items-center space-x-2" title="Поиск (Cmd+K)">
+        <button onclick="openSpotlight()" aria-label="Поиск (Cmd+K)" class="p-2.5 rounded-2xl glass-card text-gray-700 dark:text-white/80 transition-all spring-button flex items-center space-x-1.5">
           <i data-lucide="search" class="w-4 h-4"></i>
-          <span class="hidden md:inline text-xs font-medium text-white/50 light:text-black/50 pr-1">⌘K</span>
+          <span class="hidden md:inline text-xs font-medium text-gray-400 dark:text-white/50 pr-1">⌘K</span>
         </button>
 
         <!-- Audio Feedback Toggle -->
-        <button id="soundBtn" onclick="toggleSound()" class="p-2.5 rounded-2xl bg-white/5 light:bg-black/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 light:border-black/10 text-white/80 light:text-black/80 transition-all spring-button" title="Звуковые эффекты">
-          <i data-lucide="volume-2" class="w-4 h-4" id="soundIcon"></i>
+        <button id="soundBtn" onclick="toggleSound()" aria-label="Звуковые эффекты" class="p-2.5 rounded-2xl glass-card text-gray-700 dark:text-white/80 transition-all spring-button">
+          <i data-lucide="volume-x" class="w-4 h-4" id="soundIcon"></i>
         </button>
 
         <!-- Dark/Light Mode Toggle -->
-        <button onclick="toggleTheme()" class="p-2.5 rounded-2xl bg-white/5 light:bg-black/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 light:border-black/10 text-white/80 light:text-black/80 transition-all spring-button" title="Переключить тему">
-          <i data-lucide="sun" class="w-4 h-4 hidden light:block"></i>
-          <i data-lucide="moon" class="w-4 h-4 block light:hidden"></i>
+        <button onclick="toggleTheme()" aria-label="Переключить тему" class="p-2.5 rounded-2xl glass-card text-gray-700 dark:text-white/80 transition-all spring-button">
+          <span id="themeIconContainer">
+            <i data-lucide="sun" class="w-4 h-4 hidden" id="sunIcon"></i>
+            <i data-lucide="moon" class="w-4 h-4 block" id="moonIcon"></i>
+          </span>
         </button>
       </div>
     </div>
 
-    <!-- Dynamic Island Expanded Modal Tray (Hidden by default) -->
-    <div id="islandDropdown" class="hidden pointer-events-auto mt-2 w-full max-w-lg bg-black/95 border border-white/20 rounded-3xl p-5 shadow-2xl backdrop-blur-2xl transition-all">
+    <!-- Dynamic Island Expanded Modal Tray -->
+    <div id="islandDropdown" class="hidden pointer-events-auto mt-2 w-full max-w-lg bg-zinc-950/95 border border-white/20 rounded-3xl p-5 shadow-2xl backdrop-blur-2xl transition-all">
       <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
         <div class="flex items-center space-x-2">
           <div class="w-3 h-3 rounded-full bg-apple-blue"></div>
@@ -233,16 +239,16 @@
   <main class="relative z-10 max-w-7xl mx-auto pt-24 px-4 sm:px-6 lg:px-8">
     
     <!-- Hero Banner with Apple Style Title -->
-    <section class="py-6 sm:py-8 text-center sm:text-left flex flex-col sm:flex-row sm:items-end justify-between border-b border-white/10 light:border-black/10 mb-8">
+    <section class="py-6 sm:py-8 text-center sm:text-left flex flex-col sm:flex-row sm:items-end justify-between border-b border-gray-200 dark:border-white/10 mb-8">
       <div>
         <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-apple-blue text-xs font-medium mb-3">
           <span class="w-2 h-2 rounded-full bg-apple-blue animate-pulse"></span>
           <span>Цифровой сервис филиала УМГ «Уральск»</span>
         </div>
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white light:text-gray-900">
-          Заказ услуг и координация <span class="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">АУП</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
+          Заказ услуг и координация <span class="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">АУП</span>
         </h2>
-        <p class="mt-2 text-sm sm:text-base text-white/60 light:text-gray-600 max-w-2xl font-normal">
+        <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-white/60 max-w-2xl font-normal">
           Единое окно для оперативного заказа ИТ-поддержки, связи с сотрудниками отделов и онлайн-мониторинга служебного транспорта.
         </p>
       </div>
@@ -250,15 +256,15 @@
       <!-- Quick Metrics Counter -->
       <div class="mt-6 sm:mt-0 flex items-center justify-center sm:justify-end space-x-4">
         <div class="glass-card px-4 py-3 rounded-2xl text-center">
-          <p class="text-xl sm:text-2xl font-bold text-white light:text-black" id="statOnlineCount">18</p>
+          <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" id="statOnlineCount">5</p>
           <p class="text-[10px] uppercase tracking-wider text-apple-green font-semibold">Свободны</p>
         </div>
         <div class="glass-card px-4 py-3 rounded-2xl text-center">
-          <p class="text-xl sm:text-2xl font-bold text-white light:text-black" id="statBusyCount">5</p>
+          <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" id="statBusyCount">3</p>
           <p class="text-[10px] uppercase tracking-wider text-apple-orange font-semibold">Заняты</p>
         </div>
         <div class="glass-card px-4 py-3 rounded-2xl text-center">
-          <p class="text-xl sm:text-2xl font-bold text-white light:text-black" id="statDriversTrip">3</p>
+          <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" id="statDriversTrip">2</p>
           <p class="text-[10px] uppercase tracking-wider text-apple-teal font-semibold">В рейсе</p>
         </div>
       </div>
@@ -270,19 +276,19 @@
     <section id="viewServices" class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 class="text-xl font-bold text-white light:text-gray-900 flex items-center space-x-2">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center space-x-2">
             <i data-lucide="sparkles" class="w-5 h-5 text-apple-blue"></i>
             <span>Каталог корпоративных услуг</span>
           </h3>
-          <p class="text-xs text-white/50 light:text-gray-500">Выберите необходимую услугу для создания мгновенной заявки специалистам</p>
+          <p class="text-xs text-gray-500 dark:text-white/50">Выберите услугу для оформления мгновенной заявки специалистам</p>
         </div>
         <!-- Service Filter Pills -->
         <div class="flex items-center space-x-2 overflow-x-auto pb-1 max-w-full">
-          <button onclick="filterServices('all')" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/20 light:bg-black/10 text-white light:text-black transition-all">Все</button>
-          <button onclick="filterServices('it')" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/5 light:bg-black/5 hover:bg-white/10 text-white/70 light:text-gray-700 transition-all">Интернет и Сеть</button>
-          <button onclick="filterServices('hardware')" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/5 light:bg-black/5 hover:bg-white/10 text-white/70 light:text-gray-700 transition-all">Компьютеры и ПО</button>
-          <button onclick="filterServices('print')" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/5 light:bg-black/5 hover:bg-white/10 text-white/70 light:text-gray-700 transition-all">Оргтехника</button>
-          <button onclick="filterServices('admin')" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/5 light:bg-black/5 hover:bg-white/10 text-white/70 light:text-gray-700 transition-all">АХО и Комфорт</button>
+          <button onclick="filterServices('all', this)" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-900 dark:bg-white text-white dark:text-black transition-all">Все</button>
+          <button onclick="filterServices('it', this)" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium glass-card text-gray-700 dark:text-white/70 hover:opacity-80 transition-all">Интернет и Сеть</button>
+          <button onclick="filterServices('hardware', this)" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium glass-card text-gray-700 dark:text-white/70 hover:opacity-80 transition-all">Компьютеры и ПО</button>
+          <button onclick="filterServices('print', this)" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium glass-card text-gray-700 dark:text-white/70 hover:opacity-80 transition-all">Оргтехника</button>
+          <button onclick="filterServices('admin', this)" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium glass-card text-gray-700 dark:text-white/70 hover:opacity-80 transition-all">АХО и Транспорт</button>
         </div>
       </div>
 
@@ -298,32 +304,32 @@
     <section id="viewEmployees" class="hidden space-y-6">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h3 class="text-xl font-bold text-white light:text-gray-900 flex items-center space-x-2">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center space-x-2">
             <i data-lucide="users" class="w-5 h-5 text-apple-purple"></i>
             <span>База сотрудников АУП и статус присутствия</span>
           </h3>
-          <p class="text-xs text-white/50 light:text-gray-500">
-            Интерактивный статус: при статусе <span class="text-apple-orange font-semibold">«Занят»</span> отправленные сообщения сохраняются в умную очередь доставки.
+          <p class="text-xs text-gray-500 dark:text-white/50">
+            Интерактивный статус: при статусе <span class="text-apple-orange font-semibold">«Занят»</span> сообщения сохраняются в умную очередь доставки.
           </p>
         </div>
 
-        <!-- Department Filter Dropdown -->
-        <div class="flex items-center space-x-3">
-          <select id="deptFilter" onchange="filterEmployees()" class="glass-input text-xs rounded-xl px-4 py-2.5 text-white light:text-black focus:outline-none focus:ring-2 focus:ring-apple-blue">
+        <!-- Department Filter Dropdown & Search -->
+        <div class="flex flex-wrap items-center gap-3">
+          <select id="deptFilter" onchange="filterEmployees()" class="glass-input text-xs rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-apple-blue max-w-xs">
             <option value="all" class="bg-zinc-900 text-white">Все отделы АУП (16 подразделений)</option>
             <!-- Generated via JS -->
           </select>
-          <input type="text" id="employeeSearchInput" oninput="filterEmployees()" placeholder="Поиск по ФИО или кабинету..." class="glass-input text-xs rounded-xl px-4 py-2.5 text-white light:text-black placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-apple-blue w-48 sm:w-64">
+          <input type="text" id="employeeSearchInput" oninput="filterEmployees()" placeholder="Поиск по ФИО или кабинету..." class="glass-input text-xs rounded-xl px-4 py-2.5 placeholder-gray-400 dark:placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-apple-blue w-full sm:w-60">
         </div>
       </div>
 
       <!-- Info Banner about Queue Mechanism -->
       <div class="glass-card rounded-2xl p-4 flex items-center space-x-4 border-l-4 border-l-apple-orange">
-        <div class="p-2.5 rounded-xl bg-orange-500/10 text-apple-orange">
+        <div class="p-2.5 rounded-xl bg-orange-500/10 text-apple-orange shrink-0">
           <i data-lucide="clock" class="w-5 h-5"></i>
         </div>
-        <div class="text-xs text-white/80 light:text-gray-700 leading-relaxed">
-          <span class="font-bold text-apple-orange">Умная очередь доставки сообщений:</span> Если сотрудник занят на совещании или решает срочную задачу, вы можете отправить ему сообщение — оно бережно сохранится в очереди и будет моментально доставлено на экран в момент, когда статус изменится на <span class="text-apple-green font-semibold">«Свободен»</span>. Вы можете переключать статус любого сотрудника карточкой справа для проверки!
+        <div class="text-xs text-gray-700 dark:text-white/80 leading-relaxed">
+          <span class="font-bold text-apple-orange">Умная очередь доставки сообщений:</span> Если сотрудник занят на совещании или решает срочную задачу, вы можете отправить ему сообщение — оно бережно сохранится в очереди и будет моментально доставлено на экран в момент, когда статус изменится на <span class="text-apple-green font-semibold">«Свободен»</span>. Переключайте статус карточкой справа для проверки!
         </div>
       </div>
 
@@ -339,11 +345,11 @@
     <section id="viewDrivers" class="hidden space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 class="text-xl font-bold text-white light:text-gray-900 flex items-center space-x-2">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center space-x-2">
             <i data-lucide="car" class="w-5 h-5 text-apple-teal"></i>
             <span>Мониторинг служебного автотранспорта и водителей</span>
           </h3>
-          <p class="text-xs text-white/50 light:text-gray-500">Отслеживание местоположения, текущих рейсов и заказ дежурного автомобиля</p>
+          <p class="text-xs text-gray-500 dark:text-white/50">Отслеживание местоположения, текущих рейсов и заказ дежурного автомобиля</p>
         </div>
         <button onclick="openOrderCarModal()" class="spring-button px-5 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs flex items-center space-x-2 shadow-lg shadow-blue-500/30">
           <i data-lucide="navigation" class="w-4 h-4"></i>
@@ -363,21 +369,21 @@
     <section id="viewTickets" class="hidden space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="text-xl font-bold text-white light:text-gray-900 flex items-center space-x-2">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center space-x-2">
             <i data-lucide="inbox" class="w-5 h-5 text-apple-green"></i>
             <span>Журнал созданных заявок и сообщений</span>
           </h3>
-          <p class="text-xs text-white/50 light:text-gray-500">Отслеживание статусов исполнения ваших заявок и история переписки</p>
+          <p class="text-xs text-gray-500 dark:text-white/50">Отслеживание статусов исполнения ваших заявок и история переписки</p>
         </div>
         <div class="flex items-center space-x-2">
-          <button onclick="clearDemoData()" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 text-xs transition-all">Сбросить демо-данные</button>
+          <button onclick="clearDemoData()" class="px-3 py-1.5 rounded-xl glass-card text-xs text-gray-600 dark:text-white/60 hover:opacity-80 transition-all">Сбросить данные</button>
         </div>
       </div>
 
       <!-- Tickets and Messages Split Tabs -->
-      <div class="flex space-x-2 border-b border-white/10 pb-3">
-        <button id="tabTicketsBtn" onclick="switchTicketSubTab('tickets')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/15 text-white">Заявки в службу поддержки (<span id="ticketCountBadge">0</span>)</button>
-        <button id="tabMessagesBtn" onclick="switchTicketSubTab('messages')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-transparent text-white/60 hover:text-white">Отправленные сообщения (<span id="messageCountBadge">0</span>)</button>
+      <div class="flex space-x-2 border-b border-gray-200 dark:border-white/10 pb-3">
+        <button id="tabTicketsBtn" onclick="switchTicketSubTab('tickets')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-900 dark:bg-white text-white dark:text-black transition-all">Заявки в службу поддержки (<span id="ticketCountBadge">0</span>)</button>
+        <button id="tabMessagesBtn" onclick="switchTicketSubTab('messages')" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-600 dark:text-white/60 hover:text-black dark:hover:text-white transition-all">Отправленные сообщения (<span id="messageCountBadge">0</span>)</button>
       </div>
 
       <div id="ticketsListContainer" class="space-y-3">
@@ -394,43 +400,38 @@
   <!-- ======================================================== -->
   <!-- FLOATING MACOS / IOS STYLE DOCK (BOTTOM NAVIGATION) -->
   <!-- ======================================================== -->
-  <nav class="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
+  <nav class="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4 pointer-events-none" style="padding-bottom: max(0.5rem, var(--sab));">
     <div class="glass-dock rounded-3xl p-2 sm:p-2.5 flex items-center space-x-2 sm:space-x-3 pointer-events-auto">
       
       <!-- Dock Item 1: Services -->
-      <button onclick="switchView('services')" id="dock-services" class="dock-item relative group p-3 rounded-2xl bg-white/15 light:bg-black/10 text-white light:text-black transition-all spring-button" title="Услуги (Service Desk)">
+      <button onclick="switchView('services')" id="dock-services" class="dock-item relative group p-3 rounded-2xl bg-gray-900/10 dark:bg-white/20 text-gray-900 dark:text-white transition-all spring-button" title="Услуги (Service Desk)">
         <i data-lucide="sparkles" class="w-5 h-5"></i>
-        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Услуги</span>
         <div class="dock-dot w-1 h-1 rounded-full bg-apple-blue mx-auto mt-1"></div>
       </button>
 
       <!-- Dock Item 2: Employees -->
-      <button onclick="switchView('employees')" id="dock-employees" class="dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-white/10 light:hover:bg-black/5 text-white/60 light:text-black/60 transition-all spring-button" title="Отделы и Сотрудники">
+      <button onclick="switchView('employees')" id="dock-employees" class="dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-black/5 dark:hover:bg-white/10 text-gray-500 dark:text-white/60 transition-all spring-button" title="Отделы и Сотрудники">
         <i data-lucide="users" class="w-5 h-5"></i>
-        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Сотрудники</span>
         <div class="dock-dot hidden w-1 h-1 rounded-full bg-apple-purple mx-auto mt-1"></div>
       </button>
 
       <!-- Dock Item 3: Drivers -->
-      <button onclick="switchView('drivers')" id="dock-drivers" class="dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-white/10 light:hover:bg-black/5 text-white/60 light:text-black/60 transition-all spring-button" title="Водители и Транспорт">
+      <button onclick="switchView('drivers')" id="dock-drivers" class="dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-black/5 dark:hover:bg-white/10 text-gray-500 dark:text-white/60 transition-all spring-button" title="Водители и Транспорт">
         <i data-lucide="car" class="w-5 h-5"></i>
-        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Водители</span>
         <div class="dock-dot hidden w-1 h-1 rounded-full bg-apple-teal mx-auto mt-1"></div>
       </button>
 
       <!-- Dock Item 4: My Tickets -->
-      <button onclick="switchView('tickets')" id="dock-tickets" class="dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-white/10 light:hover:bg-black/5 text-white/60 light:text-black/60 transition-all spring-button" title="Мои заявки">
+      <button onclick="switchView('tickets')" id="dock-tickets" class="dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-black/5 dark:hover:bg-white/10 text-gray-500 dark:text-white/60 transition-all spring-button" title="Мои заявки">
         <i data-lucide="inbox" class="w-5 h-5"></i>
-        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Заявки</span>
         <div class="dock-dot hidden w-1 h-1 rounded-full bg-apple-green mx-auto mt-1"></div>
       </button>
 
-      <div class="w-px h-6 bg-white/20 light:bg-black/15 mx-1"></div>
+      <div class="w-px h-6 bg-gray-300 dark:bg-white/20 mx-1"></div>
 
       <!-- Dock Item 5: Order Quick Transport -->
       <button onclick="openOrderCarModal()" class="relative group p-3 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white transition-all spring-button shadow-md shadow-blue-500/30" title="Быстрый вызов авто">
         <i data-lucide="navigation" class="w-5 h-5"></i>
-        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Заказать авто</span>
       </button>
     </div>
   </nav>
@@ -438,17 +439,17 @@
   <!-- ======================================================== -->
   <!-- MODAL: ORDER SERVICE / CREATE TICKET -->
   <!-- ======================================================== -->
-  <div id="modalOrderService" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="glass-card bg-zinc-950/90 light:bg-white/95 rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-white/20 light:border-black/10 shadow-2xl relative animate-island-bounce">
-      <button onclick="closeModal('modalOrderService')" class="absolute top-5 right-5 text-white/40 hover:text-white light:text-black/40 light:hover:text-black text-xl">✕</button>
+  <div id="modalOrderService" role="dialog" aria-modal="true" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="glass-card bg-white dark:bg-zinc-950 rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-white/20 shadow-2xl relative animate-island-bounce">
+      <button onclick="closeModal('modalOrderService')" aria-label="Закрыть" class="absolute top-5 right-5 text-gray-400 hover:text-black dark:text-white/40 dark:hover:text-white text-xl">✕</button>
       
       <div class="flex items-center space-x-3 mb-6">
         <div id="modalServiceIcon" class="w-12 h-12 rounded-2xl bg-blue-500/20 text-apple-blue flex items-center justify-center text-2xl">
           <i data-lucide="activity" class="w-6 h-6"></i>
         </div>
         <div>
-          <h3 id="modalServiceTitle" class="text-lg font-bold text-white light:text-black">Оформление заявки</h3>
-          <p id="modalServiceCategory" class="text-xs text-white/50 light:text-gray-500">Отдел ИТиС УМГ «Уральск»</p>
+          <h3 id="modalServiceTitle" class="text-lg font-bold text-gray-900 dark:text-white">Оформление заявки</h3>
+          <p id="modalServiceCategory" class="text-xs text-gray-500 dark:text-white/50">Отдел ИТиС УМГ «Уральск»</p>
         </div>
       </div>
 
@@ -456,46 +457,46 @@
         <input type="hidden" id="serviceInputId">
         
         <div>
-          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Кабинет / Место установки</label>
-          <input type="text" id="ticketRoom" required placeholder="Например: Каб. 204 (Главный корпус) или Серверная" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-blue focus:outline-none">
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Кабинет / Место установки</label>
+          <input type="text" id="ticketRoom" required placeholder="Например: Каб. 204 (Главный корпус) или Серверная" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs placeholder-gray-400 dark:placeholder-white/40 focus:ring-2 focus:ring-apple-blue focus:outline-none">
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">ФИО заявителя и контактный телефон</label>
-          <input type="text" id="ticketAuthor" required placeholder="Например: Сарсенов А.Е., тел. 12-45" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-blue focus:outline-none">
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">ФИО заявителя и контактный телефон</label>
+          <input type="text" id="ticketAuthor" required placeholder="Например: Сарсенов А.Е., тел. 12-45" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs placeholder-gray-400 dark:placeholder-white/40 focus:ring-2 focus:ring-apple-blue focus:outline-none">
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Приоритет заявки</label>
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Приоритет заявки</label>
           <div class="grid grid-cols-3 gap-2">
             <label class="cursor-pointer">
               <input type="radio" name="priority" value="Обычный" checked class="hidden peer">
-              <div class="peer-checked:bg-apple-blue/20 peer-checked:border-apple-blue peer-checked:text-apple-blue border border-white/10 rounded-xl p-2 text-center text-xs text-white/70 transition-all">
+              <div class="peer-checked:bg-apple-blue/20 peer-checked:border-apple-blue peer-checked:text-apple-blue border border-gray-200 dark:border-white/10 rounded-xl p-2 text-center text-xs text-gray-700 dark:text-white/70 transition-all font-medium">
                 Обычный
               </div>
             </label>
             <label class="cursor-pointer">
               <input type="radio" name="priority" value="Срочный" class="hidden peer">
-              <div class="peer-checked:bg-apple-orange/20 peer-checked:border-apple-orange peer-checked:text-apple-orange border border-white/10 rounded-xl p-2 text-center text-xs text-white/70 transition-all">
+              <div class="peer-checked:bg-apple-orange/20 peer-checked:border-apple-orange peer-checked:text-apple-orange border border-gray-200 dark:border-white/10 rounded-xl p-2 text-center text-xs text-gray-700 dark:text-white/70 transition-all font-medium">
                 Срочный (2ч)
               </div>
             </label>
             <label class="cursor-pointer">
               <input type="radio" name="priority" value="Критический" class="hidden peer">
-              <div class="peer-checked:bg-apple-red/20 peer-checked:border-apple-red peer-checked:text-apple-red border border-white/10 rounded-xl p-2 text-center text-xs text-white/70 transition-all">
-                Авария / Сбой
+              <div class="peer-checked:bg-apple-red/20 peer-checked:border-apple-red peer-checked:text-apple-red border border-gray-200 dark:border-white/10 rounded-xl p-2 text-center text-xs text-gray-700 dark:text-white/70 transition-all font-medium">
+                Авария
               </div>
             </label>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Описание неисправности или запроса</label>
-          <textarea id="ticketDescription" rows="3" required placeholder="Опишите подробности (нет подключения к сети, сбой 1С, замятие бумаги в МФУ и т.д.)..." class="glass-input w-full rounded-xl p-3 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-blue focus:outline-none"></textarea>
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Описание неисправности или запроса</label>
+          <textarea id="ticketDescription" rows="3" required placeholder="Опишите подробности (нет подключения к сети, сбой 1С, замятие бумаги в МФУ и т.д.)..." class="glass-input w-full rounded-xl p-3 text-xs placeholder-gray-400 dark:placeholder-white/40 focus:ring-2 focus:ring-apple-blue focus:outline-none"></textarea>
         </div>
 
         <div class="pt-2 flex justify-end space-x-3">
-          <button type="button" onclick="closeModal('modalOrderService')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 text-xs font-medium transition-all">Отмена</button>
+          <button type="button" onclick="closeModal('modalOrderService')" class="px-5 py-2.5 rounded-xl glass-card text-xs font-medium transition-all">Отмена</button>
           <button type="submit" class="spring-button px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-blue-500/25">Отправить заявку</button>
         </div>
       </form>
@@ -505,17 +506,17 @@
   <!-- ======================================================== -->
   <!-- MODAL: SEND MESSAGE TO EMPLOYEE (WITH QUEUE LOGIC) -->
   <!-- ======================================================== -->
-  <div id="modalSendMessage" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="glass-card bg-zinc-950/95 light:bg-white/95 rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-white/20 light:border-black/10 shadow-2xl relative animate-island-bounce">
-      <button onclick="closeModal('modalSendMessage')" class="absolute top-5 right-5 text-white/40 hover:text-white light:text-black/40 light:hover:text-black text-xl">✕</button>
+  <div id="modalSendMessage" role="dialog" aria-modal="true" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="glass-card bg-white dark:bg-zinc-950 rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-white/20 shadow-2xl relative animate-island-bounce">
+      <button onclick="closeModal('modalSendMessage')" aria-label="Закрыть" class="absolute top-5 right-5 text-gray-400 hover:text-black dark:text-white/40 dark:hover:text-white text-xl">✕</button>
 
       <div class="flex items-center space-x-3 mb-4">
-        <div id="msgEmpAvatar" class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white font-bold text-lg">
+        <div id="msgEmpAvatar" class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white font-bold text-lg shrink-0">
           КС
         </div>
         <div>
-          <h3 id="msgEmpName" class="text-base font-bold text-white light:text-black">Кударов Заур Серикболович</h3>
-          <p id="msgEmpRole" class="text-xs text-white/50 light:text-gray-500">Начальник отдела ИТиС (Каб. 204)</p>
+          <h3 id="msgEmpName" class="text-base font-bold text-gray-900 dark:text-white">Кударов Заур Серикболович</h3>
+          <p id="msgEmpRole" class="text-xs text-gray-500 dark:text-white/50">Начальник отдела ИТиС (Каб. 204)</p>
           <div id="msgEmpStatusBadge" class="mt-1 inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-apple-green">
             <span class="w-1.5 h-1.5 rounded-full bg-apple-green"></span>
             <span id="msgEmpStatusText">Свободен</span>
@@ -525,10 +526,10 @@
 
       <!-- Warning Banner if Employee is Busy -->
       <div id="msgBusyWarning" class="hidden mb-4 p-3.5 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-apple-orange text-xs flex items-start space-x-2.5">
-        <i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
+        <i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0"></i>
         <div>
           <span class="font-bold">Внимание: Сотрудник сейчас занят!</span>
-          <p class="text-white/70 light:text-gray-700 mt-0.5">Ваше обращение будет автоматически помещено в <span class="font-semibold text-apple-orange">очередь отложенной доставки</span> и отобразится у сотрудника только тогда, когда он освободится.</p>
+          <p class="text-gray-600 dark:text-white/70 mt-0.5">Ваше обращение будет автоматически помещено в <span class="font-semibold text-apple-orange">очередь отложенной доставки</span> и отобразится у сотрудника только тогда, когда он освободится.</p>
         </div>
       </div>
 
@@ -536,22 +537,22 @@
         <input type="hidden" id="msgEmpId">
         
         <div>
-          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">От кого (ФИО и отдел)</label>
-          <input type="text" id="msgSender" required placeholder="Например: Иванов И.И. (Бухгалтерия)" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-purple focus:outline-none">
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">От кого (ФИО и отдел)</label>
+          <input type="text" id="msgSender" required placeholder="Например: Иванов И.И. (Бухгалтерия)" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs placeholder-gray-400 dark:placeholder-white/40 focus:ring-2 focus:ring-apple-purple focus:outline-none">
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Тема обращения</label>
-          <input type="text" id="msgSubject" required placeholder="Например: Согласование заявки на сервер / Доступ к папке" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-purple focus:outline-none">
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Тема обращения</label>
+          <input type="text" id="msgSubject" required placeholder="Например: Согласование заявки на сервер / Доступ к папке" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs placeholder-gray-400 dark:placeholder-white/40 focus:ring-2 focus:ring-apple-purple focus:outline-none">
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Текст сообщения</label>
-          <textarea id="msgBody" rows="3" required placeholder="Напишите сообщение по любому рабочему поводу..." class="glass-input w-full rounded-xl p-3 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-purple focus:outline-none"></textarea>
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Текст сообщения</label>
+          <textarea id="msgBody" rows="3" required placeholder="Напишите сообщение по любому рабочему поводу..." class="glass-input w-full rounded-xl p-3 text-xs placeholder-gray-400 dark:placeholder-white/40 focus:ring-2 focus:ring-apple-purple focus:outline-none"></textarea>
         </div>
 
         <div class="pt-2 flex justify-end space-x-3">
-          <button type="button" onclick="closeModal('modalSendMessage')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 text-xs font-medium transition-all">Отмена</button>
+          <button type="button" onclick="closeModal('modalSendMessage')" class="px-5 py-2.5 rounded-xl glass-card text-xs font-medium transition-all">Отмена</button>
           <button type="submit" class="spring-button px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs shadow-lg shadow-purple-500/25">Отправить</button>
         </div>
       </form>
@@ -561,59 +562,67 @@
   <!-- ======================================================== -->
   <!-- MODAL: ORDER CAR / FLEET LOGISTICS -->
   <!-- ======================================================== -->
-  <div id="modalOrderCar" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="glass-card bg-zinc-950/95 light:bg-white/95 rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-white/20 light:border-black/10 shadow-2xl relative animate-island-bounce">
-      <button onclick="closeModal('modalOrderCar')" class="absolute top-5 right-5 text-white/40 hover:text-white light:text-black/40 light:hover:text-black text-xl">✕</button>
+  <div id="modalOrderCar" role="dialog" aria-modal="true" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="glass-card bg-white dark:bg-zinc-950 rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-white/20 shadow-2xl relative animate-island-bounce">
+      <button onclick="closeModal('modalOrderCar')" aria-label="Закрыть" class="absolute top-5 right-5 text-gray-400 hover:text-black dark:text-white/40 dark:hover:text-white text-xl">✕</button>
 
       <div class="flex items-center space-x-3 mb-6">
-        <div class="w-12 h-12 rounded-2xl bg-teal-500/20 text-apple-teal flex items-center justify-center text-2xl">
+        <div class="w-12 h-12 rounded-2xl bg-teal-500/20 text-apple-teal flex items-center justify-center text-2xl shrink-0">
           <i data-lucide="car" class="w-6 h-6"></i>
         </div>
         <div>
-          <h3 class="text-lg font-bold text-white light:text-black">Заказ служебного автомобиля</h3>
-          <p class="text-xs text-white/50 light:text-gray-500">Автотранспортный участок филиала УМГ «Уральск»</p>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Заказ служебного автомобиля</h3>
+          <p class="text-xs text-gray-500 dark:text-white/50">Автотранспортный участок филиала УМГ «Уральск»</p>
         </div>
       </div>
 
       <form id="orderCarForm" onsubmit="submitCarOrder(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Пункт назначения / Маршрут</label>
-          <select id="carDestination" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black focus:ring-2 focus:ring-apple-teal focus:outline-none">
-            <option value="По городу Уральск (Банк, Акимат, Налоговая)" class="bg-zinc-900">По городу Уральск (Акимат, Налоговая, Банки)</option>
-            <option value="КС-1 «Уральск» (производственная база)" class="bg-zinc-900">КС-1 «Уральск» (производственная база)</option>
-            <option value="КС-2 «Чижа» (линейная станция)" class="bg-zinc-900">КС-2 «Чижа» (линейная станция)</option>
-            <option value="ГРС-1 / ГРС-2 Уральск" class="bg-zinc-900">ГРС-1 / ГРС-2 Уральск</option>
-            <option value="Аэропорт «Маншук Маметовой» (встреча делегации)" class="bg-zinc-900">Аэропорт «Маншук Маметовой»</option>
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Предпочитаемый водитель / Автомобиль</label>
+          <select id="carDriverSelect" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs focus:ring-2 focus:ring-apple-teal focus:outline-none">
+            <option value="auto" class="bg-zinc-900 text-white">Автоматический подбор свободного водителя</option>
+            <!-- Generated via JS -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Пункт назначения / Маршрут</label>
+          <select id="carDestination" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs focus:ring-2 focus:ring-apple-teal focus:outline-none">
+            <option value="По городу Уральск (Акимат, Налоговая, Банки)" class="bg-zinc-900 text-white">По городу Уральск (Акимат, Налоговая, Банки)</option>
+            <option value="КС-1 «Уральск» (производственная база)" class="bg-zinc-900 text-white">КС-1 «Уральск» (производственная база)</option>
+            <option value="КС-2 «Чижа» (линейная станция)" class="bg-zinc-900 text-white">КС-2 «Чижа» (линейная станция)</option>
+            <option value="ГРС-1 / ГРС-2 Уральск" class="bg-zinc-900 text-white">ГРС-1 / ГРС-2 Уральск</option>
+            <option value="Аэропорт «Маншук Маметовой» (встреча)" class="bg-zinc-900 text-white">Аэропорт «Маншук Маметовой»</option>
           </select>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Время подачи</label>
-            <input type="time" id="carTime" required value="16:00" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black focus:ring-2 focus:ring-apple-teal focus:outline-none">
+            <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Время подачи</label>
+            <input type="time" id="carTime" required value="16:00" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs focus:ring-2 focus:ring-apple-teal focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Пассажиров</label>
-            <select id="carPassengers" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black focus:ring-2 focus:ring-apple-teal focus:outline-none">
-              <option value="1 человек" class="bg-zinc-900">1 пассажир</option>
-              <option value="2-3 человека" class="bg-zinc-900">2-3 пассажира</option>
-              <option value="Группа (4-8 человек, Газель)" class="bg-zinc-900">Группа (Газель)</option>
+            <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Пассажиров</label>
+            <select id="carPassengers" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs focus:ring-2 focus:ring-apple-teal focus:outline-none">
+              <option value="1 человек" class="bg-zinc-900 text-white">1 пассажир</option>
+              <option value="2-3 человека" class="bg-zinc-900 text-white">2-3 пассажира</option>
+              <option value="Группа (4-8 человек, Газель)" class="bg-zinc-900 text-white">Группа (Газель)</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Заказчик (ФИО и отдел)</label>
-          <input type="text" id="carRequester" required placeholder="Например: Кударов З.С. (Начальник ИТиС)" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-teal focus:outline-none">
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Заказчик (ФИО и отдел)</label>
+          <input type="text" id="carRequester" required placeholder="Например: Кударов З.С. (Начальник ИТиС)" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs placeholder-gray-400 dark:placeholder-white/40 focus:ring-2 focus:ring-apple-teal focus:outline-none">
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Цель поездки</label>
-          <input type="text" id="carPurpose" required placeholder="Например: Доставка технической комиссии на объект" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-teal focus:outline-none">
+          <label class="block text-xs font-semibold text-gray-700 dark:text-white/70 uppercase mb-1.5">Цель поездки</label>
+          <input type="text" id="carPurpose" required placeholder="Например: Доставка технической комиссии на объект" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs placeholder-gray-400 dark:placeholder-white/40 focus:ring-2 focus:ring-apple-teal focus:outline-none">
         </div>
 
         <div class="pt-2 flex justify-end space-x-3">
-          <button type="button" onclick="closeModal('modalOrderCar')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 text-xs font-medium transition-all">Отмена</button>
+          <button type="button" onclick="closeModal('modalOrderCar')" class="px-5 py-2.5 rounded-xl glass-card text-xs font-medium transition-all">Отмена</button>
           <button type="submit" class="spring-button px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-400 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-teal-500/25">Заказать машину</button>
         </div>
       </form>
@@ -623,38 +632,56 @@
   <!-- ======================================================== -->
   <!-- SPOTLIGHT SEARCH OVERLAY (CMD+K) -->
   <!-- ======================================================== -->
-  <div id="spotlightModal" class="fixed inset-0 z-50 hidden flex items-start justify-center pt-24 px-4 bg-black/75 backdrop-blur-xl">
-    <div class="glass-card bg-zinc-950/95 light:bg-white/95 rounded-3xl p-5 max-w-2xl w-full border border-white/20 light:border-black/10 shadow-2xl relative">
-      <div class="flex items-center space-x-3 pb-4 border-b border-white/10">
-        <i data-lucide="search" class="w-5 h-5 text-apple-blue"></i>
-        <input type="text" id="spotlightInput" oninput="runSpotlightSearch()" placeholder="Быстрый поиск услуг, сотрудников, водителей, кабинетов..." class="bg-transparent border-none text-base text-white light:text-black placeholder-white/40 focus:outline-none w-full">
-        <button onclick="closeSpotlight()" class="text-xs bg-white/10 px-2 py-1 rounded-lg text-white/60">ESC</button>
+  <div id="spotlightModal" role="dialog" aria-modal="true" class="fixed inset-0 z-50 hidden flex items-start justify-center pt-20 px-4 bg-black/75 backdrop-blur-xl">
+    <div class="glass-card bg-white dark:bg-zinc-950 rounded-3xl p-5 max-w-2xl w-full border border-gray-200 dark:border-white/20 shadow-2xl relative">
+      <div class="flex items-center space-x-3 pb-3 border-b border-gray-200 dark:border-white/10">
+        <i data-lucide="search" class="w-5 h-5 text-apple-blue shrink-0"></i>
+        <input type="text" id="spotlightInput" oninput="runSpotlightSearch()" placeholder="Поиск услуг, сотрудников, водителей, маршрутов, авто..." class="bg-transparent border-none text-base text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/40 focus:outline-none w-full">
+        <button onclick="closeSpotlight()" class="text-xs glass-card px-2.5 py-1 rounded-lg text-gray-500 dark:text-white/60">ESC</button>
       </div>
       <div id="spotlightResults" class="mt-4 max-h-96 overflow-y-auto space-y-2">
-        <p class="text-xs text-white/40 text-center py-6">Начните вводить текст (например: «интернет», «Кударов», «Камри», «КС-2»)...</p>
+        <p class="text-xs text-gray-400 dark:text-white/40 text-center py-6">Начните вводить текст (например: «интернет», «Кударов», «Камри», «КС-2»)...</p>
       </div>
     </div>
   </div>
 
   <!-- ======================================================== -->
-  <!-- TOAST / DYNAMIC ISLAND NOTIFICATION POPUP -->
+  <!-- TOAST NOTIFICATION POPUP -->
   <!-- ======================================================== -->
-  <div id="toastNotification" class="fixed top-20 right-6 z-50 hidden transition-all duration-300 transform translate-y-2">
-    <div class="glass-card bg-zinc-950/95 border border-white/20 rounded-2xl px-5 py-3.5 shadow-2xl flex items-center space-x-3 text-xs">
-      <div id="toastIcon" class="w-7 h-7 rounded-xl bg-apple-green/20 text-apple-green flex items-center justify-center">
+  <div id="toastNotification" class="fixed top-20 right-4 sm:right-6 z-50 hidden transition-all duration-300 transform translate-y-2 max-w-sm">
+    <div class="glass-card bg-white/95 dark:bg-zinc-950/95 border border-gray-200 dark:border-white/20 rounded-2xl px-4 py-3 shadow-2xl flex items-center space-x-3 text-xs">
+      <div id="toastIcon" class="w-7 h-7 rounded-xl bg-apple-green/20 text-apple-green flex items-center justify-center shrink-0">
         <i data-lucide="check" class="w-4 h-4"></i>
       </div>
-      <div>
-        <p id="toastTitle" class="font-bold text-white">Уведомление</p>
-        <p id="toastMessage" class="text-white/60">Операция успешно выполнена</p>
+      <div class="min-w-0">
+        <p id="toastTitle" class="font-bold text-gray-900 dark:text-white truncate">Уведомление</p>
+        <p id="toastMessage" class="text-gray-600 dark:text-white/70 line-clamp-2">Операция успешно выполнена</p>
       </div>
     </div>
   </div>
 
   <!-- Application Logic -->
   <script>
+    // Safe HTML Escaping against XSS
+    function esc(s) {
+      if (s === null || s === undefined) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Safe Lucide icon initializer
+    function safeCreateIcons() {
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        try { window.lucide.createIcons(); } catch (e) { console.warn('Lucide icons render warning:', e); }
+      }
+    }
+
     // ----------------------------------------------------
-    // 1. DATASETS: SERVICES, DEPARTMENTS, EMPLOYEES, DRIVERS
+    // 1. DATASETS
     // ----------------------------------------------------
     const SERVICES_DATA = [
       {
@@ -755,13 +782,17 @@
       'Административно-хозяйственный отдел (АХО)',
       'Отдел бухгалтерского учета',
       'Отдел внутреннего контроля',
+      'Отдел капитального строительства и ремонта',
       'Отдел координации закупок и МТС',
+      'Отдел нормирования труда',
+      'Отдел по системе менеджмента',
       'Отдел управления персоналом (ОУПиОТ)',
       'Отдел экономики и бюджетного планирования',
       'Диспетчерская служба (ЦПДС)',
       'Служба охраны труда и ООС',
-      'Производственно-технический отдел (ПТО)',
-      'Служба безопасности'
+      'Служба безопасности',
+      'Служба электрохимзащиты',
+      'Служба эксплуатации газовых сетей'
     ];
 
     const EMPLOYEES_DATA = [
@@ -773,7 +804,7 @@
         room: 'Каб. 204',
         phone: '12-01',
         mobile: '+7 (701) 555-0101',
-        status: 'busy', // 'free', 'busy', 'away'
+        status: 'busy',
         note: 'Совещание по инвентаризации ОС'
       },
       {
@@ -872,7 +903,7 @@
         name: 'Мукашев Бауржан Кайратович',
         vehicle: 'Toyota Land Cruiser Prado',
         plate: '070 AC 07',
-        status: 'trip', // 'free', 'trip', 'service'
+        status: 'trip',
         destination: 'АУП ➔ КС-2 «Чижа» (линейная станция)',
         departure: '14:15',
         returnEta: '17:45',
@@ -921,7 +952,7 @@
         vehicle: 'УАЗ Патриот 4x4',
         plate: '329 AD 07',
         status: 'service',
-        destination: 'Бокс ТО / Замена расходных материалов',
+        destination: 'Бокс ТО / Плановое обслуживание',
         departure: '-',
         returnEta: 'Готовность завтра к 08:30',
         progress: 0,
@@ -930,13 +961,23 @@
     ];
 
     // ----------------------------------------------------
-    // 2. STATE MANAGEMENT (LOCAL STORAGE)
+    // 2. STATE MANAGEMENT (SAFELY LOAD FROM LOCAL STORAGE)
     // ----------------------------------------------------
+    function safeLoadJSON(key, defaultVal) {
+      try {
+        const val = localStorage.getItem(key);
+        return val ? JSON.parse(val) : defaultVal;
+      } catch (e) {
+        console.warn('LocalStorage parse error for ' + key, e);
+        return defaultVal;
+      }
+    }
+
     let state = {
       services: SERVICES_DATA,
-      employees: JSON.parse(localStorage.getItem('ica_employees') || 'null') || EMPLOYEES_DATA,
-      drivers: JSON.parse(localStorage.getItem('ica_drivers') || 'null') || DRIVERS_DATA,
-      tickets: JSON.parse(localStorage.getItem('ica_tickets') || 'null') || [
+      employees: safeLoadJSON('ica_employees_v2', EMPLOYEES_DATA),
+      drivers: safeLoadJSON('ica_drivers_v2', DRIVERS_DATA),
+      tickets: safeLoadJSON('ica_tickets_v2', [
         {
           id: 'ИТ-2026-081',
           service: 'Подключение и наладка сети Интернет',
@@ -957,22 +998,29 @@
           status: 'Выполнено',
           date: '25.09.2026 11:30'
         }
-      ],
-      messages: JSON.parse(localStorage.getItem('ica_messages') || 'null') || [],
-      soundEnabled: true,
+      ]),
+      messages: safeLoadJSON('ica_messages_v2', []),
+      soundEnabled: safeLoadJSON('ica_sound_v2', false),
+      theme: safeLoadJSON('ica_theme_v2', 'dark'),
       currentView: 'services'
     };
 
     function saveState() {
-      localStorage.setItem('ica_employees', JSON.stringify(state.employees));
-      localStorage.setItem('ica_drivers', JSON.stringify(state.drivers));
-      localStorage.setItem('ica_tickets', JSON.stringify(state.tickets));
-      localStorage.setItem('ica_messages', JSON.stringify(state.messages));
+      try {
+        localStorage.setItem('ica_employees_v2', JSON.stringify(state.employees));
+        localStorage.setItem('ica_drivers_v2', JSON.stringify(state.drivers));
+        localStorage.setItem('ica_tickets_v2', JSON.stringify(state.tickets));
+        localStorage.setItem('ica_messages_v2', JSON.stringify(state.messages));
+        localStorage.setItem('ica_sound_v2', JSON.stringify(state.soundEnabled));
+        localStorage.setItem('ica_theme_v2', JSON.stringify(state.theme));
+      } catch (e) {
+        console.warn('LocalStorage save error', e);
+      }
       updateCounts();
     }
 
     // ----------------------------------------------------
-    // 3. APPLE WEB AUDIO API SYNTHESIZER
+    // 3. APPLE WEB AUDIO API
     // ----------------------------------------------------
     let audioCtx = null;
     function playAppleSound(type = 'click') {
@@ -992,16 +1040,16 @@
           osc.type = 'sine';
           osc.frequency.setValueAtTime(800, now);
           osc.frequency.exponentialRampToValueAtTime(300, now + 0.04);
-          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.setValueAtTime(0.1, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
           osc.start(now);
           osc.stop(now + 0.04);
         } else if (type === 'chime') {
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(523.25, now); // C5
-          osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
-          osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
-          gain.gain.setValueAtTime(0.15, now);
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.16);
+          gain.gain.setValueAtTime(0.12, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
           osc.start(now);
           osc.stop(now + 0.35);
@@ -1009,26 +1057,49 @@
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(350, now);
           osc.frequency.exponentialRampToValueAtTime(900, now + 0.06);
-          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.setValueAtTime(0.12, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
           osc.start(now);
           osc.stop(now + 0.06);
         }
       } catch (e) {
-        console.warn('Audio not allowed yet:', e);
+        // Audio policy
       }
     }
 
     function toggleSound() {
       state.soundEnabled = !state.soundEnabled;
-      document.getElementById('soundIcon').setAttribute('data-lucide', state.soundEnabled ? 'volume-2' : 'volume-x');
-      lucide.createIcons();
+      saveState();
+      updateSoundIcon();
       showToast(state.soundEnabled ? 'Звук включен' : 'Звук выключен', 'Аудио-отклик интерфейса', state.soundEnabled ? 'volume-2' : 'volume-x');
     }
 
+    function updateSoundIcon() {
+      const icon = document.getElementById('soundIcon');
+      if (icon) {
+        icon.setAttribute('data-lucide', state.soundEnabled ? 'volume-2' : 'volume-x');
+        safeCreateIcons();
+      }
+    }
+
+    function applyTheme(themeName) {
+      state.theme = themeName;
+      if (themeName === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('sunIcon').classList.add('hidden');
+        document.getElementById('moonIcon').classList.remove('hidden');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('sunIcon').classList.remove('hidden');
+        document.getElementById('moonIcon').classList.add('hidden');
+      }
+      safeCreateIcons();
+    }
+
     function toggleTheme() {
-      document.documentElement.classList.toggle('dark');
-      document.documentElement.classList.toggle('light');
+      const nextTheme = state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(nextTheme);
+      saveState();
       playAppleSound('pop');
     }
 
@@ -1040,17 +1111,19 @@
       const elSub = document.getElementById('islandSubtitle');
       const dot = document.getElementById('islandDot');
 
-      elTitle.textContent = title;
-      elSub.textContent = subtitle;
+      if (elTitle) elTitle.textContent = title;
+      if (elSub) elSub.textContent = subtitle;
 
-      if (type === 'success') {
-        dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-green animate-pulse';
-      } else if (type === 'warning') {
-        dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-orange animate-pulse';
-      } else if (type === 'alert') {
-        dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-red animate-ping';
-      } else {
-        dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-blue';
+      if (dot) {
+        if (type === 'success') {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-green animate-pulse shrink-0';
+        } else if (type === 'warning') {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-orange animate-pulse shrink-0';
+        } else if (type === 'alert') {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-red animate-ping shrink-0';
+        } else {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-blue shrink-0';
+        }
       }
     }
 
@@ -1082,7 +1155,7 @@
         html += `<div class="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-between">
           <div class="flex items-center space-x-2">
             <span class="w-2 h-2 rounded-full bg-apple-teal"></span>
-            <span>Машин на выезде: <strong>${trips.length} автомобиля</strong></span>
+            <span>Автомобилей в рейсе: <strong>${trips.length}</strong></span>
           </div>
           <button onclick="switchView('drivers'); toggleIslandDetails()" class="text-apple-teal underline font-semibold">Карта рейсов</button>
         </div>`;
@@ -1101,7 +1174,7 @@
       document.getElementById('toastTitle').textContent = title;
       document.getElementById('toastMessage').textContent = message;
       document.getElementById('toastIcon').innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4"></i>`;
-      lucide.createIcons();
+      safeCreateIcons();
 
       toast.classList.remove('hidden');
       toast.classList.remove('translate-y-2');
@@ -1127,11 +1200,11 @@
 
         if (v === viewName) {
           viewEl.classList.remove('hidden');
-          dockBtn.className = 'dock-item relative group p-3 rounded-2xl bg-white/20 light:bg-black/10 text-white light:text-black transition-all spring-button';
+          dockBtn.className = 'dock-item relative group p-3 rounded-2xl bg-gray-900/10 dark:bg-white/20 text-gray-900 dark:text-white transition-all spring-button';
           dot.classList.remove('hidden');
         } else {
           viewEl.classList.add('hidden');
-          dockBtn.className = 'dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-white/10 light:hover:bg-black/5 text-white/60 light:text-black/60 transition-all spring-button';
+          dockBtn.className = 'dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-black/5 dark:hover:bg-white/10 text-gray-500 dark:text-white/60 transition-all spring-button';
           dot.classList.add('hidden');
         }
       });
@@ -1145,41 +1218,51 @@
     function renderServices(list = state.services) {
       const grid = document.getElementById('servicesGrid');
       grid.innerHTML = list.map(svc => `
-        <div class="glass-card rounded-3xl p-5 hover:border-white/30 transition-all duration-300 flex flex-col justify-between group">
+        <div class="glass-card rounded-3xl p-5 hover:border-gray-400 dark:hover:border-white/30 transition-all duration-300 flex flex-col justify-between group">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${svc.color} flex items-center justify-center text-white shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
                 <i data-lucide="${svc.icon}" class="w-6 h-6"></i>
               </div>
-              <span class="text-[10px] font-mono font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/70">
-                ${svc.sla}
+              <span class="text-[10px] font-mono font-medium px-2.5 py-1 rounded-full bg-black/5 dark:bg-white/10 text-gray-600 dark:text-white/70">
+                ${esc(svc.sla)}
               </span>
             </div>
-            <h4 class="text-base font-bold text-white light:text-gray-900 group-hover:text-apple-blue transition-colors">
-              ${svc.title}
+            <h4 class="text-base font-bold text-gray-900 dark:text-white group-hover:text-apple-blue transition-colors">
+              ${esc(svc.title)}
             </h4>
-            <p class="text-xs text-white/60 light:text-gray-600 mt-1.5 leading-relaxed">
-              ${svc.subtitle}
+            <p class="text-xs text-gray-600 dark:text-white/60 mt-1.5 leading-relaxed">
+              ${esc(svc.subtitle)}
             </p>
           </div>
 
-          <div class="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
-            <span class="text-[11px] text-white/40 light:text-gray-500 font-medium">Отдел: ${svc.dept}</span>
-            <button onclick="openOrderServiceModal('${svc.id}')" class="spring-button px-4 py-2 rounded-xl bg-white/10 hover:bg-apple-blue hover:text-white text-xs font-semibold text-white/90 light:text-gray-800 transition-all">
+          <div class="mt-5 pt-4 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
+            <span class="text-[11px] text-gray-500 dark:text-white/40 font-medium">Отдел: ${esc(svc.dept)}</span>
+            <button onclick="handleServiceClick('${svc.id}')" class="spring-button px-4 py-2 rounded-xl bg-gray-900/10 dark:bg-white/10 hover:bg-apple-blue hover:text-white dark:hover:bg-apple-blue text-xs font-semibold text-gray-900 dark:text-white transition-all">
               Заказать ➔
             </button>
           </div>
         </div>
       `).join('');
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
-    function filterServices(category) {
+    function handleServiceClick(serviceId) {
+      if (serviceId === 'car-dispatch') {
+        openOrderCarModal();
+      } else {
+        openOrderServiceModal(serviceId);
+      }
+    }
+
+    function filterServices(category, btnElement) {
       playAppleSound('click');
       document.querySelectorAll('.svc-tab').forEach(b => {
-        b.className = 'svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/5 light:bg-black/5 hover:bg-white/10 text-white/70 light:text-gray-700 transition-all';
+        b.className = 'svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium glass-card text-gray-700 dark:text-white/70 hover:opacity-80 transition-all';
       });
-      event.target.className = 'svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/20 light:bg-black/10 text-white light:text-black transition-all';
+      if (btnElement) {
+        btnElement.className = 'svc-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-900 dark:bg-white text-white dark:text-black transition-all';
+      }
 
       if (category === 'all') {
         renderServices(state.services);
@@ -1206,67 +1289,67 @@
         } else {
           statusBadge = `<div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-blue-500/15 text-apple-teal text-[10px] font-semibold border border-blue-500/30">
             <span class="w-1.5 h-1.5 rounded-full bg-apple-teal"></span>
-            <span>На выезде</span>
+            <span>На выезде (Очередь)</span>
           </div>`;
         }
 
         const initials = emp.name.split(' ').slice(0, 2).map(w => w[0]).join('');
 
         return `
-          <div class="glass-card rounded-3xl p-5 hover:border-white/30 transition-all duration-300 flex flex-col justify-between">
+          <div class="glass-card rounded-3xl p-5 hover:border-gray-400 dark:hover:border-white/30 transition-all duration-300 flex flex-col justify-between">
             <div>
               <div class="flex items-start justify-between mb-3">
                 <div class="flex items-center space-x-3">
-                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-md">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-md shrink-0">
                     ${initials}
                   </div>
                   <div>
-                    <h4 class="text-sm font-bold text-white light:text-gray-900 leading-snug">${emp.name}</h4>
-                    <p class="text-[11px] text-white/50 light:text-gray-500">${emp.role}</p>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white leading-snug">${esc(emp.name)}</h4>
+                    <p class="text-[11px] text-gray-500 dark:text-white/50">${esc(emp.role)}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Status row & Demo toggle button -->
-              <div class="flex items-center justify-between my-2.5 p-2 rounded-xl bg-white/5 light:bg-black/5">
+              <div class="flex items-center justify-between my-2.5 p-2 rounded-xl bg-black/5 dark:bg-white/5">
                 ${statusBadge}
-                <button onclick="toggleEmployeeStatus('${emp.id}')" class="text-[10px] text-white/60 hover:text-white underline font-medium" title="Переключить статус для теста">
+                <button onclick="toggleEmployeeStatus('${emp.id}')" class="text-[10px] text-gray-600 dark:text-white/60 hover:text-black dark:hover:text-white underline font-medium" title="Переключить статус для теста">
                   Сменить статус ⇄
                 </button>
               </div>
 
-              <div class="space-y-1.5 text-xs text-white/70 light:text-gray-600 mt-2">
+              <div class="space-y-1.5 text-xs text-gray-600 dark:text-white/70 mt-2">
                 <div class="flex items-center space-x-2">
-                  <i data-lucide="building" class="w-3.5 h-3.5 text-white/40"></i>
-                  <span class="truncate">${emp.dept}</span>
+                  <i data-lucide="building" class="w-3.5 h-3.5 text-gray-400 dark:text-white/40 shrink-0"></i>
+                  <span class="truncate">${esc(emp.dept)}</span>
                 </div>
                 <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-2">
-                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-white/40"></i>
-                    <span>${emp.room}</span>
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400 dark:text-white/40 shrink-0"></i>
+                    <span>${esc(emp.room)}</span>
                   </div>
                   <div class="flex items-center space-x-2">
-                    <i data-lucide="phone" class="w-3.5 h-3.5 text-white/40"></i>
-                    <span>Внутр.: <strong>${emp.phone}</strong></span>
+                    <i data-lucide="phone" class="w-3.5 h-3.5 text-gray-400 dark:text-white/40 shrink-0"></i>
+                    <span>Внутр.: <strong>${esc(emp.phone)}</strong></span>
                   </div>
                 </div>
-                <div class="text-[11px] text-white/40 italic pt-1 truncate">
-                  Примечание: ${emp.note}
+                <div class="text-[11px] text-gray-500 dark:text-white/40 italic pt-1 truncate">
+                  Примечание: ${esc(emp.note)}
                 </div>
               </div>
             </div>
 
-            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
-              <span class="text-[11px] text-white/40">${emp.mobile}</span>
-              <button onclick="openSendMessageModal('${emp.id}')" class="spring-button px-4 py-2 rounded-xl ${emp.status === 'busy' ? 'bg-orange-500/20 text-apple-orange border border-orange-500/30' : 'bg-white/10 text-white hover:bg-apple-purple'} text-xs font-semibold flex items-center space-x-1.5">
+            <div class="mt-4 pt-3 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
+              <span class="text-[11px] text-gray-400 dark:text-white/40">${esc(emp.mobile)}</span>
+              <button onclick="openSendMessageModal('${emp.id}')" class="spring-button px-4 py-2 rounded-xl ${emp.status !== 'free' ? 'bg-orange-500/20 text-apple-orange border border-orange-500/30' : 'bg-gray-900/10 dark:bg-white/10 text-gray-900 dark:text-white hover:bg-apple-purple hover:text-white'} text-xs font-semibold flex items-center space-x-1.5">
                 <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
-                <span>${emp.status === 'busy' ? 'В очередь' : 'Написать'}</span>
+                <span>${emp.status !== 'free' ? 'В очередь' : 'Написать'}</span>
               </button>
             </div>
           </div>
         `;
       }).join('');
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     function populateDeptFilter() {
@@ -1293,7 +1376,7 @@
       renderEmployees(filtered);
     }
 
-    // Toggle Employee Status (Demonstrating Queue Release)
+    // Toggle Employee Status (Release queue when free)
     function toggleEmployeeStatus(empId) {
       const emp = state.employees.find(e => e.id === empId);
       if (!emp) return;
@@ -1301,21 +1384,22 @@
       playAppleSound('pop');
       if (emp.status === 'free') {
         emp.status = 'busy';
-        emp.note = 'Занят: срочная задача / совещание';
+        emp.note = 'Занят: срочное поручение / совещание';
         showToast(emp.name, 'Статус изменён на «ЗАНЯТ». Новые сообщения пойдут в очередь.', 'clock');
         setDynamicIsland(`⚠️ ${emp.name.split(' ')[0]} занят`, 'Сообщения встают в очередь доставки', 'warning');
       } else {
         emp.status = 'free';
         emp.note = 'На рабочем месте';
         
-        // CHECK QUEUED MESSAGES FOR THIS EMPLOYEE!
+        // Deliver queued messages for this employee
         const queuedForEmp = state.messages.filter(m => m.empId === empId && m.status === 'queued');
         if (queuedForEmp.length > 0) {
+          const nowTime = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
           queuedForEmp.forEach(m => {
             m.status = 'delivered';
-            m.deliveredAt = new Date().toLocaleTimeString().slice(0, 5);
+            m.deliveredAt = nowTime;
           });
-          showToast(`Доставлено (${queuedForEmp.length})`, `Сотрудник ${emp.name} освободился! Отложенные сообщения доставлены.`, 'check-circle');
+          showToast(`Доставлено (${queuedForEmp.length})`, `Сотрудник ${emp.name} освободился! Отложенные сообщения доставлены.`, 'check-check');
           setDynamicIsland(`🎉 Сообщения доставлены!`, `${emp.name} освободился (${queuedForEmp.length} в очереди)`, 'success');
         } else {
           showToast(emp.name, 'Статус изменён на «СВОБОДЕН».', 'check');
@@ -1349,44 +1433,44 @@
         }
 
         return `
-          <div class="glass-card rounded-3xl p-5 hover:border-white/30 transition-all duration-300 flex flex-col justify-between">
+          <div class="glass-card rounded-3xl p-5 hover:border-gray-400 dark:hover:border-white/30 transition-all duration-300 flex flex-col justify-between">
             <div>
               <div class="flex items-start justify-between mb-3">
                 <div>
-                  <h4 class="text-base font-bold text-white light:text-gray-900">${drv.name}</h4>
-                  <p class="text-xs text-white/50 light:text-gray-500 font-medium">${drv.phone}</p>
+                  <h4 class="text-base font-bold text-gray-900 dark:text-white">${esc(drv.name)}</h4>
+                  <p class="text-xs text-gray-500 dark:text-white/50 font-medium">${esc(drv.phone)}</p>
                 </div>
                 ${statusBadge}
               </div>
 
               <!-- Vehicle info card -->
-              <div class="p-3 rounded-2xl bg-white/5 light:bg-black/5 flex items-center space-x-3 mb-3">
-                <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-apple-teal flex items-center justify-center">
+              <div class="p-3 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center space-x-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-apple-teal flex items-center justify-center shrink-0">
                   <i data-lucide="truck" class="w-5 h-5"></i>
                 </div>
                 <div>
-                  <p class="text-xs font-bold text-white light:text-gray-900">${drv.vehicle}</p>
-                  <p class="text-[11px] font-mono text-apple-teal font-semibold">Гос. № ${drv.plate}</p>
+                  <p class="text-xs font-bold text-gray-900 dark:text-white">${esc(drv.vehicle)}</p>
+                  <p class="text-[11px] font-mono text-apple-teal font-semibold">Гос. № ${esc(drv.plate)}</p>
                 </div>
               </div>
 
               <!-- Route details -->
-              <div class="space-y-1.5 text-xs text-white/70 light:text-gray-600">
+              <div class="space-y-1.5 text-xs text-gray-600 dark:text-white/70">
                 <div class="flex items-center space-x-2">
-                  <i data-lucide="compass" class="w-4 h-4 text-apple-blue flex-shrink-0"></i>
-                  <span class="truncate font-medium">Маршрут: <strong>${drv.destination}</strong></span>
+                  <i data-lucide="compass" class="w-4 h-4 text-apple-blue shrink-0"></i>
+                  <span class="truncate font-medium">Маршрут: <strong>${esc(drv.destination)}</strong></span>
                 </div>
-                <div class="flex items-center justify-between text-[11px] text-white/50">
-                  <span>Выезд: ${drv.departure}</span>
-                  <span>Возврат: <strong class="text-white/80">${drv.returnEta}</strong></span>
+                <div class="flex items-center justify-between text-[11px] text-gray-500 dark:text-white/50">
+                  <span>Выезд: ${esc(drv.departure)}</span>
+                  <span>Возврат: <strong class="text-gray-900 dark:text-white/80">${esc(drv.returnEta)}</strong></span>
                 </div>
                 ${drv.status === 'trip' ? `
                   <div class="pt-2">
-                    <div class="flex justify-between text-[10px] text-white/40 mb-1">
+                    <div class="flex justify-between text-[10px] text-gray-400 dark:text-white/40 mb-1">
                       <span>Прогресс поездки</span>
                       <span>${drv.progress}%</span>
                     </div>
-                    <div class="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                    <div class="w-full bg-black/10 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
                       <div class="bg-gradient-to-r from-blue-500 to-teal-400 h-1.5 rounded-full" style="width: ${drv.progress}%"></div>
                     </div>
                   </div>
@@ -1394,51 +1478,51 @@
               </div>
             </div>
 
-            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
-              <span class="text-[11px] text-white/40">${drv.status === 'free' ? 'Готов к подаче' : 'В движении'}</span>
-              <button onclick="orderSpecificDriver('${drv.id}')" class="spring-button px-4 py-2 rounded-xl ${drv.status === 'free' ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white' : 'bg-white/10 text-white/40 cursor-not-allowed'} text-xs font-semibold" ${drv.status !== 'free' ? 'disabled' : ''}>
-                ${drv.status === 'free' ? 'Заказать машину' : 'Занят рейсом'}
+            <div class="mt-4 pt-3 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
+              <span class="text-[11px] text-gray-400 dark:text-white/40">${drv.status === 'free' ? 'Готов к подаче' : drv.status === 'trip' ? 'В движении' : 'На ремонте'}</span>
+              <button onclick="orderSpecificDriver('${drv.id}')" class="spring-button px-4 py-2 rounded-xl ${drv.status === 'free' ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-white/30 cursor-not-allowed'} text-xs font-semibold" ${drv.status !== 'free' ? 'disabled' : ''}>
+                ${drv.status === 'free' ? 'Заказать машину' : 'Занят'}
               </button>
             </div>
           </div>
         `;
       }).join('');
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     function renderTicketsList() {
       const container = document.getElementById('ticketsListContainer');
       if (state.tickets.length === 0) {
-        container.innerHTML = '<p class="text-xs text-white/40 text-center py-10">У вас пока нет созданных заявок. Выберите услугу в каталоге!</p>';
+        container.innerHTML = '<p class="text-xs text-gray-400 dark:text-white/40 text-center py-10">У вас пока нет созданных заявок. Выберите услугу в каталоге!</p>';
         return;
       }
 
       container.innerHTML = state.tickets.map((t, idx) => `
         <div class="glass-card rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="flex items-start space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-blue-500/20 text-apple-blue flex items-center justify-center font-bold text-xs mt-0.5">
+            <div class="w-9 h-9 rounded-xl bg-blue-500/20 text-apple-blue flex items-center justify-center font-bold text-xs mt-0.5 shrink-0">
               #${idx+1}
             </div>
             <div>
               <div class="flex items-center space-x-2">
-                <span class="text-xs font-bold text-white light:text-gray-900">${t.service}</span>
-                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-white/60">${t.id}</span>
-                <span class="text-[10px] px-2 py-0.5 rounded font-medium ${t.priority === 'Критический' ? 'bg-red-500/20 text-apple-red' : t.priority === 'Срочный' ? 'bg-orange-500/20 text-apple-orange' : 'bg-blue-500/20 text-apple-blue'}">${t.priority}</span>
+                <span class="text-xs font-bold text-gray-900 dark:text-white">${esc(t.service)}</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-black/5 dark:bg-white/10 text-gray-600 dark:text-white/60">${esc(t.id)}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-medium ${t.priority === 'Критический' ? 'bg-red-500/20 text-apple-red' : t.priority === 'Срочный' ? 'bg-orange-500/20 text-apple-orange' : 'bg-blue-500/20 text-apple-blue'}">${esc(t.priority)}</span>
               </div>
-              <p class="text-xs text-white/60 light:text-gray-600 mt-1">${t.desc}</p>
-              <div class="flex items-center space-x-3 text-[11px] text-white/40 mt-1.5">
-                <span>Кабинет: <strong>${t.room}</strong></span>
-                <span>Заявитель: ${t.author}</span>
-                <span>${t.date}</span>
+              <p class="text-xs text-gray-600 dark:text-white/60 mt-1">${esc(t.desc)}</p>
+              <div class="flex items-center space-x-3 text-[11px] text-gray-500 dark:text-white/40 mt-1.5">
+                <span>Кабинет/Маршрут: <strong>${esc(t.room)}</strong></span>
+                <span>Заявитель: ${esc(t.author)}</span>
+                <span>${esc(t.date)}</span>
               </div>
             </div>
           </div>
 
-          <div class="flex items-center space-x-2 self-end sm:self-center">
+          <div class="flex items-center space-x-2 self-end sm:self-center shrink-0">
             <span class="px-3 py-1 rounded-full text-xs font-semibold ${t.status === 'Выполнено' ? 'bg-emerald-500/20 text-apple-green' : 'bg-blue-500/20 text-apple-blue animate-pulse'}">
-              ${t.status}
+              ${esc(t.status)}
             </span>
-            <button onclick="toggleTicketStatus('${t.id}')" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 text-xs" title="Сменить статус (демо)">
+            <button onclick="toggleTicketStatus('${t.id}')" aria-label="Сменить статус" class="p-1.5 rounded-lg glass-card text-gray-500 dark:text-white/60 text-xs" title="Сменить статус (демо)">
               ✓
             </button>
           </div>
@@ -1449,7 +1533,7 @@
     function renderMessagesList() {
       const container = document.getElementById('messagesListContainer');
       if (state.messages.length === 0) {
-        container.innerHTML = '<p class="text-xs text-white/40 text-center py-10">Нет отправленных сообщений. Напишите сотруднику в разделе «Сотрудники»!</p>';
+        container.innerHTML = '<p class="text-xs text-gray-400 dark:text-white/40 text-center py-10">Нет отправленных сообщений. Напишите сотруднику в разделе «Сотрудники»!</p>';
         return;
       }
 
@@ -1457,29 +1541,29 @@
         <div class="glass-card rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${m.status === 'queued' ? 'border-l-4 border-l-apple-orange' : 'border-l-4 border-l-apple-green'}">
           <div>
             <div class="flex items-center space-x-2">
-              <span class="text-xs font-bold text-white">${m.empName}</span>
-              <span class="text-[11px] text-white/40">(${m.subject})</span>
+              <span class="text-xs font-bold text-gray-900 dark:text-white">${esc(m.empName)}</span>
+              <span class="text-[11px] text-gray-500 dark:text-white/40">(${esc(m.subject)})</span>
             </div>
-            <p class="text-xs text-white/70 mt-1">«${m.body}»</p>
-            <p class="text-[10px] text-white/40 mt-1">От: ${m.sender} • Отправлено в ${m.time}</p>
+            <p class="text-xs text-gray-700 dark:text-white/70 mt-1">«${esc(m.body)}»</p>
+            <p class="text-[10px] text-gray-500 dark:text-white/40 mt-1">От: ${esc(m.sender)} • Отправлено в ${esc(m.time)}</p>
           </div>
 
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-2 shrink-0">
             ${m.status === 'queued' ? `
               <div class="px-3 py-1 rounded-full bg-orange-500/20 border border-orange-500/30 text-apple-orange text-xs font-semibold flex items-center space-x-1.5">
-                <i data-lucide="clock" class="w-3.5 h-3.5 animate-spin"></i>
+                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
                 <span>В очереди (Сотрудник занят)</span>
               </div>
             ` : `
               <div class="px-3 py-1 rounded-full bg-emerald-500/20 text-apple-green text-xs font-semibold flex items-center space-x-1.5">
                 <i data-lucide="check-check" class="w-3.5 h-3.5"></i>
-                <span>Доставлено в ${m.deliveredAt || m.time}</span>
+                <span>Доставлено в ${esc(m.deliveredAt || m.time)}</span>
               </div>
             `}
           </div>
         </div>
       `).join('');
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     function switchTicketSubTab(tab) {
@@ -1492,13 +1576,13 @@
       if (tab === 'tickets') {
         tContainer.classList.remove('hidden');
         mContainer.classList.add('hidden');
-        tBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-white/15 text-white';
-        mBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-transparent text-white/60 hover:text-white';
+        tBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-gray-900 dark:bg-white text-white dark:text-black transition-all';
+        mBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-gray-600 dark:text-white/60 hover:text-black dark:hover:text-white transition-all';
       } else {
         tContainer.classList.add('hidden');
         mContainer.classList.remove('hidden');
-        tBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-transparent text-white/60 hover:text-white';
-        mBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-white/15 text-white';
+        tBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-gray-600 dark:text-white/60 hover:text-black dark:hover:text-white transition-all';
+        mBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-gray-900 dark:bg-white text-white dark:text-black transition-all';
       }
     }
 
@@ -1514,7 +1598,7 @@
 
     function updateCounts() {
       const online = state.employees.filter(e => e.status === 'free').length;
-      const busy = state.employees.filter(e => e.status === 'busy').length;
+      const busy = state.employees.filter(e => e.status !== 'free').length;
       const trips = state.drivers.filter(d => d.status === 'trip').length;
 
       document.getElementById('statOnlineCount').textContent = online;
@@ -1537,25 +1621,27 @@
       document.getElementById('modalServiceTitle').textContent = svc.title;
       document.getElementById('modalServiceCategory').textContent = `${svc.dept} • Срок: ${svc.sla}`;
       document.getElementById('modalServiceIcon').innerHTML = `<i data-lucide="${svc.icon}" class="w-6 h-6"></i>`;
-      lucide.createIcons();
+      safeCreateIcons();
 
       document.getElementById('modalOrderService').classList.remove('hidden');
     }
 
-    function submitServiceTicket(e) {
-      e.preventDefault();
+    function submitServiceTicket(ev) {
+      ev.preventDefault();
       const svcId = document.getElementById('serviceInputId').value;
       const svc = state.services.find(s => s.id === svcId);
 
+      const prefix = svc.dept.includes('ИТ') ? 'ИТ' : 'АХО';
+      const now = new Date();
       const newTicket = {
-        id: `ИТ-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
+        id: `${prefix}-${now.getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
         service: svc.title,
-        room: document.getElementById('ticketRoom').value,
-        author: document.getElementById('ticketAuthor').value,
+        room: document.getElementById('ticketRoom').value.trim(),
+        author: document.getElementById('ticketAuthor').value.trim(),
         priority: document.querySelector('input[name="priority"]:checked').value,
-        desc: document.getElementById('ticketDescription').value,
+        desc: document.getElementById('ticketDescription').value.trim(),
         status: 'В работе',
-        date: new Date().toLocaleDateString('ru-RU') + ' ' + new Date().toLocaleTimeString('ru-RU').slice(0, 5)
+        date: now.toLocaleDateString('ru-RU') + ' ' + now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
       };
 
       state.tickets.unshift(newTicket);
@@ -1583,9 +1669,9 @@
       const warning = document.getElementById('msgBusyWarning');
       const statusText = document.getElementById('msgEmpStatusText');
 
-      if (emp.status === 'busy') {
+      if (emp.status !== 'free') {
         badge.className = 'mt-1 inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-orange-500/20 text-apple-orange border border-orange-500/30';
-        statusText.textContent = 'Занят (Встанет в очередь)';
+        statusText.textContent = emp.status === 'busy' ? 'Занят (Встанет в очередь)' : 'На выезде (Встанет в очередь)';
         warning.classList.remove('hidden');
       } else {
         badge.className = 'mt-1 inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-apple-green';
@@ -1596,22 +1682,24 @@
       document.getElementById('modalSendMessage').classList.remove('hidden');
     }
 
-    function submitEmployeeMessage(e) {
-      e.preventDefault();
+    function submitEmployeeMessage(ev) {
+      ev.preventDefault();
       const empId = document.getElementById('msgEmpId').value;
-      const emp = state.employees.find(e => e.id === empId);
+      const targetEmp = state.employees.find(item => item.id === empId);
+      if (!targetEmp) return;
 
-      const isBusy = emp.status === 'busy';
+      const isBusy = targetEmp.status !== 'free';
+      const nowTime = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
       const newMsg = {
         id: 'msg-' + Date.now(),
-        empId: emp.id,
-        empName: emp.name,
-        sender: document.getElementById('msgSender').value,
-        subject: document.getElementById('msgSubject').value,
-        body: document.getElementById('msgBody').value,
+        empId: targetEmp.id,
+        empName: targetEmp.name,
+        sender: document.getElementById('msgSender').value.trim(),
+        subject: document.getElementById('msgSubject').value.trim(),
+        body: document.getElementById('msgBody').value.trim(),
         status: isBusy ? 'queued' : 'delivered',
-        time: new Date().toLocaleTimeString().slice(0, 5),
-        deliveredAt: isBusy ? null : new Date().toLocaleTimeString().slice(0, 5)
+        time: nowTime,
+        deliveredAt: isBusy ? null : nowTime
       };
 
       state.messages.unshift(newMsg);
@@ -1621,54 +1709,103 @@
       document.getElementById('sendMessageForm').reset();
 
       if (isBusy) {
-        setDynamicIsland(`⏳ Сообщение в очереди`, `Доставится, как только ${emp.name.split(' ')[0]} освободится`, 'warning');
-        showToast('Поставлено в очередь', `Сотрудник ${emp.name} сейчас занят. Сообщение будет доставлено при освобождении!`, 'clock');
+        setDynamicIsland(`⏳ Сообщение в очереди`, `Доставится, как только ${targetEmp.name.split(' ')[0]} освободится`, 'warning');
+        showToast('Поставлено в очередь', `Сотрудник ${targetEmp.name} сейчас занят. Сообщение будет доставлено при освобождении!`, 'clock');
       } else {
-        setDynamicIsland(`✓✓ Сообщение доставлено`, `${emp.name} получил ваше уведомление`, 'success');
-        showToast('Доставлено мгновенно', `Сотрудник ${emp.name} получил сообщение.`, 'check-check');
+        setDynamicIsland(`✓✓ Сообщение доставлено`, `${targetEmp.name} получил ваше обращение`, 'success');
+        showToast('Доставлено мгновенно', `Сотрудник ${targetEmp.name} получил сообщение.`, 'check-check');
       }
 
       renderMessagesList();
     }
 
-    function openOrderCarModal() {
+    function populateDriverSelect() {
+      const select = document.getElementById('carDriverSelect');
+      select.innerHTML = '<option value="auto" class="bg-zinc-900 text-white">Автоматический подбор свободного водителя</option>';
+      state.drivers.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.id;
+        opt.textContent = `${d.name} (${d.vehicle}, ${d.plate}) — ${d.status === 'free' ? 'Свободен' : 'В рейсе'}`;
+        opt.className = 'bg-zinc-900 text-white';
+        select.appendChild(opt);
+      });
+    }
+
+    function openOrderCarModal(preselectedDriverId = null) {
       playAppleSound('click');
+      populateDriverSelect();
+      if (preselectedDriverId) {
+        document.getElementById('carDriverSelect').value = preselectedDriverId;
+      }
       document.getElementById('modalOrderCar').classList.remove('hidden');
     }
 
     function orderSpecificDriver(driverId) {
-      openOrderCarModal();
+      openOrderCarModal(driverId);
     }
 
-    function submitCarOrder(e) {
-      e.preventDefault();
+    function submitCarOrder(ev) {
+      ev.preventDefault();
       const dest = document.getElementById('carDestination').value;
       const time = document.getElementById('carTime').value;
       const pass = document.getElementById('carPassengers').value;
-      const req = document.getElementById('carRequester').value;
+      const req = document.getElementById('carRequester').value.trim();
+      const purpose = document.getElementById('carPurpose').value.trim();
+      const driverChoice = document.getElementById('carDriverSelect').value;
 
-      // Find free driver
-      const freeDriver = state.drivers.find(d => d.status === 'free') || state.drivers[0];
-      freeDriver.status = 'trip';
-      freeDriver.destination = `АУП ➔ ${dest}`;
-      freeDriver.departure = time;
-      freeDriver.returnEta = '~' + (parseInt(time.split(':')[0]) + 2) + ':00';
-      freeDriver.progress = 10;
+      let assignedDriver = null;
+      if (driverChoice !== 'auto') {
+        assignedDriver = state.drivers.find(d => d.id === driverChoice);
+      } else {
+        assignedDriver = state.drivers.find(d => d.status === 'free');
+      }
 
+      if (!assignedDriver) {
+        alert('К сожалению, в данный момент все водители находятся в рейсе или на ТО. Заявка направлена дежурному диспетчеру УТТиСТ.');
+        assignedDriver = state.drivers[0];
+      }
+
+      assignedDriver.status = 'trip';
+      assignedDriver.destination = `АУП ➔ ${dest}`;
+      assignedDriver.departure = time;
+      
+      const depHour = parseInt(time.split(':')[0]) || 15;
+      const returnHour = (depHour + 2) % 24;
+      assignedDriver.returnEta = `~${String(returnHour).padStart(2, '0')}:30`;
+      assignedDriver.progress = 15;
+
+      // Add to tickets
+      const newCarTicket = {
+        id: `АВТО-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+        service: 'Заказ служебного автотранспорта',
+        room: dest,
+        author: `${req} (${pass})`,
+        priority: 'Срочный',
+        desc: `Водитель: ${assignedDriver.name} (${assignedDriver.vehicle}, ${assignedDriver.plate}). Цель: ${purpose}`,
+        status: 'В работе',
+        date: new Date().toLocaleDateString('ru-RU') + ' ' + new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+      };
+
+      state.tickets.unshift(newCarTicket);
       saveState();
+
       closeModal('modalOrderCar');
       document.getElementById('orderCarForm').reset();
 
-      setDynamicIsland(`🚗 Автомобиль назначен!`, `${freeDriver.vehicle} (${freeDriver.plate}) • Подача к ${time}`, 'success');
-      showToast(`Автомобиль заказан!`, `Водитель ${freeDriver.name} принял заказ. Гос. номер: ${freeDriver.plate}`, 'navigation');
+      setDynamicIsland(`🚗 Машина назначена!`, `${assignedDriver.vehicle} (${assignedDriver.plate}) • Подача: ${time}`, 'success');
+      showToast(`Автомобиль заказан!`, `Водитель ${assignedDriver.name} принял заказ. Гос. номер: ${assignedDriver.plate}`, 'navigation');
 
       renderDrivers();
+      renderTicketsList();
       switchView('drivers');
     }
 
     function closeModal(modalId) {
-      playAppleSound('click');
-      document.getElementById(modalId).classList.add('hidden');
+      const modal = document.getElementById(modalId);
+      if (modal && !modal.classList.contains('hidden')) {
+        playAppleSound('click');
+        modal.classList.add('hidden');
+      }
     }
 
     // ----------------------------------------------------
@@ -1703,70 +1840,76 @@
       const resContainer = document.getElementById('spotlightResults');
 
       if (!q) {
-        resContainer.innerHTML = '<p class="text-xs text-white/40 text-center py-6">Начните вводить текст...</p>';
+        resContainer.innerHTML = '<p class="text-xs text-gray-400 dark:text-white/40 text-center py-6">Начните вводить текст...</p>';
         return;
       }
 
       let html = '';
 
       // Match services
-      const matchServices = state.services.filter(s => s.title.toLowerCase().includes(q) || s.subtitle.toLowerCase().includes(q));
+      const matchServices = state.services.filter(s => s.title.toLowerCase().includes(q) || s.subtitle.toLowerCase().includes(q) || s.dept.toLowerCase().includes(q));
       if (matchServices.length > 0) {
         html += '<p class="text-[10px] font-bold text-apple-blue uppercase tracking-wider mb-1">Услуги и поддержка</p>';
         matchServices.forEach(s => {
           html += `
-            <div onclick="closeSpotlight(); openOrderServiceModal('${s.id}')" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center justify-between text-xs text-white">
+            <div onclick="closeSpotlight(); handleServiceClick('${s.id}')" class="p-3 rounded-2xl glass-card cursor-pointer flex items-center justify-between text-xs text-gray-900 dark:text-white hover:opacity-80">
               <div class="flex items-center space-x-2.5">
-                <i data-lucide="${s.icon}" class="w-4 h-4 text-apple-blue"></i>
-                <span class="font-semibold">${s.title}</span>
+                <i data-lucide="${s.icon}" class="w-4 h-4 text-apple-blue shrink-0"></i>
+                <span class="font-semibold">${esc(s.title)}</span>
               </div>
-              <span class="text-white/40">${s.sla}</span>
+              <span class="text-gray-400 dark:text-white/40 text-[11px]">${esc(s.sla)}</span>
             </div>
           `;
         });
       }
 
       // Match employees
-      const matchEmp = state.employees.filter(e => e.name.toLowerCase().includes(q) || e.room.toLowerCase().includes(q) || e.dept.toLowerCase().includes(q));
+      const matchEmp = state.employees.filter(e => e.name.toLowerCase().includes(q) || e.room.toLowerCase().includes(q) || e.dept.toLowerCase().includes(q) || e.role.toLowerCase().includes(q));
       if (matchEmp.length > 0) {
         html += '<p class="text-[10px] font-bold text-apple-purple uppercase tracking-wider mt-3 mb-1">Сотрудники АУП</p>';
         matchEmp.forEach(e => {
           html += `
-            <div onclick="closeSpotlight(); openSendMessageModal('${e.id}')" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center justify-between text-xs text-white">
+            <div onclick="closeSpotlight(); openSendMessageModal('${e.id}')" class="p-3 rounded-2xl glass-card cursor-pointer flex items-center justify-between text-xs text-gray-900 dark:text-white hover:opacity-80">
               <div>
-                <span class="font-semibold">${e.name}</span>
-                <span class="text-white/50 text-[11px] block">${e.role} (${e.room})</span>
+                <span class="font-semibold">${esc(e.name)}</span>
+                <span class="text-gray-500 dark:text-white/50 text-[11px] block">${esc(e.role)} (${esc(e.room)})</span>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] ${e.status === 'free' ? 'bg-emerald-500/20 text-apple-green' : 'bg-orange-500/20 text-apple-orange'}">${e.status === 'free' ? 'Свободен' : 'Занят'}</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${e.status === 'free' ? 'bg-emerald-500/20 text-apple-green' : 'bg-orange-500/20 text-apple-orange'}">${e.status === 'free' ? 'Свободен' : 'Занят'}</span>
             </div>
           `;
         });
       }
 
-      // Match drivers
-      const matchDrv = state.drivers.filter(d => d.name.toLowerCase().includes(q) || d.vehicle.toLowerCase().includes(q) || d.plate.toLowerCase().includes(q));
+      // Match drivers (support Russian terms: камри, прадо, тойота, чижа)
+      const qClean = q.replace('камри', 'camry').replace('прадо', 'prado').replace('тойота', 'toyota');
+      const matchDrv = state.drivers.filter(d => 
+        d.name.toLowerCase().includes(q) || 
+        d.vehicle.toLowerCase().includes(qClean) || 
+        d.plate.toLowerCase().includes(q) ||
+        d.destination.toLowerCase().includes(q)
+      );
       if (matchDrv.length > 0) {
         html += '<p class="text-[10px] font-bold text-apple-teal uppercase tracking-wider mt-3 mb-1">Водители и Автомобили</p>';
         matchDrv.forEach(d => {
           html += `
-            <div onclick="closeSpotlight(); switchView('drivers')" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center justify-between text-xs text-white">
+            <div onclick="closeSpotlight(); switchView('drivers')" class="p-3 rounded-2xl glass-card cursor-pointer flex items-center justify-between text-xs text-gray-900 dark:text-white hover:opacity-80">
               <div>
-                <span class="font-semibold">${d.name} — ${d.vehicle}</span>
-                <span class="text-white/50 text-[11px] block">${d.plate} • ${d.destination}</span>
+                <span class="font-semibold">${esc(d.name)} — ${esc(d.vehicle)}</span>
+                <span class="text-gray-500 dark:text-white/50 text-[11px] block">Гос. № ${esc(d.plate)} • ${esc(d.destination)}</span>
               </div>
-              <span class="text-apple-teal">${d.status === 'free' ? 'Свободен' : 'В рейсе'}</span>
+              <span class="text-apple-teal font-medium text-[11px]">${d.status === 'free' ? 'Свободен' : d.status === 'trip' ? 'В рейсе' : 'На ТО'}</span>
             </div>
           `;
         });
       }
 
-      resContainer.innerHTML = html || '<p class="text-xs text-white/40 text-center py-6">Ничего не найдено</p>';
-      lucide.createIcons();
+      resContainer.innerHTML = html || '<p class="text-xs text-gray-400 dark:text-white/40 text-center py-6">Ничего не найдено</p>';
+      safeCreateIcons();
     }
 
     function clearDemoData() {
       if (confirm('Сбросить локальные данные портала к исходным демо-значениям?')) {
-        localStorage.clear();
+        ['ica_employees_v2', 'ica_drivers_v2', 'ica_tickets_v2', 'ica_messages_v2'].forEach(k => localStorage.removeItem(k));
         location.reload();
       }
     }
@@ -1775,6 +1918,8 @@
     // INITIALIZATION
     // ----------------------------------------------------
     window.addEventListener('DOMContentLoaded', () => {
+      applyTheme(state.theme);
+      updateSoundIcon();
       populateDeptFilter();
       renderServices();
       renderEmployees();
@@ -1782,7 +1927,7 @@
       renderTicketsList();
       renderMessagesList();
       updateCounts();
-      lucide.createIcons();
+      safeCreateIcons();
     });
   </script>
 </body>
