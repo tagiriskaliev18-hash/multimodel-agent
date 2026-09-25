@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>АУП УМГ «Уральск» | Единый портал услуг и сервисов</title>
+  
+  <!-- Apple Web App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="АУП Сервис">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'Segoe UI', 'sans-serif'],
+          },
+          colors: {
+            apple: {
+              blue: '#0A84FF',
+              green: '#30D158',
+              orange: '#FF9F0A',
+              red: '#FF453A',
+              purple: '#BF5AF2',
+              teal: '#64D2FF',
+              yellow: '#FFD60A',
+              gray: {
+                50: '#F5F5F7',
+                100: '#E5E5EA',
+                200: '#D1D1D6',
+                300: '#C7C7CC',
+                400: '#AEAEB2',
+                500: '#8E8E93',
+                600: '#636366',
+                700: '#48484A',
+                800: '#2C2C2E',
+                900: '#1C1C1E',
+                950: '#0C0C0E'
+              }
+            }
+          },
+          animation: {
+            'blob': 'blob 18s infinite ease-in-out',
+            'pulse-soft': 'pulseSoft 3s ease-in-out infinite',
+            'island-bounce': 'islandBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+          },
+          keyframes: {
+            blob: {
+              '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.15)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' }
+            },
+            pulseSoft: {
+              '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+              '50%': { opacity: '0.6', transform: 'scale(1.05)' }
+            },
+            islandBounce: {
+              '0%': { transform: 'scale(0.85)', opacity: '0' },
+              '60%': { transform: 'scale(1.04)', opacity: '1' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Apple Glassmorphism and Backdrop Blur */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+    .light .glass-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+    }
+
+    .glass-dock {
+      background: rgba(28, 28, 30, 0.72);
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    }
+    .light .glass-dock {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    .glass-input {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .light .glass-input {
+      background: rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    /* Dynamic Island Styling */
+    .dynamic-island {
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .light .dynamic-island {
+      background: #111111;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(142, 142, 147, 0.3);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(142, 142, 147, 0.5);
+    }
+
+    /* Spring Hover */
+    .spring-button {
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    }
+    .spring-button:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+    .spring-button:active {
+      transform: translateY(1px) scale(0.97);
+    }
+  </style>
+</head>
+<body class="bg-black text-white font-sans antialiased min-h-screen selection:bg-apple-blue selection:text-white pb-32 transition-colors duration-500 overflow-x-hidden">
+
+  <!-- Animated Apple Aurora Background Orbs -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-purple-600/25 rounded-full filter blur-[120px] animate-blob"></div>
+    <div class="absolute top-1/4 -right-32 w-[30rem] h-[30rem] bg-blue-600/20 rounded-full filter blur-[140px] animate-blob [animation-delay:4s]"></div>
+    <div class="absolute bottom-1/3 left-1/4 w-[28rem] h-[28rem] bg-emerald-600/15 rounded-full filter blur-[130px] animate-blob [animation-delay:8s]"></div>
+    <div class="absolute -bottom-20 right-1/4 w-80 h-80 bg-pink-600/20 rounded-full filter blur-[110px] animate-blob [animation-delay:12s]"></div>
+  </div>
+
+  <!-- Top Navigation & Apple Dynamic Island Header -->
+  <header class="fixed top-0 inset-x-0 z-50 pt-3 px-4 flex flex-col items-center pointer-events-none">
+    <div class="w-full max-w-7xl flex items-center justify-between pointer-events-auto">
+      <!-- Organization Logo & Title -->
+      <div class="flex items-center space-x-3 bg-white/5 light:bg-black/5 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 light:border-black/10 shadow-lg">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/25">
+          <i data-lucide="layers" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <h1 class="text-xs font-semibold tracking-wide uppercase text-white/90 light:text-black">УМГ «Уральск»</h1>
+          <p class="text-[10px] text-white/50 light:text-black/60 font-medium">АО «Интергаз Центральная Азия»</p>
+        </div>
+      </div>
+
+      <!-- Center: Apple Dynamic Island -->
+      <div id="dynamicIsland" onclick="toggleIslandDetails()" class="pointer-events-auto cursor-pointer dynamic-island rounded-full px-4 py-2 flex items-center space-x-3 max-w-sm sm:max-w-md hover:scale-[1.02] active:scale-[0.98]">
+        <div id="islandDot" class="w-2.5 h-2.5 rounded-full bg-apple-green animate-pulse"></div>
+        <div class="flex-1 min-w-0 pr-1">
+          <p id="islandTitle" class="text-xs font-medium text-white truncate">Система активна • Все службы онлайн</p>
+          <p id="islandSubtitle" class="text-[10px] text-white/60 truncate">Нажмите для просмотра уведомлений</p>
+        </div>
+        <div id="islandBadge" class="bg-white/10 px-2 py-0.5 rounded-full text-[10px] font-mono text-apple-teal">
+          847 ОС
+        </div>
+      </div>
+
+      <!-- Right: Search, Sound, Theme Toggle -->
+      <div class="flex items-center space-x-2 pointer-events-auto">
+        <!-- Spotlight Search Trigger -->
+        <button onclick="openSpotlight()" class="p-2.5 rounded-2xl bg-white/5 light:bg-black/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 light:border-black/10 text-white/80 light:text-black/80 transition-all spring-button flex items-center space-x-2" title="Поиск (Cmd+K)">
+          <i data-lucide="search" class="w-4 h-4"></i>
+          <span class="hidden md:inline text-xs font-medium text-white/50 light:text-black/50 pr-1">⌘K</span>
+        </button>
+
+        <!-- Audio Feedback Toggle -->
+        <button id="soundBtn" onclick="toggleSound()" class="p-2.5 rounded-2xl bg-white/5 light:bg-black/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 light:border-black/10 text-white/80 light:text-black/80 transition-all spring-button" title="Звуковые эффекты">
+          <i data-lucide="volume-2" class="w-4 h-4" id="soundIcon"></i>
+        </button>
+
+        <!-- Dark/Light Mode Toggle -->
+        <button onclick="toggleTheme()" class="p-2.5 rounded-2xl bg-white/5 light:bg-black/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 light:border-black/10 text-white/80 light:text-black/80 transition-all spring-button" title="Переключить тему">
+          <i data-lucide="sun" class="w-4 h-4 hidden light:block"></i>
+          <i data-lucide="moon" class="w-4 h-4 block light:hidden"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dynamic Island Expanded Modal Tray (Hidden by default) -->
+    <div id="islandDropdown" class="hidden pointer-events-auto mt-2 w-full max-w-lg bg-black/95 border border-white/20 rounded-3xl p-5 shadow-2xl backdrop-blur-2xl transition-all">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-3 h-3 rounded-full bg-apple-blue"></div>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-white">Информационный центр АУП</h3>
+        </div>
+        <button onclick="toggleIslandDetails()" class="text-white/40 hover:text-white text-xs">Закрыть ✕</button>
+      </div>
+      <div id="islandNotificationList" class="space-y-2.5 text-xs text-white/80">
+        <!-- Live Notifications will be inserted here -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="relative z-10 max-w-7xl mx-auto pt-24 px-4 sm:px-6 lg:px-8">
+    
+    <!-- Hero Banner with Apple Style Title -->
+    <section class="py-6 sm:py-8 text-center sm:text-left flex flex-col sm:flex-row sm:items-end justify-between border-b border-white/10 light:border-black/10 mb-8">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-apple-blue text-xs font-medium mb-3">
+          <span class="w-2 h-2 rounded-full bg-apple-blue animate-pulse"></span>
+          <span>Цифровой сервис филиала УМГ «Уральск»</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white light:text-gray-900">
+          Заказ услуг и координация <span class="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">АУП</span>
+        </h2>
+        <p class="mt-2 text-sm sm:text-base text-white/60 light:text-gray-600 max-w-2xl font-normal">
+          Единое окно для оперативного заказа ИТ-поддержки, связи с сотрудниками отделов и онлайн-мониторинга служебного транспорта.
+        </p>
+      </div>
+
+      <!-- Quick Metrics Counter -->
+      <div class="mt-6 sm:mt-0 flex items-center justify-center sm:justify-end space-x-4">
+        <div class="glass-card px-4 py-3 rounded-2xl text-center">
+          <p class="text-xl sm:text-2xl font-bold text-white light:text-black" id="statOnlineCount">18</p>
+          <p class="text-[10px] uppercase tracking-wider text-apple-green font-semibold">Свободны</p>
+        </div>
+        <div class="glass-card px-4 py-3 rounded-2xl text-center">
+          <p class="text-xl sm:text-2xl font-bold text-white light:text-black" id="statBusyCount">5</p>
+          <p class="text-[10px] uppercase tracking-wider text-apple-orange font-semibold">Заняты</p>
+        </div>
+        <div class="glass-card px-4 py-3 rounded-2xl text-center">
+          <p class="text-xl sm:text-2xl font-bold text-white light:text-black" id="statDriversTrip">3</p>
+          <p class="text-[10px] uppercase tracking-wider text-apple-teal font-semibold">В рейсе</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 1: SERVICE DESK (УСЛУГИ И ТИКЕТЫ) -->
+    <!-- ======================================================== -->
+    <section id="viewServices" class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-xl font-bold text-white light:text-gray-900 flex items-center space-x-2">
+            <i data-lucide="sparkles" class="w-5 h-5 text-apple-blue"></i>
+            <span>Каталог корпоративных услуг</span>
+          </h3>
+          <p class="text-xs text-white/50 light:text-gray-500">Выберите необходимую услугу для создания мгновенной заявки специалистам</p>
+        </div>
+        <!-- Service Filter Pills -->
+        <div class="flex items-center space-x-2 overflow-x-auto pb-1 max-w-full">
+          <button onclick="filterServices('all')" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/20 light:bg-black/10 text-white light:text-black transition-all">Все</button>
+          <button onclick="filterServices('it')" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/5 light:bg-black/5 hover:bg-white/10 text-white/70 light:text-gray-700 transition-all">Интернет и Сеть</button>
+          <button onclick="filterServices('hardware')" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/5 light:bg-black/5 hover:bg-white/10 text-white/70 light:text-gray-700 transition-all">Компьютеры и ПО</button>
+          <button onclick="filterServices('print')" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/5 light:bg-black/5 hover:bg-white/10 text-white/70 light:text-gray-700 transition-all">Оргтехника</button>
+          <button onclick="filterServices('admin')" class="svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/5 light:bg-black/5 hover:bg-white/10 text-white/70 light:text-gray-700 transition-all">АХО и Комфорт</button>
+        </div>
+      </div>
+
+      <!-- Services Grid -->
+      <div id="servicesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 2: EMPLOYEES & DEPARTMENTS (ОТДЕЛЫ И СОТРУДНИКИ) -->
+    <!-- ======================================================== -->
+    <section id="viewEmployees" class="hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-xl font-bold text-white light:text-gray-900 flex items-center space-x-2">
+            <i data-lucide="users" class="w-5 h-5 text-apple-purple"></i>
+            <span>База сотрудников АУП и статус присутствия</span>
+          </h3>
+          <p class="text-xs text-white/50 light:text-gray-500">
+            Интерактивный статус: при статусе <span class="text-apple-orange font-semibold">«Занят»</span> отправленные сообщения сохраняются в умную очередь доставки.
+          </p>
+        </div>
+
+        <!-- Department Filter Dropdown -->
+        <div class="flex items-center space-x-3">
+          <select id="deptFilter" onchange="filterEmployees()" class="glass-input text-xs rounded-xl px-4 py-2.5 text-white light:text-black focus:outline-none focus:ring-2 focus:ring-apple-blue">
+            <option value="all" class="bg-zinc-900 text-white">Все отделы АУП (16 подразделений)</option>
+            <!-- Generated via JS -->
+          </select>
+          <input type="text" id="employeeSearchInput" oninput="filterEmployees()" placeholder="Поиск по ФИО или кабинету..." class="glass-input text-xs rounded-xl px-4 py-2.5 text-white light:text-black placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-apple-blue w-48 sm:w-64">
+        </div>
+      </div>
+
+      <!-- Info Banner about Queue Mechanism -->
+      <div class="glass-card rounded-2xl p-4 flex items-center space-x-4 border-l-4 border-l-apple-orange">
+        <div class="p-2.5 rounded-xl bg-orange-500/10 text-apple-orange">
+          <i data-lucide="clock" class="w-5 h-5"></i>
+        </div>
+        <div class="text-xs text-white/80 light:text-gray-700 leading-relaxed">
+          <span class="font-bold text-apple-orange">Умная очередь доставки сообщений:</span> Если сотрудник занят на совещании или решает срочную задачу, вы можете отправить ему сообщение — оно бережно сохранится в очереди и будет моментально доставлено на экран в момент, когда статус изменится на <span class="text-apple-green font-semibold">«Свободен»</span>. Вы можете переключать статус любого сотрудника карточкой справа для проверки!
+        </div>
+      </div>
+
+      <!-- Employees Grid -->
+      <div id="employeesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 3: DRIVERS & LOGISTICS (ВОДИТЕЛИ И АВТОТРАНСПОРТ) -->
+    <!-- ======================================================== -->
+    <section id="viewDrivers" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-xl font-bold text-white light:text-gray-900 flex items-center space-x-2">
+            <i data-lucide="car" class="w-5 h-5 text-apple-teal"></i>
+            <span>Мониторинг служебного автотранспорта и водителей</span>
+          </h3>
+          <p class="text-xs text-white/50 light:text-gray-500">Отслеживание местоположения, текущих рейсов и заказ дежурного автомобиля</p>
+        </div>
+        <button onclick="openOrderCarModal()" class="spring-button px-5 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs flex items-center space-x-2 shadow-lg shadow-blue-500/30">
+          <i data-lucide="navigation" class="w-4 h-4"></i>
+          <span>Заказать служебный автотранспорт</span>
+        </button>
+      </div>
+
+      <!-- Drivers & Fleet Grid -->
+      <div id="driversGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 4: MY TICKETS & MESSAGES (МОИ ЗАЯВКИ И ЧАТ) -->
+    <!-- ======================================================== -->
+    <section id="viewTickets" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-xl font-bold text-white light:text-gray-900 flex items-center space-x-2">
+            <i data-lucide="inbox" class="w-5 h-5 text-apple-green"></i>
+            <span>Журнал созданных заявок и сообщений</span>
+          </h3>
+          <p class="text-xs text-white/50 light:text-gray-500">Отслеживание статусов исполнения ваших заявок и история переписки</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="clearDemoData()" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 text-xs transition-all">Сбросить демо-данные</button>
+        </div>
+      </div>
+
+      <!-- Tickets and Messages Split Tabs -->
+      <div class="flex space-x-2 border-b border-white/10 pb-3">
+        <button id="tabTicketsBtn" onclick="switchTicketSubTab('tickets')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/15 text-white">Заявки в службу поддержки (<span id="ticketCountBadge">0</span>)</button>
+        <button id="tabMessagesBtn" onclick="switchTicketSubTab('messages')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-transparent text-white/60 hover:text-white">Отправленные сообщения (<span id="messageCountBadge">0</span>)</button>
+      </div>
+
+      <div id="ticketsListContainer" class="space-y-3">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div id="messagesListContainer" class="hidden space-y-3">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- FLOATING MACOS / IOS STYLE DOCK (BOTTOM NAVIGATION) -->
+  <!-- ======================================================== -->
+  <nav class="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
+    <div class="glass-dock rounded-3xl p-2 sm:p-2.5 flex items-center space-x-2 sm:space-x-3 pointer-events-auto">
+      
+      <!-- Dock Item 1: Services -->
+      <button onclick="switchView('services')" id="dock-services" class="dock-item relative group p-3 rounded-2xl bg-white/15 light:bg-black/10 text-white light:text-black transition-all spring-button" title="Услуги (Service Desk)">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Услуги</span>
+        <div class="dock-dot w-1 h-1 rounded-full bg-apple-blue mx-auto mt-1"></div>
+      </button>
+
+      <!-- Dock Item 2: Employees -->
+      <button onclick="switchView('employees')" id="dock-employees" class="dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-white/10 light:hover:bg-black/5 text-white/60 light:text-black/60 transition-all spring-button" title="Отделы и Сотрудники">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Сотрудники</span>
+        <div class="dock-dot hidden w-1 h-1 rounded-full bg-apple-purple mx-auto mt-1"></div>
+      </button>
+
+      <!-- Dock Item 3: Drivers -->
+      <button onclick="switchView('drivers')" id="dock-drivers" class="dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-white/10 light:hover:bg-black/5 text-white/60 light:text-black/60 transition-all spring-button" title="Водители и Транспорт">
+        <i data-lucide="car" class="w-5 h-5"></i>
+        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Водители</span>
+        <div class="dock-dot hidden w-1 h-1 rounded-full bg-apple-teal mx-auto mt-1"></div>
+      </button>
+
+      <!-- Dock Item 4: My Tickets -->
+      <button onclick="switchView('tickets')" id="dock-tickets" class="dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-white/10 light:hover:bg-black/5 text-white/60 light:text-black/60 transition-all spring-button" title="Мои заявки">
+        <i data-lucide="inbox" class="w-5 h-5"></i>
+        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Заявки</span>
+        <div class="dock-dot hidden w-1 h-1 rounded-full bg-apple-green mx-auto mt-1"></div>
+      </button>
+
+      <div class="w-px h-6 bg-white/20 light:bg-black/15 mx-1"></div>
+
+      <!-- Dock Item 5: Order Quick Transport -->
+      <button onclick="openOrderCarModal()" class="relative group p-3 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white transition-all spring-button shadow-md shadow-blue-500/30" title="Быстрый вызов авто">
+        <i data-lucide="navigation" class="w-5 h-5"></i>
+        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Заказать авто</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ORDER SERVICE / CREATE TICKET -->
+  <!-- ======================================================== -->
+  <div id="modalOrderService" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="glass-card bg-zinc-950/90 light:bg-white/95 rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-white/20 light:border-black/10 shadow-2xl relative animate-island-bounce">
+      <button onclick="closeModal('modalOrderService')" class="absolute top-5 right-5 text-white/40 hover:text-white light:text-black/40 light:hover:text-black text-xl">✕</button>
+      
+      <div class="flex items-center space-x-3 mb-6">
+        <div id="modalServiceIcon" class="w-12 h-12 rounded-2xl bg-blue-500/20 text-apple-blue flex items-center justify-center text-2xl">
+          <i data-lucide="activity" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 id="modalServiceTitle" class="text-lg font-bold text-white light:text-black">Оформление заявки</h3>
+          <p id="modalServiceCategory" class="text-xs text-white/50 light:text-gray-500">Отдел ИТиС УМГ «Уральск»</p>
+        </div>
+      </div>
+
+      <form id="orderServiceForm" onsubmit="submitServiceTicket(event)" class="space-y-4">
+        <input type="hidden" id="serviceInputId">
+        
+        <div>
+          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Кабинет / Место установки</label>
+          <input type="text" id="ticketRoom" required placeholder="Например: Каб. 204 (Главный корпус) или Серверная" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-blue focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">ФИО заявителя и контактный телефон</label>
+          <input type="text" id="ticketAuthor" required placeholder="Например: Сарсенов А.Е., тел. 12-45" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-blue focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Приоритет заявки</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="cursor-pointer">
+              <input type="radio" name="priority" value="Обычный" checked class="hidden peer">
+              <div class="peer-checked:bg-apple-blue/20 peer-checked:border-apple-blue peer-checked:text-apple-blue border border-white/10 rounded-xl p-2 text-center text-xs text-white/70 transition-all">
+                Обычный
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="priority" value="Срочный" class="hidden peer">
+              <div class="peer-checked:bg-apple-orange/20 peer-checked:border-apple-orange peer-checked:text-apple-orange border border-white/10 rounded-xl p-2 text-center text-xs text-white/70 transition-all">
+                Срочный (2ч)
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="priority" value="Критический" class="hidden peer">
+              <div class="peer-checked:bg-apple-red/20 peer-checked:border-apple-red peer-checked:text-apple-red border border-white/10 rounded-xl p-2 text-center text-xs text-white/70 transition-all">
+                Авария / Сбой
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Описание неисправности или запроса</label>
+          <textarea id="ticketDescription" rows="3" required placeholder="Опишите подробности (нет подключения к сети, сбой 1С, замятие бумаги в МФУ и т.д.)..." class="glass-input w-full rounded-xl p-3 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-blue focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-3">
+          <button type="button" onclick="closeModal('modalOrderService')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 text-xs font-medium transition-all">Отмена</button>
+          <button type="submit" class="spring-button px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-blue-500/25">Отправить заявку</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: SEND MESSAGE TO EMPLOYEE (WITH QUEUE LOGIC) -->
+  <!-- ======================================================== -->
+  <div id="modalSendMessage" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="glass-card bg-zinc-950/95 light:bg-white/95 rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-white/20 light:border-black/10 shadow-2xl relative animate-island-bounce">
+      <button onclick="closeModal('modalSendMessage')" class="absolute top-5 right-5 text-white/40 hover:text-white light:text-black/40 light:hover:text-black text-xl">✕</button>
+
+      <div class="flex items-center space-x-3 mb-4">
+        <div id="msgEmpAvatar" class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white font-bold text-lg">
+          КС
+        </div>
+        <div>
+          <h3 id="msgEmpName" class="text-base font-bold text-white light:text-black">Кударов Заур Серикболович</h3>
+          <p id="msgEmpRole" class="text-xs text-white/50 light:text-gray-500">Начальник отдела ИТиС (Каб. 204)</p>
+          <div id="msgEmpStatusBadge" class="mt-1 inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-apple-green">
+            <span class="w-1.5 h-1.5 rounded-full bg-apple-green"></span>
+            <span id="msgEmpStatusText">Свободен</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning Banner if Employee is Busy -->
+      <div id="msgBusyWarning" class="hidden mb-4 p-3.5 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-apple-orange text-xs flex items-start space-x-2.5">
+        <i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
+        <div>
+          <span class="font-bold">Внимание: Сотрудник сейчас занят!</span>
+          <p class="text-white/70 light:text-gray-700 mt-0.5">Ваше обращение будет автоматически помещено в <span class="font-semibold text-apple-orange">очередь отложенной доставки</span> и отобразится у сотрудника только тогда, когда он освободится.</p>
+        </div>
+      </div>
+
+      <form id="sendMessageForm" onsubmit="submitEmployeeMessage(event)" class="space-y-4">
+        <input type="hidden" id="msgEmpId">
+        
+        <div>
+          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">От кого (ФИО и отдел)</label>
+          <input type="text" id="msgSender" required placeholder="Например: Иванов И.И. (Бухгалтерия)" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-purple focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Тема обращения</label>
+          <input type="text" id="msgSubject" required placeholder="Например: Согласование заявки на сервер / Доступ к папке" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-purple focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Текст сообщения</label>
+          <textarea id="msgBody" rows="3" required placeholder="Напишите сообщение по любому рабочему поводу..." class="glass-input w-full rounded-xl p-3 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-purple focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-3">
+          <button type="button" onclick="closeModal('modalSendMessage')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 text-xs font-medium transition-all">Отмена</button>
+          <button type="submit" class="spring-button px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs shadow-lg shadow-purple-500/25">Отправить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ORDER CAR / FLEET LOGISTICS -->
+  <!-- ======================================================== -->
+  <div id="modalOrderCar" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="glass-card bg-zinc-950/95 light:bg-white/95 rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-white/20 light:border-black/10 shadow-2xl relative animate-island-bounce">
+      <button onclick="closeModal('modalOrderCar')" class="absolute top-5 right-5 text-white/40 hover:text-white light:text-black/40 light:hover:text-black text-xl">✕</button>
+
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-teal-500/20 text-apple-teal flex items-center justify-center text-2xl">
+          <i data-lucide="car" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-white light:text-black">Заказ служебного автомобиля</h3>
+          <p class="text-xs text-white/50 light:text-gray-500">Автотранспортный участок филиала УМГ «Уральск»</p>
+        </div>
+      </div>
+
+      <form id="orderCarForm" onsubmit="submitCarOrder(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Пункт назначения / Маршрут</label>
+          <select id="carDestination" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black focus:ring-2 focus:ring-apple-teal focus:outline-none">
+            <option value="По городу Уральск (Банк, Акимат, Налоговая)" class="bg-zinc-900">По городу Уральск (Акимат, Налоговая, Банки)</option>
+            <option value="КС-1 «Уральск» (производственная база)" class="bg-zinc-900">КС-1 «Уральск» (производственная база)</option>
+            <option value="КС-2 «Чижа» (линейная станция)" class="bg-zinc-900">КС-2 «Чижа» (линейная станция)</option>
+            <option value="ГРС-1 / ГРС-2 Уральск" class="bg-zinc-900">ГРС-1 / ГРС-2 Уральск</option>
+            <option value="Аэропорт «Маншук Маметовой» (встреча делегации)" class="bg-zinc-900">Аэропорт «Маншук Маметовой»</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Время подачи</label>
+            <input type="time" id="carTime" required value="16:00" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black focus:ring-2 focus:ring-apple-teal focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Пассажиров</label>
+            <select id="carPassengers" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black focus:ring-2 focus:ring-apple-teal focus:outline-none">
+              <option value="1 человек" class="bg-zinc-900">1 пассажир</option>
+              <option value="2-3 человека" class="bg-zinc-900">2-3 пассажира</option>
+              <option value="Группа (4-8 человек, Газель)" class="bg-zinc-900">Группа (Газель)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Заказчик (ФИО и отдел)</label>
+          <input type="text" id="carRequester" required placeholder="Например: Кударов З.С. (Начальник ИТиС)" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-teal focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-white/70 light:text-gray-700 uppercase mb-1.5">Цель поездки</label>
+          <input type="text" id="carPurpose" required placeholder="Например: Доставка технической комиссии на объект" class="glass-input w-full rounded-xl px-4 py-2.5 text-xs text-white light:text-black placeholder-white/40 focus:ring-2 focus:ring-apple-teal focus:outline-none">
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-3">
+          <button type="button" onclick="closeModal('modalOrderCar')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 text-xs font-medium transition-all">Отмена</button>
+          <button type="submit" class="spring-button px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-400 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-teal-500/25">Заказать машину</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- SPOTLIGHT SEARCH OVERLAY (CMD+K) -->
+  <!-- ======================================================== -->
+  <div id="spotlightModal" class="fixed inset-0 z-50 hidden flex items-start justify-center pt-24 px-4 bg-black/75 backdrop-blur-xl">
+    <div class="glass-card bg-zinc-950/95 light:bg-white/95 rounded-3xl p-5 max-w-2xl w-full border border-white/20 light:border-black/10 shadow-2xl relative">
+      <div class="flex items-center space-x-3 pb-4 border-b border-white/10">
+        <i data-lucide="search" class="w-5 h-5 text-apple-blue"></i>
+        <input type="text" id="spotlightInput" oninput="runSpotlightSearch()" placeholder="Быстрый поиск услуг, сотрудников, водителей, кабинетов..." class="bg-transparent border-none text-base text-white light:text-black placeholder-white/40 focus:outline-none w-full">
+        <button onclick="closeSpotlight()" class="text-xs bg-white/10 px-2 py-1 rounded-lg text-white/60">ESC</button>
+      </div>
+      <div id="spotlightResults" class="mt-4 max-h-96 overflow-y-auto space-y-2">
+        <p class="text-xs text-white/40 text-center py-6">Начните вводить текст (например: «интернет», «Кударов», «Камри», «КС-2»)...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- TOAST / DYNAMIC ISLAND NOTIFICATION POPUP -->
+  <!-- ======================================================== -->
+  <div id="toastNotification" class="fixed top-20 right-6 z-50 hidden transition-all duration-300 transform translate-y-2">
+    <div class="glass-card bg-zinc-950/95 border border-white/20 rounded-2xl px-5 py-3.5 shadow-2xl flex items-center space-x-3 text-xs">
+      <div id="toastIcon" class="w-7 h-7 rounded-xl bg-apple-green/20 text-apple-green flex items-center justify-center">
+        <i data-lucide="check" class="w-4 h-4"></i>
+      </div>
+      <div>
+        <p id="toastTitle" class="font-bold text-white">Уведомление</p>
+        <p id="toastMessage" class="text-white/60">Операция успешно выполнена</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Logic -->
+  <script>
+    // ----------------------------------------------------
+    // 1. DATASETS: SERVICES, DEPARTMENTS, EMPLOYEES, DRIVERS
+    // ----------------------------------------------------
+    const SERVICES_DATA = [
+      {
+        id: 'net-conn',
+        category: 'it',
+        title: 'Подключение и наладка сети Интернет',
+        subtitle: 'Устранение неполадок с кабельной сетью LAN и Wi-Fi',
+        icon: 'wifi',
+        color: 'from-blue-600 to-cyan-500',
+        dept: 'Отдел ИТиС',
+        sla: 'До 1 часа'
+      },
+      {
+        id: 'vpn-access',
+        category: 'it',
+        title: 'Настройка VPN и удалённого доступа',
+        subtitle: 'Конфигурация Cisco AnyConnect и защищенного канала',
+        icon: 'shield-check',
+        color: 'from-indigo-600 to-blue-500',
+        dept: 'Отдел ИТиС',
+        sla: 'До 2 часов'
+      },
+      {
+        id: 'pc-setup',
+        category: 'hardware',
+        title: 'Ремонт и настройка ПК / Ноутбуков',
+        subtitle: 'Устранение зависаний, чистка, замена комплектующих',
+        icon: 'monitor',
+        color: 'from-purple-600 to-pink-500',
+        dept: 'Отдел ИТиС',
+        sla: 'В течение дня'
+      },
+      {
+        id: 'soft-install',
+        category: 'hardware',
+        title: 'Установка 1С, SAP и офисного ПО',
+        subtitle: 'Инсталляция и обновление специализированных программ',
+        icon: 'code-2',
+        color: 'from-fuchsia-600 to-purple-500',
+        dept: 'Отдел ИТиС',
+        sla: 'До 3 часов'
+      },
+      {
+        id: 'print-repair',
+        category: 'print',
+        title: 'Обслуживание принтеров и МФУ',
+        subtitle: 'Заправка картриджей, устранение замятия бумаги',
+        icon: 'printer',
+        color: 'from-amber-500 to-orange-600',
+        dept: 'Отдел ИТиС',
+        sla: 'До 1.5 часов'
+      },
+      {
+        id: 'phone-voip',
+        category: 'it',
+        title: 'IP-Телефония и видеоконференции (ВКС)',
+        subtitle: 'Подключение Cisco 7942, настройка переадресации',
+        icon: 'phone-call',
+        color: 'from-emerald-500 to-teal-600',
+        dept: 'Отдел ИТиС',
+        sla: 'До 2 часов'
+      },
+      {
+        id: 'office-repair',
+        category: 'admin',
+        title: 'Мелкий ремонт мебели и помещений',
+        subtitle: 'Замки, кресла, столы, жалюзи, подвесные потолки',
+        icon: 'wrench',
+        color: 'from-stone-500 to-zinc-600',
+        dept: 'Отдел АХО',
+        sla: 'В течение дня'
+      },
+      {
+        id: 'hvac-lighting',
+        category: 'admin',
+        title: 'Освещение и кондиционирование',
+        subtitle: 'Замена ламп, наладка кондиционеров и отопления',
+        icon: 'sun',
+        color: 'from-yellow-500 to-amber-600',
+        dept: 'Отдел АХО',
+        sla: 'До 2 часов'
+      },
+      {
+        id: 'car-dispatch',
+        category: 'admin',
+        title: 'Заказ служебного автотранспорта',
+        subtitle: 'Поездки по городу Уральск и на компрессорные станции',
+        icon: 'navigation',
+        color: 'from-teal-500 to-blue-600',
+        dept: 'УТТиСТ / АХО',
+        sla: 'Подача от 15 мин'
+      }
+    ];
+
+    const DEPARTMENTS_DATA = [
+      'Руководство филиала (АУП)',
+      'Отдел информационных технологий и связи (ИТиС)',
+      'Административно-хозяйственный отдел (АХО)',
+      'Отдел бухгалтерского учета',
+      'Отдел внутреннего контроля',
+      'Отдел координации закупок и МТС',
+      'Отдел управления персоналом (ОУПиОТ)',
+      'Отдел экономики и бюджетного планирования',
+      'Диспетчерская служба (ЦПДС)',
+      'Служба охраны труда и ООС',
+      'Производственно-технический отдел (ПТО)',
+      'Служба безопасности'
+    ];
+
+    const EMPLOYEES_DATA = [
+      {
+        id: 'emp-1',
+        name: 'Кударов Заур Серикболович',
+        role: 'Начальник отдела ИТиС (МОЛ)',
+        dept: 'Отдел информационных технологий и связи (ИТиС)',
+        room: 'Каб. 204',
+        phone: '12-01',
+        mobile: '+7 (701) 555-0101',
+        status: 'busy', // 'free', 'busy', 'away'
+        note: 'Совещание по инвентаризации ОС'
+      },
+      {
+        id: 'emp-2',
+        name: 'Атьярова Айгуль Сериккалиевна',
+        role: 'Начальник отдела АХО',
+        dept: 'Административно-хозяйственный отдел (АХО)',
+        room: 'Каб. 102',
+        phone: '12-05',
+        mobile: '+7 (701) 555-0105',
+        status: 'free',
+        note: 'На рабочем месте'
+      },
+      {
+        id: 'emp-3',
+        name: 'Килибаев Азамат Аманжолович',
+        role: 'Главный инженер филиала',
+        dept: 'Руководство филиала (АУП)',
+        room: 'Каб. 301',
+        phone: '11-02',
+        mobile: '+7 (777) 222-0102',
+        status: 'busy',
+        note: 'Селекторное совещание с АО ИЦА'
+      },
+      {
+        id: 'emp-4',
+        name: 'Дусалиев Самат Мухтарович',
+        role: 'Ведущий инженер связи',
+        dept: 'Отдел информационных технологий и связи (ИТиС)',
+        room: 'Каб. 205',
+        phone: '12-03',
+        mobile: '+7 (702) 444-0103',
+        status: 'free',
+        note: 'Доступен для заявок'
+      },
+      {
+        id: 'emp-5',
+        name: 'Сарсенов Арман Ерланович',
+        role: 'Системный администратор',
+        dept: 'Отдел информационных технологий и связи (ИТиС)',
+        room: 'Серверная / Каб. 206',
+        phone: '12-04',
+        mobile: '+7 (705) 333-0104',
+        status: 'away',
+        note: 'Выезд на ГРС-1'
+      },
+      {
+        id: 'emp-6',
+        name: 'Темиргалиева Гульнара Болатовна',
+        role: 'Главный бухгалтер филиала',
+        dept: 'Отдел бухгалтерского учета',
+        room: 'Каб. 210',
+        phone: '13-01',
+        mobile: '+7 (771) 666-0110',
+        status: 'free',
+        note: 'На рабочем месте'
+      },
+      {
+        id: 'emp-7',
+        name: 'Жаксылыков Нурлан Канатович',
+        role: 'Начальник службы безопасности',
+        dept: 'Служба безопасности',
+        room: 'Каб. 108',
+        phone: '14-01',
+        mobile: '+7 (775) 888-0108',
+        status: 'free',
+        note: 'Прием посетителей'
+      },
+      {
+        id: 'emp-8',
+        name: 'Оразов Бекболат Маратович',
+        role: 'Инженер по охране труда',
+        dept: 'Служба охраны труда и ООС',
+        room: 'Каб. 115',
+        phone: '15-02',
+        mobile: '+7 (707) 999-0115',
+        status: 'busy',
+        note: 'Инструктаж сотрудников'
+      },
+      {
+        id: 'emp-9',
+        name: 'Кадырова Динара Салаватовна',
+        role: 'Ведущий специалист ОУПиОТ',
+        dept: 'Отдел управления персоналом (ОУПиОТ)',
+        room: 'Каб. 212',
+        phone: '16-03',
+        mobile: '+7 (778) 111-0212',
+        status: 'free',
+        note: 'Оформление отпусков'
+      }
+    ];
+
+    const DRIVERS_DATA = [
+      {
+        id: 'drv-1',
+        name: 'Мукашев Бауржан Кайратович',
+        vehicle: 'Toyota Land Cruiser Prado',
+        plate: '070 AC 07',
+        status: 'trip', // 'free', 'trip', 'service'
+        destination: 'АУП ➔ КС-2 «Чижа» (линейная станция)',
+        departure: '14:15',
+        returnEta: '17:45',
+        progress: 75,
+        phone: '+7 (777) 301-4455'
+      },
+      {
+        id: 'drv-2',
+        name: 'Искаков Данияр Русланович',
+        vehicle: 'Skoda Octavia A7',
+        plate: '184 KZ 07',
+        status: 'free',
+        destination: 'На базе АУП (ул. Гагарина 17/6)',
+        departure: '-',
+        returnEta: 'Готов к подаче за 5 мин',
+        progress: 0,
+        phone: '+7 (701) 402-8899'
+      },
+      {
+        id: 'drv-3',
+        name: 'Сериков Арман Жанибекович',
+        vehicle: 'Toyota Camry 70',
+        plate: '005 AA 07',
+        status: 'trip',
+        destination: 'АУП ➔ Акимат ЗКО (Доставка документов)',
+        departure: '15:20',
+        returnEta: '16:30',
+        progress: 45,
+        phone: '+7 (775) 503-1122'
+      },
+      {
+        id: 'drv-4',
+        name: 'Жумабаев Нурлан Темирович',
+        vehicle: 'Газель Next Пассажирская (16 мест)',
+        plate: '512 BC 07',
+        status: 'free',
+        destination: 'На парковке филиала',
+        departure: '-',
+        returnEta: 'Свободен для групповых выездов',
+        progress: 0,
+        phone: '+7 (702) 604-3344'
+      },
+      {
+        id: 'drv-5',
+        name: 'Калиев Марат Серикович',
+        vehicle: 'УАЗ Патриот 4x4',
+        plate: '329 AD 07',
+        status: 'service',
+        destination: 'Бокс ТО / Замена расходных материалов',
+        departure: '-',
+        returnEta: 'Готовность завтра к 08:30',
+        progress: 0,
+        phone: '+7 (705) 705-7788'
+      }
+    ];
+
+    // ----------------------------------------------------
+    // 2. STATE MANAGEMENT (LOCAL STORAGE)
+    // ----------------------------------------------------
+    let state = {
+      services: SERVICES_DATA,
+      employees: JSON.parse(localStorage.getItem('ica_employees') || 'null') || EMPLOYEES_DATA,
+      drivers: JSON.parse(localStorage.getItem('ica_drivers') || 'null') || DRIVERS_DATA,
+      tickets: JSON.parse(localStorage.getItem('ica_tickets') || 'null') || [
+        {
+          id: 'ИТ-2026-081',
+          service: 'Подключение и наладка сети Интернет',
+          room: 'Каб. 204',
+          author: 'Кударов З.С.',
+          priority: 'Высокий',
+          desc: 'Проверить пропускную способность сетевого порта коммутатора Cisco',
+          status: 'В работе',
+          date: '25.09.2026 14:10'
+        },
+        {
+          id: 'АХО-2026-044',
+          service: 'Освещение и кондиционирование',
+          room: 'Каб. 102',
+          author: 'Атьярова А.С.',
+          priority: 'Обычный',
+          desc: 'Замена светодиодной панели в приемной',
+          status: 'Выполнено',
+          date: '25.09.2026 11:30'
+        }
+      ],
+      messages: JSON.parse(localStorage.getItem('ica_messages') || 'null') || [],
+      soundEnabled: true,
+      currentView: 'services'
+    };
+
+    function saveState() {
+      localStorage.setItem('ica_employees', JSON.stringify(state.employees));
+      localStorage.setItem('ica_drivers', JSON.stringify(state.drivers));
+      localStorage.setItem('ica_tickets', JSON.stringify(state.tickets));
+      localStorage.setItem('ica_messages', JSON.stringify(state.messages));
+      updateCounts();
+    }
+
+    // ----------------------------------------------------
+    // 3. APPLE WEB AUDIO API SYNTHESIZER
+    // ----------------------------------------------------
+    let audioCtx = null;
+    function playAppleSound(type = 'click') {
+      if (!state.soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(300, now + 0.04);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+          osc.start(now);
+          osc.stop(now + 0.04);
+        } else if (type === 'chime') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'pop') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(350, now);
+          osc.frequency.exponentialRampToValueAtTime(900, now + 0.06);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        }
+      } catch (e) {
+        console.warn('Audio not allowed yet:', e);
+      }
+    }
+
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      document.getElementById('soundIcon').setAttribute('data-lucide', state.soundEnabled ? 'volume-2' : 'volume-x');
+      lucide.createIcons();
+      showToast(state.soundEnabled ? 'Звук включен' : 'Звук выключен', 'Аудио-отклик интерфейса', state.soundEnabled ? 'volume-2' : 'volume-x');
+    }
+
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+      document.documentElement.classList.toggle('light');
+      playAppleSound('pop');
+    }
+
+    // ----------------------------------------------------
+    // 4. DYNAMIC ISLAND & NOTIFICATIONS
+    // ----------------------------------------------------
+    function setDynamicIsland(title, subtitle, type = 'normal') {
+      const elTitle = document.getElementById('islandTitle');
+      const elSub = document.getElementById('islandSubtitle');
+      const dot = document.getElementById('islandDot');
+
+      elTitle.textContent = title;
+      elSub.textContent = subtitle;
+
+      if (type === 'success') {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-green animate-pulse';
+      } else if (type === 'warning') {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-orange animate-pulse';
+      } else if (type === 'alert') {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-red animate-ping';
+      } else {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-apple-blue';
+      }
+    }
+
+    function toggleIslandDetails() {
+      const dropdown = document.getElementById('islandDropdown');
+      dropdown.classList.toggle('hidden');
+      renderIslandNotifications();
+      playAppleSound('click');
+    }
+
+    function renderIslandNotifications() {
+      const list = document.getElementById('islandNotificationList');
+      const queuedMsgs = state.messages.filter(m => m.status === 'queued');
+      const activeTickets = state.tickets.filter(t => t.status === 'В работе');
+      const trips = state.drivers.filter(d => d.status === 'trip');
+
+      let html = '';
+      if (queuedMsgs.length > 0) {
+        html += `<div class="p-3 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-apple-orange animate-ping"></span>
+            <span>В очереди отложенной доставки: <strong>${queuedMsgs.length} сообщ.</strong></span>
+          </div>
+          <button onclick="switchView('tickets'); toggleIslandDetails()" class="text-apple-orange underline font-semibold">Посмотреть</button>
+        </div>`;
+      }
+
+      if (trips.length > 0) {
+        html += `<div class="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-apple-teal"></span>
+            <span>Машин на выезде: <strong>${trips.length} автомобиля</strong></span>
+          </div>
+          <button onclick="switchView('drivers'); toggleIslandDetails()" class="text-apple-teal underline font-semibold">Карта рейсов</button>
+        </div>`;
+      }
+
+      html += `<div class="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
+        <span>Активных заявок в работе: <strong>${activeTickets.length}</strong></span>
+        <button onclick="switchView('tickets'); toggleIslandDetails()" class="text-apple-blue underline font-semibold">Журнал</button>
+      </div>`;
+
+      list.innerHTML = html;
+    }
+
+    function showToast(title, message, iconName = 'check') {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastMessage').textContent = message;
+      document.getElementById('toastIcon').innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4"></i>`;
+      lucide.createIcons();
+
+      toast.classList.remove('hidden');
+      toast.classList.remove('translate-y-2');
+      playAppleSound('chime');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-2');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 3500);
+    }
+
+    // ----------------------------------------------------
+    // 5. VIEW NAVIGATION & DOCK
+    // ----------------------------------------------------
+    function switchView(viewName) {
+      playAppleSound('click');
+      state.currentView = viewName;
+
+      ['services', 'employees', 'drivers', 'tickets'].forEach(v => {
+        const viewEl = document.getElementById(`view${v.charAt(0).toUpperCase() + v.slice(1)}`);
+        const dockBtn = document.getElementById(`dock-${v}`);
+        const dot = dockBtn.querySelector('.dock-dot');
+
+        if (v === viewName) {
+          viewEl.classList.remove('hidden');
+          dockBtn.className = 'dock-item relative group p-3 rounded-2xl bg-white/20 light:bg-black/10 text-white light:text-black transition-all spring-button';
+          dot.classList.remove('hidden');
+        } else {
+          viewEl.classList.add('hidden');
+          dockBtn.className = 'dock-item relative group p-3 rounded-2xl bg-transparent hover:bg-white/10 light:hover:bg-black/5 text-white/60 light:text-black/60 transition-all spring-button';
+          dot.classList.add('hidden');
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ----------------------------------------------------
+    // 6. RENDER MODULES
+    // ----------------------------------------------------
+    function renderServices(list = state.services) {
+      const grid = document.getElementById('servicesGrid');
+      grid.innerHTML = list.map(svc => `
+        <div class="glass-card rounded-3xl p-5 hover:border-white/30 transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${svc.color} flex items-center justify-center text-white shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                <i data-lucide="${svc.icon}" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[10px] font-mono font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/70">
+                ${svc.sla}
+              </span>
+            </div>
+            <h4 class="text-base font-bold text-white light:text-gray-900 group-hover:text-apple-blue transition-colors">
+              ${svc.title}
+            </h4>
+            <p class="text-xs text-white/60 light:text-gray-600 mt-1.5 leading-relaxed">
+              ${svc.subtitle}
+            </p>
+          </div>
+
+          <div class="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
+            <span class="text-[11px] text-white/40 light:text-gray-500 font-medium">Отдел: ${svc.dept}</span>
+            <button onclick="openOrderServiceModal('${svc.id}')" class="spring-button px-4 py-2 rounded-xl bg-white/10 hover:bg-apple-blue hover:text-white text-xs font-semibold text-white/90 light:text-gray-800 transition-all">
+              Заказать ➔
+            </button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function filterServices(category) {
+      playAppleSound('click');
+      document.querySelectorAll('.svc-tab').forEach(b => {
+        b.className = 'svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/5 light:bg-black/5 hover:bg-white/10 text-white/70 light:text-gray-700 transition-all';
+      });
+      event.target.className = 'svc-tab px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white/20 light:bg-black/10 text-white light:text-black transition-all';
+
+      if (category === 'all') {
+        renderServices(state.services);
+      } else {
+        const filtered = state.services.filter(s => s.category === category);
+        renderServices(filtered);
+      }
+    }
+
+    function renderEmployees(list = state.employees) {
+      const grid = document.getElementById('employeesGrid');
+      grid.innerHTML = list.map(emp => {
+        let statusBadge = '';
+        if (emp.status === 'free') {
+          statusBadge = `<div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 text-apple-green text-[10px] font-semibold border border-emerald-500/30">
+            <span class="w-1.5 h-1.5 rounded-full bg-apple-green animate-pulse"></span>
+            <span>Свободен</span>
+          </div>`;
+        } else if (emp.status === 'busy') {
+          statusBadge = `<div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-orange-500/15 text-apple-orange text-[10px] font-semibold border border-orange-500/30">
+            <span class="w-1.5 h-1.5 rounded-full bg-apple-orange"></span>
+            <span>Занят (Очередь)</span>
+          </div>`;
+        } else {
+          statusBadge = `<div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-blue-500/15 text-apple-teal text-[10px] font-semibold border border-blue-500/30">
+            <span class="w-1.5 h-1.5 rounded-full bg-apple-teal"></span>
+            <span>На выезде</span>
+          </div>`;
+        }
+
+        const initials = emp.name.split(' ').slice(0, 2).map(w => w[0]).join('');
+
+        return `
+          <div class="glass-card rounded-3xl p-5 hover:border-white/30 transition-all duration-300 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center space-x-3">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-md">
+                    ${initials}
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-white light:text-gray-900 leading-snug">${emp.name}</h4>
+                    <p class="text-[11px] text-white/50 light:text-gray-500">${emp.role}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Status row & Demo toggle button -->
+              <div class="flex items-center justify-between my-2.5 p-2 rounded-xl bg-white/5 light:bg-black/5">
+                ${statusBadge}
+                <button onclick="toggleEmployeeStatus('${emp.id}')" class="text-[10px] text-white/60 hover:text-white underline font-medium" title="Переключить статус для теста">
+                  Сменить статус ⇄
+                </button>
+              </div>
+
+              <div class="space-y-1.5 text-xs text-white/70 light:text-gray-600 mt-2">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="building" class="w-3.5 h-3.5 text-white/40"></i>
+                  <span class="truncate">${emp.dept}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-white/40"></i>
+                    <span>${emp.room}</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <i data-lucide="phone" class="w-3.5 h-3.5 text-white/40"></i>
+                    <span>Внутр.: <strong>${emp.phone}</strong></span>
+                  </div>
+                </div>
+                <div class="text-[11px] text-white/40 italic pt-1 truncate">
+                  Примечание: ${emp.note}
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+              <span class="text-[11px] text-white/40">${emp.mobile}</span>
+              <button onclick="openSendMessageModal('${emp.id}')" class="spring-button px-4 py-2 rounded-xl ${emp.status === 'busy' ? 'bg-orange-500/20 text-apple-orange border border-orange-500/30' : 'bg-white/10 text-white hover:bg-apple-purple'} text-xs font-semibold flex items-center space-x-1.5">
+                <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                <span>${emp.status === 'busy' ? 'В очередь' : 'Написать'}</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function populateDeptFilter() {
+      const select = document.getElementById('deptFilter');
+      DEPARTMENTS_DATA.forEach(dept => {
+        const opt = document.createElement('option');
+        opt.value = dept;
+        opt.textContent = dept;
+        opt.className = 'bg-zinc-900 text-white';
+        select.appendChild(opt);
+      });
+    }
+
+    function filterEmployees() {
+      const dept = document.getElementById('deptFilter').value;
+      const q = document.getElementById('employeeSearchInput').value.toLowerCase().trim();
+
+      const filtered = state.employees.filter(emp => {
+        const matchDept = (dept === 'all' || emp.dept === dept);
+        const matchQ = (emp.name.toLowerCase().includes(q) || emp.room.toLowerCase().includes(q) || emp.role.toLowerCase().includes(q));
+        return matchDept && matchQ;
+      });
+
+      renderEmployees(filtered);
+    }
+
+    // Toggle Employee Status (Demonstrating Queue Release)
+    function toggleEmployeeStatus(empId) {
+      const emp = state.employees.find(e => e.id === empId);
+      if (!emp) return;
+
+      playAppleSound('pop');
+      if (emp.status === 'free') {
+        emp.status = 'busy';
+        emp.note = 'Занят: срочная задача / совещание';
+        showToast(emp.name, 'Статус изменён на «ЗАНЯТ». Новые сообщения пойдут в очередь.', 'clock');
+        setDynamicIsland(`⚠️ ${emp.name.split(' ')[0]} занят`, 'Сообщения встают в очередь доставки', 'warning');
+      } else {
+        emp.status = 'free';
+        emp.note = 'На рабочем месте';
+        
+        // CHECK QUEUED MESSAGES FOR THIS EMPLOYEE!
+        const queuedForEmp = state.messages.filter(m => m.empId === empId && m.status === 'queued');
+        if (queuedForEmp.length > 0) {
+          queuedForEmp.forEach(m => {
+            m.status = 'delivered';
+            m.deliveredAt = new Date().toLocaleTimeString().slice(0, 5);
+          });
+          showToast(`Доставлено (${queuedForEmp.length})`, `Сотрудник ${emp.name} освободился! Отложенные сообщения доставлены.`, 'check-circle');
+          setDynamicIsland(`🎉 Сообщения доставлены!`, `${emp.name} освободился (${queuedForEmp.length} в очереди)`, 'success');
+        } else {
+          showToast(emp.name, 'Статус изменён на «СВОБОДЕН».', 'check');
+          setDynamicIsland(`🟢 ${emp.name.split(' ')[0]} свободен`, 'Доступен для прямого контакта', 'success');
+        }
+      }
+
+      saveState();
+      filterEmployees();
+      renderMessagesList();
+    }
+
+    function renderDrivers() {
+      const grid = document.getElementById('driversGrid');
+      grid.innerHTML = state.drivers.map(drv => {
+        let statusBadge = '';
+        if (drv.status === 'free') {
+          statusBadge = `<span class="px-2.5 py-1 rounded-full bg-emerald-500/15 text-apple-green text-[10px] font-semibold border border-emerald-500/30 flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-apple-green animate-pulse"></span>
+            <span>Свободен (на базе)</span>
+          </span>`;
+        } else if (drv.status === 'trip') {
+          statusBadge = `<span class="px-2.5 py-1 rounded-full bg-blue-500/15 text-apple-teal text-[10px] font-semibold border border-blue-500/30 flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-apple-teal"></span>
+            <span>В рейсе</span>
+          </span>`;
+        } else {
+          statusBadge = `<span class="px-2.5 py-1 rounded-full bg-yellow-500/15 text-apple-orange text-[10px] font-semibold border border-yellow-500/30 flex items-center space-x-1.5">
+            <span>На ТО</span>
+          </span>`;
+        }
+
+        return `
+          <div class="glass-card rounded-3xl p-5 hover:border-white/30 transition-all duration-300 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <h4 class="text-base font-bold text-white light:text-gray-900">${drv.name}</h4>
+                  <p class="text-xs text-white/50 light:text-gray-500 font-medium">${drv.phone}</p>
+                </div>
+                ${statusBadge}
+              </div>
+
+              <!-- Vehicle info card -->
+              <div class="p-3 rounded-2xl bg-white/5 light:bg-black/5 flex items-center space-x-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-apple-teal flex items-center justify-center">
+                  <i data-lucide="truck" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-white light:text-gray-900">${drv.vehicle}</p>
+                  <p class="text-[11px] font-mono text-apple-teal font-semibold">Гос. № ${drv.plate}</p>
+                </div>
+              </div>
+
+              <!-- Route details -->
+              <div class="space-y-1.5 text-xs text-white/70 light:text-gray-600">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="compass" class="w-4 h-4 text-apple-blue flex-shrink-0"></i>
+                  <span class="truncate font-medium">Маршрут: <strong>${drv.destination}</strong></span>
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-white/50">
+                  <span>Выезд: ${drv.departure}</span>
+                  <span>Возврат: <strong class="text-white/80">${drv.returnEta}</strong></span>
+                </div>
+                ${drv.status === 'trip' ? `
+                  <div class="pt-2">
+                    <div class="flex justify-between text-[10px] text-white/40 mb-1">
+                      <span>Прогресс поездки</span>
+                      <span>${drv.progress}%</span>
+                    </div>
+                    <div class="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                      <div class="bg-gradient-to-r from-blue-500 to-teal-400 h-1.5 rounded-full" style="width: ${drv.progress}%"></div>
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+              <span class="text-[11px] text-white/40">${drv.status === 'free' ? 'Готов к подаче' : 'В движении'}</span>
+              <button onclick="orderSpecificDriver('${drv.id}')" class="spring-button px-4 py-2 rounded-xl ${drv.status === 'free' ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white' : 'bg-white/10 text-white/40 cursor-not-allowed'} text-xs font-semibold" ${drv.status !== 'free' ? 'disabled' : ''}>
+                ${drv.status === 'free' ? 'Заказать машину' : 'Занят рейсом'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function renderTicketsList() {
+      const container = document.getElementById('ticketsListContainer');
+      if (state.tickets.length === 0) {
+        container.innerHTML = '<p class="text-xs text-white/40 text-center py-10">У вас пока нет созданных заявок. Выберите услугу в каталоге!</p>';
+        return;
+      }
+
+      container.innerHTML = state.tickets.map((t, idx) => `
+        <div class="glass-card rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-blue-500/20 text-apple-blue flex items-center justify-center font-bold text-xs mt-0.5">
+              #${idx+1}
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="text-xs font-bold text-white light:text-gray-900">${t.service}</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-white/60">${t.id}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-medium ${t.priority === 'Критический' ? 'bg-red-500/20 text-apple-red' : t.priority === 'Срочный' ? 'bg-orange-500/20 text-apple-orange' : 'bg-blue-500/20 text-apple-blue'}">${t.priority}</span>
+              </div>
+              <p class="text-xs text-white/60 light:text-gray-600 mt-1">${t.desc}</p>
+              <div class="flex items-center space-x-3 text-[11px] text-white/40 mt-1.5">
+                <span>Кабинет: <strong>${t.room}</strong></span>
+                <span>Заявитель: ${t.author}</span>
+                <span>${t.date}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold ${t.status === 'Выполнено' ? 'bg-emerald-500/20 text-apple-green' : 'bg-blue-500/20 text-apple-blue animate-pulse'}">
+              ${t.status}
+            </span>
+            <button onclick="toggleTicketStatus('${t.id}')" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 text-xs" title="Сменить статус (демо)">
+              ✓
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderMessagesList() {
+      const container = document.getElementById('messagesListContainer');
+      if (state.messages.length === 0) {
+        container.innerHTML = '<p class="text-xs text-white/40 text-center py-10">Нет отправленных сообщений. Напишите сотруднику в разделе «Сотрудники»!</p>';
+        return;
+      }
+
+      container.innerHTML = state.messages.map(m => `
+        <div class="glass-card rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${m.status === 'queued' ? 'border-l-4 border-l-apple-orange' : 'border-l-4 border-l-apple-green'}">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-white">${m.empName}</span>
+              <span class="text-[11px] text-white/40">(${m.subject})</span>
+            </div>
+            <p class="text-xs text-white/70 mt-1">«${m.body}»</p>
+            <p class="text-[10px] text-white/40 mt-1">От: ${m.sender} • Отправлено в ${m.time}</p>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            ${m.status === 'queued' ? `
+              <div class="px-3 py-1 rounded-full bg-orange-500/20 border border-orange-500/30 text-apple-orange text-xs font-semibold flex items-center space-x-1.5">
+                <i data-lucide="clock" class="w-3.5 h-3.5 animate-spin"></i>
+                <span>В очереди (Сотрудник занят)</span>
+              </div>
+            ` : `
+              <div class="px-3 py-1 rounded-full bg-emerald-500/20 text-apple-green text-xs font-semibold flex items-center space-x-1.5">
+                <i data-lucide="check-check" class="w-3.5 h-3.5"></i>
+                <span>Доставлено в ${m.deliveredAt || m.time}</span>
+              </div>
+            `}
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function switchTicketSubTab(tab) {
+      playAppleSound('click');
+      const tContainer = document.getElementById('ticketsListContainer');
+      const mContainer = document.getElementById('messagesListContainer');
+      const tBtn = document.getElementById('tabTicketsBtn');
+      const mBtn = document.getElementById('tabMessagesBtn');
+
+      if (tab === 'tickets') {
+        tContainer.classList.remove('hidden');
+        mContainer.classList.add('hidden');
+        tBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-white/15 text-white';
+        mBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-transparent text-white/60 hover:text-white';
+      } else {
+        tContainer.classList.add('hidden');
+        mContainer.classList.remove('hidden');
+        tBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-transparent text-white/60 hover:text-white';
+        mBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-white/15 text-white';
+      }
+    }
+
+    function toggleTicketStatus(ticketId) {
+      const ticket = state.tickets.find(t => t.id === ticketId);
+      if (!ticket) return;
+      playAppleSound('pop');
+      ticket.status = ticket.status === 'В работе' ? 'Выполнено' : 'В работе';
+      saveState();
+      renderTicketsList();
+      showToast(ticket.id, `Статус заявки изменён на: ${ticket.status}`, 'check');
+    }
+
+    function updateCounts() {
+      const online = state.employees.filter(e => e.status === 'free').length;
+      const busy = state.employees.filter(e => e.status === 'busy').length;
+      const trips = state.drivers.filter(d => d.status === 'trip').length;
+
+      document.getElementById('statOnlineCount').textContent = online;
+      document.getElementById('statBusyCount').textContent = busy;
+      document.getElementById('statDriversTrip').textContent = trips;
+
+      document.getElementById('ticketCountBadge').textContent = state.tickets.length;
+      document.getElementById('messageCountBadge').textContent = state.messages.length;
+    }
+
+    // ----------------------------------------------------
+    // 7. MODALS LOGIC & FORMS
+    // ----------------------------------------------------
+    function openOrderServiceModal(serviceId) {
+      playAppleSound('click');
+      const svc = state.services.find(s => s.id === serviceId);
+      if (!svc) return;
+
+      document.getElementById('serviceInputId').value = svc.id;
+      document.getElementById('modalServiceTitle').textContent = svc.title;
+      document.getElementById('modalServiceCategory').textContent = `${svc.dept} • Срок: ${svc.sla}`;
+      document.getElementById('modalServiceIcon').innerHTML = `<i data-lucide="${svc.icon}" class="w-6 h-6"></i>`;
+      lucide.createIcons();
+
+      document.getElementById('modalOrderService').classList.remove('hidden');
+    }
+
+    function submitServiceTicket(e) {
+      e.preventDefault();
+      const svcId = document.getElementById('serviceInputId').value;
+      const svc = state.services.find(s => s.id === svcId);
+
+      const newTicket = {
+        id: `ИТ-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
+        service: svc.title,
+        room: document.getElementById('ticketRoom').value,
+        author: document.getElementById('ticketAuthor').value,
+        priority: document.querySelector('input[name="priority"]:checked').value,
+        desc: document.getElementById('ticketDescription').value,
+        status: 'В работе',
+        date: new Date().toLocaleDateString('ru-RU') + ' ' + new Date().toLocaleTimeString('ru-RU').slice(0, 5)
+      };
+
+      state.tickets.unshift(newTicket);
+      saveState();
+
+      closeModal('modalOrderService');
+      document.getElementById('orderServiceForm').reset();
+
+      setDynamicIsland(`Заявка ${newTicket.id} принята!`, `${svc.title} (${newTicket.room})`, 'success');
+      showToast(`Заявка ${newTicket.id} создана`, `Направлена специалистам: ${svc.dept}`, 'check');
+      renderTicketsList();
+    }
+
+    function openSendMessageModal(empId) {
+      playAppleSound('click');
+      const emp = state.employees.find(e => e.id === empId);
+      if (!emp) return;
+
+      document.getElementById('msgEmpId').value = emp.id;
+      document.getElementById('msgEmpName').textContent = emp.name;
+      document.getElementById('msgEmpRole').textContent = `${emp.role} (${emp.room})`;
+      document.getElementById('msgEmpAvatar').textContent = emp.name.split(' ').slice(0, 2).map(w => w[0]).join('');
+
+      const badge = document.getElementById('msgEmpStatusBadge');
+      const warning = document.getElementById('msgBusyWarning');
+      const statusText = document.getElementById('msgEmpStatusText');
+
+      if (emp.status === 'busy') {
+        badge.className = 'mt-1 inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-orange-500/20 text-apple-orange border border-orange-500/30';
+        statusText.textContent = 'Занят (Встанет в очередь)';
+        warning.classList.remove('hidden');
+      } else {
+        badge.className = 'mt-1 inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-apple-green';
+        statusText.textContent = 'Свободен (Прямая доставка)';
+        warning.classList.add('hidden');
+      }
+
+      document.getElementById('modalSendMessage').classList.remove('hidden');
+    }
+
+    function submitEmployeeMessage(e) {
+      e.preventDefault();
+      const empId = document.getElementById('msgEmpId').value;
+      const emp = state.employees.find(e => e.id === empId);
+
+      const isBusy = emp.status === 'busy';
+      const newMsg = {
+        id: 'msg-' + Date.now(),
+        empId: emp.id,
+        empName: emp.name,
+        sender: document.getElementById('msgSender').value,
+        subject: document.getElementById('msgSubject').value,
+        body: document.getElementById('msgBody').value,
+        status: isBusy ? 'queued' : 'delivered',
+        time: new Date().toLocaleTimeString().slice(0, 5),
+        deliveredAt: isBusy ? null : new Date().toLocaleTimeString().slice(0, 5)
+      };
+
+      state.messages.unshift(newMsg);
+      saveState();
+
+      closeModal('modalSendMessage');
+      document.getElementById('sendMessageForm').reset();
+
+      if (isBusy) {
+        setDynamicIsland(`⏳ Сообщение в очереди`, `Доставится, как только ${emp.name.split(' ')[0]} освободится`, 'warning');
+        showToast('Поставлено в очередь', `Сотрудник ${emp.name} сейчас занят. Сообщение будет доставлено при освобождении!`, 'clock');
+      } else {
+        setDynamicIsland(`✓✓ Сообщение доставлено`, `${emp.name} получил ваше уведомление`, 'success');
+        showToast('Доставлено мгновенно', `Сотрудник ${emp.name} получил сообщение.`, 'check-check');
+      }
+
+      renderMessagesList();
+    }
+
+    function openOrderCarModal() {
+      playAppleSound('click');
+      document.getElementById('modalOrderCar').classList.remove('hidden');
+    }
+
+    function orderSpecificDriver(driverId) {
+      openOrderCarModal();
+    }
+
+    function submitCarOrder(e) {
+      e.preventDefault();
+      const dest = document.getElementById('carDestination').value;
+      const time = document.getElementById('carTime').value;
+      const pass = document.getElementById('carPassengers').value;
+      const req = document.getElementById('carRequester').value;
+
+      // Find free driver
+      const freeDriver = state.drivers.find(d => d.status === 'free') || state.drivers[0];
+      freeDriver.status = 'trip';
+      freeDriver.destination = `АУП ➔ ${dest}`;
+      freeDriver.departure = time;
+      freeDriver.returnEta = '~' + (parseInt(time.split(':')[0]) + 2) + ':00';
+      freeDriver.progress = 10;
+
+      saveState();
+      closeModal('modalOrderCar');
+      document.getElementById('orderCarForm').reset();
+
+      setDynamicIsland(`🚗 Автомобиль назначен!`, `${freeDriver.vehicle} (${freeDriver.plate}) • Подача к ${time}`, 'success');
+      showToast(`Автомобиль заказан!`, `Водитель ${freeDriver.name} принял заказ. Гос. номер: ${freeDriver.plate}`, 'navigation');
+
+      renderDrivers();
+      switchView('drivers');
+    }
+
+    function closeModal(modalId) {
+      playAppleSound('click');
+      document.getElementById(modalId).classList.add('hidden');
+    }
+
+    // ----------------------------------------------------
+    // 8. SPOTLIGHT SEARCH (CMD+K / CTRL+K)
+    // ----------------------------------------------------
+    function openSpotlight() {
+      playAppleSound('pop');
+      document.getElementById('spotlightModal').classList.remove('hidden');
+      document.getElementById('spotlightInput').focus();
+    }
+
+    function closeSpotlight() {
+      document.getElementById('spotlightModal').classList.add('hidden');
+      document.getElementById('spotlightInput').value = '';
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        openSpotlight();
+      }
+      if (e.key === 'Escape') {
+        closeSpotlight();
+        closeModal('modalOrderService');
+        closeModal('modalSendMessage');
+        closeModal('modalOrderCar');
+      }
+    });
+
+    function runSpotlightSearch() {
+      const q = document.getElementById('spotlightInput').value.toLowerCase().trim();
+      const resContainer = document.getElementById('spotlightResults');
+
+      if (!q) {
+        resContainer.innerHTML = '<p class="text-xs text-white/40 text-center py-6">Начните вводить текст...</p>';
+        return;
+      }
+
+      let html = '';
+
+      // Match services
+      const matchServices = state.services.filter(s => s.title.toLowerCase().includes(q) || s.subtitle.toLowerCase().includes(q));
+      if (matchServices.length > 0) {
+        html += '<p class="text-[10px] font-bold text-apple-blue uppercase tracking-wider mb-1">Услуги и поддержка</p>';
+        matchServices.forEach(s => {
+          html += `
+            <div onclick="closeSpotlight(); openOrderServiceModal('${s.id}')" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center justify-between text-xs text-white">
+              <div class="flex items-center space-x-2.5">
+                <i data-lucide="${s.icon}" class="w-4 h-4 text-apple-blue"></i>
+                <span class="font-semibold">${s.title}</span>
+              </div>
+              <span class="text-white/40">${s.sla}</span>
+            </div>
+          `;
+        });
+      }
+
+      // Match employees
+      const matchEmp = state.employees.filter(e => e.name.toLowerCase().includes(q) || e.room.toLowerCase().includes(q) || e.dept.toLowerCase().includes(q));
+      if (matchEmp.length > 0) {
+        html += '<p class="text-[10px] font-bold text-apple-purple uppercase tracking-wider mt-3 mb-1">Сотрудники АУП</p>';
+        matchEmp.forEach(e => {
+          html += `
+            <div onclick="closeSpotlight(); openSendMessageModal('${e.id}')" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center justify-between text-xs text-white">
+              <div>
+                <span class="font-semibold">${e.name}</span>
+                <span class="text-white/50 text-[11px] block">${e.role} (${e.room})</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] ${e.status === 'free' ? 'bg-emerald-500/20 text-apple-green' : 'bg-orange-500/20 text-apple-orange'}">${e.status === 'free' ? 'Свободен' : 'Занят'}</span>
+            </div>
+          `;
+        });
+      }
+
+      // Match drivers
+      const matchDrv = state.drivers.filter(d => d.name.toLowerCase().includes(q) || d.vehicle.toLowerCase().includes(q) || d.plate.toLowerCase().includes(q));
+      if (matchDrv.length > 0) {
+        html += '<p class="text-[10px] font-bold text-apple-teal uppercase tracking-wider mt-3 mb-1">Водители и Автомобили</p>';
+        matchDrv.forEach(d => {
+          html += `
+            <div onclick="closeSpotlight(); switchView('drivers')" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center justify-between text-xs text-white">
+              <div>
+                <span class="font-semibold">${d.name} — ${d.vehicle}</span>
+                <span class="text-white/50 text-[11px] block">${d.plate} • ${d.destination}</span>
+              </div>
+              <span class="text-apple-teal">${d.status === 'free' ? 'Свободен' : 'В рейсе'}</span>
+            </div>
+          `;
+        });
+      }
+
+      resContainer.innerHTML = html || '<p class="text-xs text-white/40 text-center py-6">Ничего не найдено</p>';
+      lucide.createIcons();
+    }
+
+    function clearDemoData() {
+      if (confirm('Сбросить локальные данные портала к исходным демо-значениям?')) {
+        localStorage.clear();
+        location.reload();
+      }
+    }
+
+    // ----------------------------------------------------
+    // INITIALIZATION
+    // ----------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+      populateDeptFilter();
+      renderServices();
+      renderEmployees();
+      renderDrivers();
+      renderTicketsList();
+      renderMessagesList();
+      updateCounts();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
