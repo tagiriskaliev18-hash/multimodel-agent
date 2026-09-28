@@ -1,10 +1,27 @@
 {
   "mcpServers": {
     "claude-bridge": {
-      "command": "python",
+      "command": "C:\\Users\\URL060\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
       "args": [
         "C:\\projects\\tools\\claude_bridge.py"
-      ]
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "NODE_EXTRA_CA_CERTS": "C:\\projects\\tools\\corporate_ca.pem",
+        "SSL_CERT_FILE": "C:\\projects\\tools\\corporate_ca.pem",
+        "REQUESTS_CA_BUNDLE": "C:\\projects\\tools\\corporate_ca.pem"
+      }
+    },
+    "soup": {
+      "command": "C:\\Users\\URL060\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "args": [
+        "-m",
+        "soup_cli.commands.mcp",
+        "serve"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      }
     }
   }
 }

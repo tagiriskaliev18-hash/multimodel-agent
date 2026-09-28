@@ -3,28 +3,87 @@ import json
 import os
 import subprocess
 import traceback
+import urllib.request
+import urllib.error
 
 CLAUDE_PATH = os.path.expandvars(r"%USERPROFILE%\.local\bin\claude.exe")
 if not os.path.exists(CLAUDE_PATH):
     CLAUDE_PATH = "claude"
 
-MODEL = os.environ.get("CLAUDE_BRIDGE_MODEL", "sonnet")
+DEFAULT_MODEL = os.environ.get("CLAUDE_BRIDGE_MODEL", "sonnet")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DEFAULT_PROVIDERS = {
+    "default_provider": "claude",
+    "providers": {
+        "claude": {
+            "type": "cli",
+            "command": "claude",
+            "model": "sonnet",
+            "description": "Claude Code CLI (старший ревьюер и архитектор)"
+        },
+        "ollama": {
+            "type": "openai_compatible",
+            "base_url": "http://127.0.0.1:11434/v1",
+            "model": "qwen2.5-coder:1.5b",
+            "api_key": "ollama",
+            "description": "Локальный Ollama (быстрая легковесная модель на CPU)"
+        },
+        "soup_local": {
+            "type": "openai_compatible",
+            "base_url": "http://127.0.0.1:8080/v1",
+            "model": "default",
+            "api_key": "soup",
+            "description": "Локальный llama.cpp / Soup llama-server"
+        },
+        "deepseek": {
+            "type": "openai_compatible",
+            "base_url": "https://api.deepseek.com/v1",
+            "model": "deepseek-coder",
+            "api_key_env": "DEEPSEEK_API_KEY",
+            "description": "DeepSeek API (высокоточный код и рассуждения)"
+        },
+        "openrouter": {
+            "type": "openai_compatible",
+            "base_url": "https://openrouter.ai/api/v1",
+            "model": "meta-llama/llama-3.3-70b-instruct",
+            "api_key_env": "OPENROUTER_API_KEY",
+            "description": "OpenRouter Gateway (универсальный доступ к любым открытым и закрытым LLM)"
+        }
+    }
+}
 
 def log(msg):
-    sys.stderr.write(f"[claude-bridge] {msg}\n")
+    sys.stderr.write(f"[ai-bridge] {msg}\n")
     sys.stderr.flush()
+
+def load_providers():
+    candidate_paths = [
+        os.path.join(BASE_DIR, "providers.json"),
+        os.path.expandvars(r"%USERPROFILE%\.aiduo\providers.json"),
+        r"C:\projects\tools\providers.json"
+    ]
+    for path in candidate_paths:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                log(f"Ошибка чтения {path}: {e}")
+    return DEFAULT_PROVIDERS
 
 def validate_work_folder(work_folder):
     if not work_folder or not os.path.isdir(work_folder):
         return False, f"CLAUDE_ERROR: Рабочая папка '{work_folder}' не найдена или не является директорией."
     return True, os.path.abspath(work_folder)
 
-def run_claude(cwd, prompt, tools_arg=None, allow_writes=False):
+def run_claude(cwd, prompt, tools_arg=None, allow_writes=False, model=None):
     ok, validated_cwd = validate_work_folder(cwd)
     if not ok:
         return validated_cwd
 
-    cmd = [CLAUDE_PATH, "-p", prompt, "--model", MODEL]
+    target_model = model or DEFAULT_MODEL
+    cmd = [CLAUDE_PATH, "-p", prompt, "--model", target_model]
     if tools_arg is not None:
         cmd.extend(["--tools", tools_arg])
     if allow_writes:
@@ -78,6 +137,54 @@ def run_claude(cwd, prompt, tools_arg=None, allow_writes=False):
         log(f"Exception during execution: {e}")
         return f"CLAUDE_ERROR: {str(e)}"
 
+def run_openai_compatible(config, prompt, system_prompt=None, timeout=60):
+    base_url = config.get("base_url", "http://127.0.0.1:11434/v1").rstrip("/")
+    url = f"{base_url}/chat/completions"
+    api_key = config.get("api_key")
+    if not api_key and "api_key_env" in config:
+        api_key = os.environ.get(config["api_key_env"], "")
+    
+    headers = {
+        "Content-Type": "application/json"
+    }
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
+        
+    messages = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": prompt})
+    
+    payload = {
+        "model": config.get("model", "default"),
+        "messages": messages,
+        "temperature": config.get("temperature", 0.2)
+    }
+    
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers=headers,
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            choices = data.get("choices", [])
+            if choices and "message" in choices[0]:
+                return choices[0]["message"].get("content", "")
+    except urllib.error.HTTPError as e:
+        err_body = ""
+        try:
+            err_body = e.read().decode("utf-8", errors="replace")
+        except Exception:
+            pass
+        return f"PROVIDER_ERROR (HTTP {e.code}): {e.reason}. {err_body}".strip()
+    except urllib.error.URLError as e:
+        return f"PROVIDER_OFFLINE: Не удалось связаться с {url}: {e.reason}"
+    except Exception as e:
+        return f"PROVIDER_ERROR: {str(e)}"
+
 def handle_review(work_folder, focus=""):
     diff_info = ""
     try:
@@ -128,6 +235,87 @@ def handle_implement(work_folder, instruction):
         "Выполни необходимые изменения в коде аккуратно и точно."
     )
     return run_claude(work_folder, prompt, allow_writes=True)
+
+def handle_model_ask(provider_name, question, work_folder="."):
+    config_data = load_providers()
+    providers = config_data.get("providers", {})
+    
+    if not provider_name:
+        provider_name = config_data.get("default_provider", "claude")
+        
+    if provider_name not in providers:
+        available = ", ".join(providers.keys())
+        return f"PROVIDER_ERROR: Провайдер '{provider_name}' не найден. Доступные: {available}"
+        
+    prov = providers[provider_name]
+    ptype = prov.get("type")
+    
+    if ptype == "cli":
+        return run_claude(work_folder, question, tools_arg="Read,Grep,Glob", model=prov.get("model"))
+    elif ptype == "openai_compatible":
+        sys_prompt = f"Ты инженер-разработчик в связке AI Duo. Контекст рабочей директории: {work_folder}."
+        return run_openai_compatible(prov, question, system_prompt=sys_prompt)
+    else:
+        return f"PROVIDER_ERROR: Неизвестный тип провайдера '{ptype}'"
+
+def handle_models_list():
+    config_data = load_providers()
+    providers = config_data.get("providers", {})
+    default_p = config_data.get("default_provider", "claude")
+    
+    lines = [
+        f"### Реестр моделей AI Duo (по образцу LLM Soup)\n",
+        f"**Провайдер по умолчанию:** `{default_p}`\n",
+        "| Провайдер | Тип | Модель | Статус | Назначение |",
+        "|---|---|---|---|---|"
+    ]
+    
+    for name, p in providers.items():
+        ptype = p.get("type")
+        model = p.get("model", "-")
+        desc = p.get("description", "")
+        status = "UNKNOWN"
+        
+        if ptype == "cli":
+            try:
+                res = subprocess.run(["where.exe", p.get("command", "claude")], capture_output=True, text=True)
+                status = "[ГОТОВ]" if res.returncode == 0 else "[НЕ УСТАНОВЛЕН]"
+            except Exception:
+                status = "[ОШИБКА]"
+        elif ptype == "openai_compatible":
+            base_url = p.get("base_url", "").rstrip("/")
+            test_url = f"{base_url}/models"
+            try:
+                req = urllib.request.Request(test_url, method="GET")
+                with urllib.request.urlopen(req, timeout=1.5):
+                    status = "[ОНЛАЙН]"
+            except Exception:
+                status = "[ОФФЛАЙН]"
+                
+        is_def = " *(по умолчанию)*" if name == default_p else ""
+        lines.append(f"| **{name}**{is_def} | `{ptype}` | `{model}` | {status} | {desc} |")
+        
+    return "\n".join(lines)
+
+def handle_soup_recipe(query=""):
+    try:
+        from soup_cli.recipes.catalog import search_recipes, list_recipes
+        if query:
+            results = search_recipes(query)
+            if not results:
+                return f"Рецепты по запросу '{query}' не найдены."
+            out = [f"Найдено рецептов ({len(results)}):"]
+            for r in results[:10]:
+                out.append(f"- **{r.model}** ({r.task}, {r.size}): {r.description}")
+            return "\n".join(out)
+        else:
+            all_r = list_recipes()
+            out = [f"Всего доступных шаблонов/рецептов Soup ({len(all_r)}):"]
+            for r in all_r[:10]:
+                out.append(f"- **{r.model}** ({r.task}, {r.size}): {r.description}")
+            return "\n".join(out)
+    except Exception as e:
+        return f"SOUP_ERROR: {str(e)}"
 
 TOOLS = [
     {
@@ -183,6 +371,49 @@ TOOLS = [
             },
             "required": ["work_folder", "instruction"]
         }
+    },
+    {
+        "name": "model_ask",
+        "description": "Задать вопрос любой модели из реестра провайдеров AI Duo (Claude, Ollama, DeepSeek, Soup).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "type": "string",
+                    "description": "Имя провайдера из реестра (например: 'claude', 'ollama', 'deepseek', 'soup_local')"
+                },
+                "question": {
+                    "type": "string",
+                    "description": "Вопрос или задача для модели"
+                },
+                "work_folder": {
+                    "type": "string",
+                    "description": "Рабочая папка проекта (по умолчанию текущая)"
+                }
+            },
+            "required": ["question"]
+        }
+    },
+    {
+        "name": "models_list",
+        "description": "Вывести список всех подключенных моделей и провайдеров AI Duo с их текущим статусом (онлайн/оффлайн).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {}
+        }
+    },
+    {
+        "name": "soup_recipe",
+        "description": "Поиск и просмотр рецептов/шаблонов моделей из LLM Soup для локального запуска или файн-тюнинга.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Поисковый запрос (например: 'coder', 'qwen', 'llama', 'math')"
+                }
+            }
+        }
     }
 ]
 
@@ -191,7 +422,7 @@ def main():
         import io
         sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding="utf-8", errors="replace")
         sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-    log("claude-bridge MCP server starting...")
+    log("ai-bridge MCP server starting...")
     for line in sys.stdin:
         line = line.strip()
         if not line:
@@ -216,8 +447,8 @@ def main():
                         "tools": {}
                     },
                     "serverInfo": {
-                        "name": "claude-bridge",
-                        "version": "1.0.0"
+                        "name": "ai-bridge",
+                        "version": "2.0.0"
                     }
                 }
             }
@@ -260,6 +491,12 @@ def main():
                     text = handle_ask(work_folder, args.get("question", ""))
                 elif tool_name == "claude_implement":
                     text = handle_implement(work_folder, args.get("instruction", ""))
+                elif tool_name == "model_ask":
+                    text = handle_model_ask(args.get("provider", "claude"), args.get("question", ""), work_folder)
+                elif tool_name == "models_list":
+                    text = handle_models_list()
+                elif tool_name == "soup_recipe":
+                    text = handle_soup_recipe(args.get("query", ""))
                 else:
                     text = f"Неизвестный инструмент: {tool_name}"
 
@@ -273,7 +510,7 @@ def main():
                                 "text": text
                             }
                         ],
-                        "isError": text.startswith("CLAUDE_ERROR") or text.startswith("CLAUDE_LIMIT_REACHED")
+                        "isError": any(text.startswith(prefix) for prefix in ("CLAUDE_ERROR", "CLAUDE_LIMIT_REACHED", "PROVIDER_ERROR", "PROVIDER_OFFLINE", "SOUP_ERROR", "BRIDGE_ERROR"))
                     }
                 }
             except Exception as e:
@@ -285,7 +522,7 @@ def main():
                         "content": [
                             {
                                 "type": "text",
-                                "text": f"CLAUDE_ERROR: {str(e)}"
+                                "text": f"BRIDGE_ERROR: {str(e)}"
                             }
                         ],
                         "isError": True

@@ -1,0 +1,39 @@
+{
+  "default_provider": "claude",
+  "providers": {
+    "claude": {
+      "type": "cli",
+      "command": "claude",
+      "model": "sonnet",
+      "description": "Claude Code CLI (старший ревьюер и архитектор)"
+    },
+    "ollama": {
+      "type": "openai_compatible",
+      "base_url": "http://127.0.0.1:11434/v1",
+      "model": "qwen2.5-coder:1.5b",
+      "api_key": "ollama",
+      "description": "Локальный Ollama (быстрая легковесная модель на CPU)"
+    },
+    "soup_local": {
+      "type": "openai_compatible",
+      "base_url": "http://127.0.0.1:8080/v1",
+      "model": "default",
+      "api_key": "soup",
+      "description": "Локальный llama.cpp / Soup llama-server"
+    },
+    "deepseek": {
+      "type": "openai_compatible",
+      "base_url": "https://api.deepseek.com/v1",
+      "model": "deepseek-coder",
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "description": "DeepSeek API (высокоточный код и рассуждения)"
+    },
+    "openrouter": {
+      "type": "openai_compatible",
+      "base_url": "https://openrouter.ai/api/v1",
+      "model": "meta-llama/llama-3.3-70b-instruct",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "description": "OpenRouter Gateway (универсальный доступ к любым открытым и закрытым LLM)"
+    }
+  }
+}
