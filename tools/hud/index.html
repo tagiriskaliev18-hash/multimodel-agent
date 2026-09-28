@@ -653,6 +653,204 @@
       background: rgba(0, 0, 0, 0.08);
     }
 
+    /* Real-time Agent Workload & Telemetry Section */
+    .realtime-monitor-section {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+      padding: 36px;
+      margin-bottom: 56px;
+    }
+
+    .monitor-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .monitor-badge-pulse {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #1b7340;
+      background: var(--badge-green-bg);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34c759;
+      box-shadow: 0 0 6px #34c759;
+      animation: pulseAnim 2s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .workload-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .workload-card {
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+    }
+
+    .workload-card:hover {
+      border-color: rgba(0, 0, 0, 0.16);
+      transform: translateY(-2px);
+    }
+
+    .workload-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .workload-agent-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .workload-state-tag {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+    }
+
+    .workload-state-tag.active {
+      background: var(--badge-blue-bg);
+      color: var(--badge-blue-text);
+    }
+
+    .workload-state-tag.idle {
+      background: var(--bg-subtle);
+      color: var(--text-tertiary);
+    }
+
+    .workload-state-tag.busy {
+      background: var(--badge-green-bg);
+      color: var(--badge-green-text);
+    }
+
+    .load-bar-track {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin: 10px 0 6px;
+    }
+
+    .load-bar-fill {
+      height: 100%;
+      background: var(--accent-blue);
+      border-radius: var(--radius-full);
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .load-bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+    }
+
+    .load-current-task {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Live Activity Log Stream */
+    .stream-container {
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+    }
+
+    .stream-head {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stream-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .stream-item {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+      font-size: 12.5px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .stream-item:last-child {
+      border-bottom: none;
+    }
+
+    .stream-time {
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      color: var(--text-tertiary);
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .stream-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+
     /* Apple-style Interactive Recommender */
     .recommender-section {
       background: var(--bg-surface);
@@ -1430,6 +1628,160 @@
         </div>
       </div>
 
+    <!-- Real-time Agent Workload & Telemetry Monitor -->
+    <section class="realtime-monitor-section" id="realtimeMonitorSection">
+      <div class="monitor-top-row">
+        <div>
+          <h2 style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px;">
+            Нагрузка и работа агентов в реальном времени
+          </h2>
+          <p style="font-size: 13.5px; color: var(--text-secondary);">
+            Мониторинг текущих процессов, очередей запросов и использования ресурсов ПК.
+          </p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <div class="monitor-badge-pulse">
+            <span class="pulse-dot"></span>
+            <span>Телеметрия активна</span>
+          </div>
+          <button class="btn-card-secondary" id="btnToggleSim" onclick="toggleWorkloadSimulation()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <span id="simBtnLabel">Тестовый поток задач</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5 Workload Cards -->
+      <div class="workload-grid">
+        <!-- 1. Architect -->
+        <div class="workload-card" id="wl-architect">
+          <div>
+            <div class="workload-header">
+              <div class="workload-agent-name">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span>Архитектор</span>
+              </div>
+              <span class="workload-state-tag active" id="wl-state-architect">Ожидание</span>
+            </div>
+            <div class="load-bar-track">
+              <div class="load-bar-fill" id="wl-bar-architect" style="width: 15%;"></div>
+            </div>
+            <div class="load-bar-meta">
+              <span>Нагрузка: <strong id="wl-pct-architect">15%</strong></span>
+              <span id="wl-tokens-architect">1.2K токенов</span>
+            </div>
+          </div>
+          <div class="load-current-task" id="wl-task-architect">
+            В ожидании архитектурных запросов по структуре проекта.
+          </div>
+        </div>
+
+        <!-- 2. Reviewer -->
+        <div class="workload-card" id="wl-reviewer">
+          <div>
+            <div class="workload-header">
+              <div class="workload-agent-name">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><path d="M13 6h3a2 2 0 0 1 2 2v7"></path><line x1="6" y1="9" x2="6" y2="21"></line></svg>
+                <span>Ревьюер</span>
+              </div>
+              <span class="workload-state-tag idle" id="wl-state-reviewer">В покое</span>
+            </div>
+            <div class="load-bar-track">
+              <div class="load-bar-fill" id="wl-bar-reviewer" style="width: 8%;"></div>
+            </div>
+            <div class="load-bar-meta">
+              <span>Нагрузка: <strong id="wl-pct-reviewer">8%</strong></span>
+              <span id="wl-tokens-reviewer">0 diffs</span>
+            </div>
+          </div>
+          <div class="load-current-task" id="wl-task-reviewer">
+            Ожидание коммитов или изменений в файлах репозитория.
+          </div>
+        </div>
+
+        <!-- 3. Developer -->
+        <div class="workload-card" id="wl-developer">
+          <div>
+            <div class="workload-header">
+              <div class="workload-agent-name">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                <span>Разработчик</span>
+              </div>
+              <span class="workload-state-tag busy" id="wl-state-developer">Groq LPU</span>
+            </div>
+            <div class="load-bar-track">
+              <div class="load-bar-fill" id="wl-bar-developer" style="width: 32%;"></div>
+            </div>
+            <div class="load-bar-meta">
+              <span>Нагрузка: <strong id="wl-pct-developer">32%</strong></span>
+              <span id="wl-tokens-developer">410 TPS</span>
+            </div>
+          </div>
+          <div class="load-current-task" id="wl-task-developer">
+            Генерация бойлерплейта и шаблонов в фоновом режиме.
+          </div>
+        </div>
+
+        <!-- 4. Security Auditor -->
+        <div class="workload-card" id="wl-security">
+          <div>
+            <div class="workload-header">
+              <div class="workload-agent-name">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>Безопасность</span>
+              </div>
+              <span class="workload-state-tag idle" id="wl-state-security">Ожидание</span>
+            </div>
+            <div class="load-bar-track">
+              <div class="load-bar-fill" id="wl-bar-security" style="width: 10%;"></div>
+            </div>
+            <div class="load-bar-meta">
+              <span>Нагрузка: <strong id="wl-pct-security">10%</strong></span>
+              <span id="wl-tokens-security">AST clean</span>
+            </div>
+          </div>
+          <div class="load-current-task" id="wl-task-security">
+            Мониторинг исключений и проверка утечек секретов.
+          </div>
+        </div>
+
+        <!-- 5. LLMOps -->
+        <div class="workload-card" id="wl-llmops">
+          <div>
+            <div class="workload-header">
+              <div class="workload-agent-name">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg>
+                <span>LLMOps (Soup)</span>
+              </div>
+              <span class="workload-state-tag active" id="wl-state-llmops">8 GB RAM</span>
+            </div>
+            <div class="load-bar-track">
+              <div class="load-bar-fill" id="wl-bar-llmops" style="width: 48%;"></div>
+            </div>
+            <div class="load-bar-meta">
+              <span>RAM: <strong id="wl-pct-llmops">5.2 / 8 GB</strong></span>
+              <span id="wl-tokens-llmops">Q4 профиль</span>
+            </div>
+          </div>
+          <div class="load-current-task" id="wl-task-llmops">
+            Контроль потребления системной памяти и кэша моделей.
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Activity Stream -->
+      <div class="stream-container">
+        <div class="stream-head">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            <span>Хроника операций агентов в реальном времени</span>
+          </div>
+          <span style="font-size: 11px; color: var(--text-tertiary);" id="streamLastPing">Синхронизировано сейчас</span>
+        </div>
+        <div class="stream-items" id="streamItems">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
     </section>
 
     <!-- Interactive Recommender Assistant -->
@@ -2051,6 +2403,106 @@ skills/${skillKey}/SKILL.md
         showToast('Включена светлая тема интерфейса');
       }
     }
+
+
+    // -------------------------------------------------------------
+    // 8. Real-Time Agent Workload Telemetry & Activity Stream
+    // -------------------------------------------------------------
+    let isSimulating = true;
+
+    const AGENT_WORKLOAD_STATE = {
+      architect: { pct: 24, tokens: '18.4K токенов', state: 'Активен', tagClass: 'active', task: 'Сверка контрактов REST API с базой данных PostgreSQL' },
+      reviewer: { pct: 12, tokens: '42 строки diff', state: 'В покое', tagClass: 'idle', task: 'Ожидание коммита или открытия Pull Request' },
+      developer: { pct: 72, tokens: '412 TPS', state: 'Groq LPU', tagClass: 'busy', task: 'Компиляция модульных тестов pytest для схемы валидации' },
+      security: { pct: 15, tokens: 'AST clean', state: 'Сканирование', tagClass: 'active', task: 'Проверка сигнатур на утечки API-токенов в файлах' },
+      llmops: { pct: 64, tokens: '5.1 / 8 GB', state: 'Soup v0.75', tagClass: 'active', task: 'Контроль кэша модели Q4_K_M и параметров RAM ноутбука' }
+    };
+
+    const STREAM_TEMPLATES = [
+      { agent: 'Разработчик', badge: 'busy', text: 'Завершил генерацию 3 фикстур pytest через Groq LPU (38 ms).' },
+      { agent: 'Архитектор', badge: 'active', text: 'Проверил совместимость схемы внешних ключей в базе данных.' },
+      { agent: 'Безопасность', badge: 'active', text: 'Сканирование .env и конфигов: утечек секретов не обнаружено.' },
+      { agent: 'LLMOps (Soup)', badge: 'active', text: 'Утилизация RAM стабильна: 5.1 GB из 8.0 GB (запас 2.9 GB).' },
+      { agent: 'Ревьюер', badge: 'idle', text: 'Получен сигнал о чистом дереве git master (коммит f1ef109).' }
+    ];
+
+    function updateWorkloadUI() {
+      for (const [key, val] of Object.entries(AGENT_WORKLOAD_STATE)) {
+        const bar = document.getElementById(`wl-bar-${key}`);
+        const pctEl = document.getElementById(`wl-pct-${key}`);
+        const tokensEl = document.getElementById(`wl-tokens-${key}`);
+        const stateEl = document.getElementById(`wl-state-${key}`);
+        const taskEl = document.getElementById(`wl-task-${key}`);
+
+        if (bar) bar.style.width = `${val.pct}%`;
+        if (pctEl) {
+          pctEl.innerText = key === 'llmops' ? val.tokens : `${val.pct}%`;
+        }
+        if (tokensEl) tokensEl.innerText = val.tokens;
+        if (stateEl) {
+          stateEl.innerText = val.state;
+          stateEl.className = `workload-state-tag ${val.tagClass}`;
+        }
+        if (taskEl) taskEl.innerText = val.task;
+      }
+    }
+
+    function addStreamEvent(agentName, badgeClass, text) {
+      const container = document.getElementById('streamItems');
+      if (!container) return;
+
+      const now = new Date().toTimeString().split(' ')[0];
+      const div = document.createElement('div');
+      div.className = 'stream-item';
+      div.innerHTML = `
+        <span class="stream-time">${now}</span>
+        <span class="stream-badge ${badgeClass === 'busy' ? 'pill green' : 'pill blue'}">${agentName}</span>
+        <span>${text}</span>
+      `;
+
+      container.insertBefore(div, container.firstChild);
+      while (container.children.length > 5) {
+        container.removeChild(container.lastChild);
+      }
+
+      const pingEl = document.getElementById('streamLastPing');
+      if (pingEl) pingEl.innerText = 'Обновлено ' + now;
+    }
+
+    function runTelemetryTick() {
+      if (!isSimulating) return;
+
+      AGENT_WORKLOAD_STATE.developer.pct = Math.floor(45 + Math.random() * 45);
+      AGENT_WORKLOAD_STATE.developer.tokens = `${Math.floor(380 + Math.random() * 80)} TPS`;
+
+      AGENT_WORKLOAD_STATE.architect.pct = Math.floor(15 + Math.random() * 35);
+      AGENT_WORKLOAD_STATE.architect.tokens = `${(15 + Math.random() * 8).toFixed(1)}K токенов`;
+
+      AGENT_WORKLOAD_STATE.llmops.pct = Math.floor(58 + Math.random() * 10);
+      AGENT_WORKLOAD_STATE.llmops.tokens = `${(5.0 + Math.random() * 0.4).toFixed(1)} / 8 GB`;
+
+      updateWorkloadUI();
+
+      const item = STREAM_TEMPLATES[Math.floor(Math.random() * STREAM_TEMPLATES.length)];
+      addStreamEvent(item.agent, item.badge, item.text);
+    }
+
+    function toggleWorkloadSimulation() {
+      isSimulating = !isSimulating;
+      const label = document.getElementById('simBtnLabel');
+      if (isSimulating) {
+        label.innerText = 'Остановить поток';
+        showToast('Живой поток нагрузки агентов запущен');
+      } else {
+        label.innerText = 'Возобновить поток';
+        showToast('Поток нагрузки переведен в паузу');
+      }
+    }
+
+    // Initialize telemetry
+    updateWorkloadUI();
+    STREAM_TEMPLATES.forEach(item => addStreamEvent(item.agent, item.badge, item.text));
+    setInterval(runTelemetryTick, 2800);
   </script>
 </body>
 </html>

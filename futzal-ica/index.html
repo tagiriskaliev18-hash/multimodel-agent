@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>График и бюджет футзала • Зал «Достык» 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f8f9fa;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f3f5;
+      --text-main: #1a1f2c;
+      --text-muted: #6c757d;
+      --border-color: #e9ecef;
+      --accent-blue: #0d6efd;
+      --accent-blue-hover: #0b5ed7;
+      --accent-emerald: #198754;
+      --accent-amber: #fd7e14;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
+      --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header Nav */
+    .top-nav {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 14px 24px;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 17px;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: var(--accent-blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .nav-tag {
+      font-size: 12px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .btn-print {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-print:hover {
+      background: var(--bg-subtle);
+      border-color: #ced4da;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 32px auto 0;
+      padding: 0 24px;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .hero-info h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .hero-info p {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 620px;
+    }
+
+    .meta-pills {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .meta-pill {
+      font-size: 12.5px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .meta-pill svg {
+      width: 14px;
+      height: 14px;
+      color: var(--accent-blue);
+    }
+
+    /* KPI Summary Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+
+    @media (max-width: 900px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kpi-label svg {
+      width: 14px;
+      height: 14px;
+      color: var(--accent-blue);
+    }
+
+    .kpi-val {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .kpi-sub {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Section Headings */
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title svg {
+      width: 20px;
+      height: 20px;
+      color: var(--accent-blue);
+    }
+
+    /* Visual Analytics & Charts */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 36px;
+    }
+
+    @media (max-width: 860px) {
+      .analytics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .chart-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 20px;
+    }
+
+    .chart-head h3 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .chart-head span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Interactive Calendar View */
+    .calendar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 36px;
+    }
+
+    .month-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .month-tab-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .month-tab-btn:hover {
+      background: #e9ecef;
+    }
+
+    .month-tab-btn.active {
+      background: var(--accent-blue);
+      color: white;
+      border-color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    .month-overview {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .month-overview {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+
+    .cal-day-header {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 8px 0;
+    }
+
+    .cal-cell {
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      position: relative;
+    }
+
+    .cal-cell.empty {
+      background: transparent;
+      border: none;
+    }
+
+    .cal-cell.regular {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .cal-cell.session {
+      background: #e7f1ff;
+      border-color: #b6d4fe;
+      color: var(--accent-blue);
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(13, 110, 253, 0.1);
+    }
+
+    .cal-cell.session::after {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      position: absolute;
+      bottom: 4px;
+    }
+
+    .cal-cell.session:hover {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    .cal-cell.session:hover::after {
+      background: white;
+    }
+
+    .month-details-sidebar {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+    }
+
+    .sidebar-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .sidebar-metric {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .sidebar-metric span.lbl {
+      color: var(--text-muted);
+    }
+
+    .sidebar-metric span.val {
+      font-weight: 600;
+    }
+
+    .dates-tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .date-badge {
+      background: white;
+      border: 1px solid #ced4da;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: var(--accent-blue);
+    }
+
+    /* Detailed Table */
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      overflow-x: auto;
+      margin-bottom: 40px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    .data-table th {
+      background: #f8f9fa;
+      padding: 14px 18px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+      text-transform: uppercase;
+      font-size: 11.5px;
+      letter-spacing: 0.03em;
+    }
+
+    .data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .data-table tr:hover td {
+      background: #fdfdfd;
+    }
+
+    .data-table tr.total-row td {
+      background: #f1f3f5;
+      font-weight: 700;
+      font-size: 14px;
+      border-top: 2px solid #ced4da;
+      border-bottom: none;
+    }
+
+    .badge-month {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .pill-count {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: #e7f1ff;
+      color: var(--accent-blue);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    /* Footer */
+    .page-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 24px;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding-bottom: 0;
+      }
+      .top-nav, .btn-print, .month-tabs {
+        display: none !important;
+      }
+      .container {
+        margin-top: 0;
+        max-width: 100%;
+        padding: 0;
+      }
+      .hero-banner, .kpi-card, .chart-card, .calendar-card, .table-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+        </div>
+        <span>Футзал • Достык Зал</span>
+      </div>
+
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <span class="nav-tag">Сезон 2026</span>
+        <button class="btn-print" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Печать отчета
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+      <div class="hero-info">
+        <h1>Расчет и график посещений футзала на 2026 год</h1>
+        <p>Полная сводка тренировок, финансовый расчет аренды спортзала «Достык» и календарное расписание тренировочных дней.</p>
+        
+        <div class="meta-pills">
+          <div class="meta-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span>Локация: Спорткомплекс «Достык»</span>
+          </div>
+          <div class="meta-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>Длительность: 2 часа на тренировку</span>
+          </div>
+          <div class="meta-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <span>Тариф: 33 000 ₸ за 2 часа (16 500 ₸ / час)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Metrics Cards -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          Итоговый бюджет
+        </div>
+        <div class="kpi-val">1 650 000 ₸</div>
+        <div class="kpi-sub">Общая стоимость аренды за сезон</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Всего тренировок
+        </div>
+        <div class="kpi-val">50 сессий</div>
+        <div class="kpi-sub">Период: Март — Ноябрь 2026</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Общее время в зале
+        </div>
+        <div class="kpi-val">100 часов</div>
+        <div class="kpi-sub">50 тренировок × 2 часа</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          Средняя нагрузка
+        </div>
+        <div class="kpi-val">5.5 зан./мес</div>
+        <div class="kpi-sub">Пик в октябре и ноябре (8 зан.)</div>
+      </div>
+    </section>
+
+    <!-- Visual Charts: Bar Chart of Sessions & Cumulative Budget -->
+    <section class="analytics-grid">
+      <div class="chart-card">
+        <div class="chart-head">
+          <h3>График тренировок по месяцам</h3>
+          <span>Количество сессий</span>
+        </div>
+        <div style="height: 220px; position: relative;">
+          <canvas id="sessionsChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <h3>Динамика бюджета аренды</h3>
+          <span>Нарастающий итог (₸)</span>
+        </div>
+        <div style="height: 220px; position: relative;">
+          <canvas id="budgetChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Calendar Component -->
+    <section class="calendar-card">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Календарь тренировок 2026
+      </div>
+
+      <!-- Month Tabs -->
+      <div class="month-tabs" id="monthTabs">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Calendar Grid & Details -->
+      <div class="month-overview">
+        <div>
+          <div class="cal-grid">
+            <div class="cal-day-header">Пн</div>
+            <div class="cal-day-header">Вт</div>
+            <div class="cal-day-header">Ср</div>
+            <div class="cal-day-header">Чт</div>
+            <div class="cal-day-header">Пт</div>
+            <div class="cal-day-header">Сб</div>
+            <div class="cal-day-header">Вс</div>
+          </div>
+          <div class="cal-grid" id="calendarDaysGrid" style="margin-top: 6px;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="month-details-sidebar" id="monthSidebar">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Comprehensive Monthly Table -->
+    <section class="table-card">
+      <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <div class="section-title" style="margin-bottom: 0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          Сводная таблица по месяцам
+        </div>
+        <span style="font-size: 13px; color: var(--text-muted);">Тариф: 33 000 ₸ за тренировку</span>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Месяц</th>
+            <th>Даты тренировок</th>
+            <th>Кол-во тренировок</th>
+            <th>Часы</th>
+            <th>Тариф за 2 ч</th>
+            <th>Сумма за месяц</th>
+            <th>Нарастающий итог</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- Rendered by JS -->
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <footer class="page-footer">
+    <div>График посещений футзала 2026 • Достык Зал • futzal.ica</div>
+    <div style="margin-top: 4px;">Общий бюджет: 1 650 000 ₸ • 50 тренировок • 100 часов</div>
+  </footer>
+
+  <!-- Simple Native Canvas Chart Renderer (Zero External Dependencies) -->
+  <script>
+    // Data definition exactly from the provided CSV
+    const FUTZAL_DATA = [
+      { id: 'feb', name: 'Февраль', year: 2026, monthIdx: 1, sessions: 0, cost: 0, days: [] },
+      { id: 'mar', name: 'Март', year: 2026, monthIdx: 2, sessions: 6, cost: 198000, days: [3, 5, 10, 12, 17, 19] },
+      { id: 'apr', name: 'Апрель', year: 2026, monthIdx: 3, sessions: 5, cost: 165000, days: [7, 9, 16, 21, 24] },
+      { id: 'may', name: 'Май', year: 2026, monthIdx: 4, sessions: 4, cost: 132000, days: [5, 12, 19, 26] },
+      { id: 'jun', name: 'Июнь', year: 2026, monthIdx: 5, sessions: 4, cost: 132000, days: [2, 9, 16, 23] },
+      { id: 'jul', name: 'Июль', year: 2026, monthIdx: 6, sessions: 4, cost: 132000, days: [7, 14, 21, 28] },
+      { id: 'aug', name: 'Август', year: 2026, monthIdx: 7, sessions: 4, cost: 132000, days: [4, 11, 13, 18, 20, 25], note: '4 тренировки по расчету (6 дат в графике)' },
+      { id: 'sep', name: 'Сентябрь', year: 2026, monthIdx: 8, sessions: 7, cost: 231000, days: [1, 3, 8, 15, 17], note: '7 тренировок по расчету' },
+      { id: 'oct', name: 'Октябрь', year: 2026, monthIdx: 9, sessions: 8, cost: 264000, days: [1, 8, 13, 15, 20, 22, 27, 29] },
+      { id: 'nov', name: 'Ноябрь', year: 2026, monthIdx: 10, sessions: 8, cost: 264000, days: [3, 5, 10, 12, 17, 19, 24, 26] }
+    ];
+
+    let activeMonthId = 'mar';
+
+    // 1. Render Table
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+      let cumulative = 0;
+      let totalSessions = 0;
+
+      FUTZAL_DATA.forEach(row => {
+        cumulative += row.cost;
+        totalSessions += row.sessions;
+        const hours = row.sessions * 2;
+        const daysText = row.days.length > 0 ? row.days.join(', ') : '—';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="badge-month">${row.name}</span></td>
+          <td style="color: #495057;">${daysText}</td>
+          <td><span class="pill-count">${row.sessions} ${row.sessions === 1 ? 'сессия' : (row.sessions >= 5 ? 'сессий' : 'сессии')}</span></td>
+          <td>${hours} ч.</td>
+          <td>33 000 ₸</td>
+          <td style="font-weight: 600;">${row.cost.toLocaleString('ru-RU')} ₸</td>
+          <td style="color: var(--text-muted);">${cumulative.toLocaleString('ru-RU')} ₸</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Total row
+      const trTotal = document.createElement('tr');
+      trTotal.className = 'total-row';
+      trTotal.innerHTML = `
+        <td>Итого (10 мес.)</td>
+        <td>—</td>
+        <td>${totalSessions} сессий</td>
+        <td>${totalSessions * 2} часов</td>
+        <td>—</td>
+        <td style="color: var(--accent-blue); font-size: 15px;">${cumulative.toLocaleString('ru-RU')} ₸</td>
+        <td>—</td>
+      `;
+      tbody.appendChild(trTotal);
+    }
+
+    // 2. Render Month Tabs & Calendar
+    function renderMonthTabs() {
+      const container = document.getElementById('monthTabs');
+      container.innerHTML = '';
+
+      FUTZAL_DATA.filter(m => m.id !== 'feb').forEach(m => {
+        const btn = document.createElement('button');
+        btn.className = `month-tab-btn ${m.id === activeMonthId ? 'active' : ''}`;
+        btn.innerText = `${m.name} (${m.sessions})`;
+        btn.onclick = () => selectMonth(m.id);
+        container.appendChild(btn);
+      });
+    }
+
+    function selectMonth(id) {
+      activeMonthId = id;
+      renderMonthTabs();
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const monthData = FUTZAL_DATA.find(m => m.id === activeMonthId);
+      if (!monthData) return;
+
+      const grid = document.getElementById('calendarDaysGrid');
+      grid.innerHTML = '';
+
+      const year = monthData.year;
+      const monthIdx = monthData.monthIdx;
+
+      const firstDay = new Date(year, monthIdx, 1);
+      const lastDay = new Date(year, monthIdx + 1, 0);
+      const daysInMonth = lastDay.getDate();
+
+      // In JS: Sunday is 0, Monday is 1... adjust to Monday=0
+      let startDayOfWeek = firstDay.getDay() - 1;
+      if (startDayOfWeek === -1) startDayOfWeek = 6;
+
+      // Empty lead cells
+      for (let i = 0; i < startDayOfWeek; i++) {
+        const empty = document.createElement('div');
+        empty.className = 'cal-cell empty';
+        grid.appendChild(empty);
+      }
+
+      // Day cells
+      for (let d = 1; d <= daysInMonth; d++) {
+        const cell = document.createElement('div');
+        const isSession = monthData.days.includes(d);
+
+        if (isSession) {
+          cell.className = 'cal-cell session';
+          cell.title = `${d} ${monthData.name}: Тренировка (2 часа, Достык зал)`;
+        } else {
+          cell.className = 'cal-cell regular';
+        }
+        cell.innerText = d;
+        grid.appendChild(cell);
+      }
+
+      // Sidebar Details
+      const sidebar = document.getElementById('monthSidebar');
+      sidebar.innerHTML = `
+        <div class="sidebar-title">${monthData.name} 2026</div>
+        <div class="sidebar-metric">
+          <span class="lbl">Тренировок:</span>
+          <span class="val">${monthData.sessions} сессий</span>
+        </div>
+        <div class="sidebar-metric">
+          <span class="lbl">Аренда зала:</span>
+          <span class="val">${(monthData.sessions * 2)} часов</span>
+        </div>
+        <div class="sidebar-metric">
+          <span class="lbl">Бюджет месяца:</span>
+          <span class="val" style="color: var(--accent-blue);">${monthData.cost.toLocaleString('ru-RU')} ₸</span>
+        </div>
+        ${monthData.note ? `<div style="font-size: 11.5px; color: var(--accent-amber); margin-top: 6px;">* ${monthData.note}</div>` : ''}
+
+        <div style="font-size: 12px; font-weight: 600; margin-top: 16px; color: var(--text-muted);">Даты тренировок:</div>
+        <div class="dates-tag-cloud">
+          ${monthData.days.map(d => `<span class="date-badge">${d} ${monthData.name.toLowerCase()}</span>`).join('')}
+        </div>
+      `;
+    }
+
+    // 3. Native Canvas Chart Implementation
+    function drawCharts() {
+      // Sessions Bar Chart
+      const sCanvas = document.getElementById('sessionsChart');
+      const sCtx = sCanvas.getContext('2d');
+      const sDpr = window.devicePixelRatio || 1;
+      const sRect = sCanvas.getBoundingClientRect();
+      sCanvas.width = sRect.width * sDpr;
+      sCanvas.height = sRect.height * sDpr;
+      sCtx.scale(sDpr, sDpr);
+
+      const sW = sRect.width;
+      const sH = sRect.height;
+      const monthsActive = FUTZAL_DATA.filter(m => m.id !== 'feb');
+
+      const barW = (sW - 60) / monthsActive.length;
+      const maxSessions = 10;
+
+      sCtx.clearRect(0, 0, sW, sH);
+
+      // Grid lines
+      sCtx.strokeStyle = '#e9ecef';
+      sCtx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = 20 + (sH - 50) * (i / 4);
+        sCtx.beginPath();
+        sCtx.moveTo(40, y);
+        sCtx.lineTo(sW - 10, y);
+        sCtx.stroke();
+
+        sCtx.fillStyle = '#6c757d';
+        sCtx.font = '10px Inter, sans-serif';
+        sCtx.fillText((10 - i * 2.5).toFixed(0), 10, y + 3);
+      }
+
+      // Draw Bars
+      monthsActive.forEach((m, idx) => {
+        const x = 45 + idx * barW + barW * 0.15;
+        const bWidth = barW * 0.7;
+        const barHeight = (m.sessions / maxSessions) * (sH - 50);
+        const y = sH - 30 - barHeight;
+
+        // Bar
+        sCtx.fillStyle = '#0d6efd';
+        sCtx.beginPath();
+        sCtx.roundRect(x, y, bWidth, barHeight, [4, 4, 0, 0]);
+        sCtx.fill();
+
+        // Label count
+        sCtx.fillStyle = '#1a1f2c';
+        sCtx.font = 'bold 11px Inter, sans-serif';
+        sCtx.textAlign = 'center';
+        sCtx.fillText(m.sessions, x + bWidth / 2, y - 6);
+
+        // Label Month
+        sCtx.fillStyle = '#6c757d';
+        sCtx.font = '10px Inter, sans-serif';
+        sCtx.fillText(m.name.slice(0, 3), x + bWidth / 2, sH - 12);
+      });
+
+      // Budget Cumulative Line Chart
+      const bCanvas = document.getElementById('budgetChart');
+      const bCtx = bCanvas.getContext('2d');
+      const bRect = bCanvas.getBoundingClientRect();
+      bCanvas.width = bRect.width * sDpr;
+      bCanvas.height = bRect.height * sDpr;
+      bCtx.scale(sDpr, sDpr);
+
+      const bW = bRect.width;
+      const bH = bRect.height;
+      bCtx.clearRect(0, 0, bW, bH);
+
+      // Grid
+      bCtx.strokeStyle = '#e9ecef';
+      bCtx.lineWidth = 1;
+      for (let i = 0; i <= 3; i++) {
+        const y = 20 + (bH - 50) * (i / 3);
+        bCtx.beginPath();
+        bCtx.moveTo(50, y);
+        bCtx.lineTo(bW - 10, y);
+        bCtx.stroke();
+
+        bCtx.fillStyle = '#6c757d';
+        bCtx.font = '10px Inter, sans-serif';
+        const val = ((1.65 * (3 - i) / 3)).toFixed(1);
+        bCtx.fillText(val + 'M ₸', 5, y + 3);
+      }
+
+      let cum = 0;
+      const points = [];
+      monthsActive.forEach((m, idx) => {
+        cum += m.cost;
+        const x = 60 + idx * ((bW - 80) / (monthsActive.length - 1));
+        const y = bH - 30 - (cum / 1650000) * (bH - 50);
+        points.push({ x, y, cum, name: m.name });
+      });
+
+      // Fill Area
+      bCtx.beginPath();
+      bCtx.moveTo(points[0].x, bH - 30);
+      points.forEach(p => bCtx.lineTo(p.x, p.y));
+      bCtx.lineTo(points[points.length - 1].x, bH - 30);
+      bCtx.closePath();
+      bCtx.fillStyle = 'rgba(13, 110, 253, 0.08)';
+      bCtx.fill();
+
+      // Stroke Line
+      bCtx.beginPath();
+      points.forEach((p, idx) => {
+        if (idx === 0) bCtx.moveTo(p.x, p.y);
+        else bCtx.lineTo(p.x, p.y);
+      });
+      bCtx.strokeStyle = '#0d6efd';
+      bCtx.lineWidth = 2.5;
+      bCtx.stroke();
+
+      // Points
+      points.forEach(p => {
+        bCtx.beginPath();
+        bCtx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        bCtx.fillStyle = '#ffffff';
+        bCtx.fill();
+        bCtx.strokeStyle = '#0d6efd';
+        bCtx.lineWidth = 2;
+        bCtx.stroke();
+
+        bCtx.fillStyle = '#6c757d';
+        bCtx.font = '10px Inter, sans-serif';
+        bCtx.textAlign = 'center';
+        bCtx.fillText(p.name.slice(0, 3), p.x, bH - 12);
+      });
+    }
+
+    // Init
+    renderTable();
+    renderMonthTabs();
+    renderCalendar();
+    window.addEventListener('load', drawCharts);
+    window.addEventListener('resize', drawCharts);
+  </script>
+</body>
+</html>
