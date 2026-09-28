@@ -2,10 +2,12 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>AI Studio • Интеллектуальный ассистент без регистрации</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <style>
     :root {
       /* Apple & Microsoft Fluent 2 Design Tokens */
@@ -105,6 +107,7 @@
       -moz-osx-font-smoothing: grayscale;
       line-height: 1.5;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       display: flex;
     }
@@ -114,6 +117,7 @@
       display: flex;
       width: 100vw;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       position: relative;
     }
@@ -245,6 +249,7 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       background: var(--bg-page);
       position: relative;
@@ -568,10 +573,18 @@
       margin-bottom: 4px;
     }
 
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 10px 0;
+      border-radius: var(--radius-sm);
+    }
+
     .bubble table {
       width: 100%;
       border-collapse: collapse;
-      margin: 10px 0;
+      margin: 0;
       font-size: 13px;
     }
 
@@ -807,11 +820,12 @@
       left: 0;
       right: 0;
       background: linear-gradient(180deg, transparent 0%, var(--bg-page) 25%);
-      padding: 20px 20px 24px;
+      padding: 16px 20px calc(20px + env(safe-area-inset-bottom, 0px));
       display: flex;
       flex-direction: column;
       align-items: center;
       z-index: 40;
+      transition: bottom 0.15s ease-out;
     }
 
     .input-box {
@@ -822,15 +836,133 @@
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-md);
       display: flex;
-      align-items: flex-end;
-      padding: 10px 14px;
-      gap: 10px;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      flex-direction: column;
+      padding: 8px 12px;
+      gap: 6px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
     .input-box:focus-within {
       border-color: var(--accent-blue);
       box-shadow: 0 0 0 2px var(--accent-blue-subtle), var(--shadow-md);
+    }
+
+    .input-box.drag-active {
+      border-color: var(--accent-blue) !important;
+      box-shadow: 0 0 0 2px var(--accent-blue-subtle), var(--shadow-lg) !important;
+      background: var(--bg-surface-secondary) !important;
+    }
+
+    .input-row {
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .btn-attach {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-attach:hover {
+      background: var(--bg-subtle);
+      color: var(--accent-blue);
+    }
+
+    .attachments-tray {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 4px 2px 8px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .attachment-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px 4px 10px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      color: var(--text-primary);
+      max-width: 240px;
+      transition: all 0.2s ease;
+    }
+
+    .attachment-chip .chip-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 130px;
+    }
+
+    .attachment-chip .chip-size {
+      color: var(--text-tertiary);
+      font-size: 11px;
+    }
+
+    .attachment-chip .chip-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      object-fit: cover;
+    }
+
+    .btn-remove-attachment {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 2px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-remove-attachment:hover {
+      color: #ff3b30;
+      background: rgba(255, 59, 48, 0.1);
+    }
+
+    .user-attached-files {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .user-file-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .user-file-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      object-fit: cover;
     }
 
     .input-textarea {
@@ -1119,15 +1251,44 @@
       opacity: 1;
     }
 
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 95;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     /* Responsive Breakdown */
     @media (max-width: 768px) {
+      .sidebar-overlay {
+        display: block;
+      }
+
       .app-sidebar {
-        position: absolute;
+        position: fixed;
         top: 0;
         bottom: 0;
         left: 0;
+        height: 100vh;
+        height: 100dvh;
         transform: translateX(-100%);
         box-shadow: var(--shadow-lg);
+        z-index: 100;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
       }
 
       .app-sidebar.open {
@@ -1136,6 +1297,32 @@
 
       .mobile-menu-btn {
         display: flex;
+        min-width: 40px;
+        min-height: 40px;
+      }
+
+      .main-nav {
+        padding: 0 12px;
+      }
+
+      .btn-icon-nav {
+        min-width: 40px;
+        min-height: 40px;
+      }
+
+      .btn-send, .btn-attach {
+        min-width: 40px;
+        min-height: 40px;
+      }
+
+      .input-textarea,
+      .form-input,
+      .model-select-input,
+      select,
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        font-size: 16px !important; /* Prevents auto-zoom on iOS Safari */
       }
 
       .chips-grid {
@@ -1143,15 +1330,53 @@
       }
 
       .welcome-title {
-        font-size: 26px;
+        font-size: 24px;
+      }
+
+      .welcome-container {
+        padding: 24px 12px 100px;
       }
 
       .input-bar-container {
-        padding: 12px 14px 18px;
+        padding: 8px 12px calc(14px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .input-meta-hint {
+        display: none;
       }
 
       .bubble {
-        max-width: 92%;
+        max-width: 94%;
+        padding: 10px 14px;
+        font-size: 14px;
+      }
+
+      .chart-card, .diagram-card, .csv-card {
+        max-width: 100%;
+      }
+
+      .chart-canvas-wrapper {
+        height: 240px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .auth-btn-text, #authBtnText {
+        display: none;
+      }
+
+      .btn-auth-trigger {
+        padding: 8px;
+        border-radius: 50%;
+      }
+
+      .model-selector {
+        max-width: 135px;
+      }
+
+      .model-selector select {
+        font-size: 12px;
+        padding-right: 20px;
       }
     }
   </style>
@@ -1195,6 +1420,7 @@
         <div>Войдите, чтобы синхронизировать диалоги на всех устройствах.</div>
       </div>
     </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <!-- Main Content Area -->
     <main class="app-main">
@@ -1299,29 +1525,38 @@
 
       <!-- Bottom Sticky Input Bar -->
       <div class="input-bar-container">
-        <div class="input-box">
-          <textarea 
-            id="messageInput" 
-            class="input-textarea" 
-            placeholder="Напишите ваш запрос... (например: помоги с графиком посещений)"
-            rows="1"
-            onkeydown="handleInputKeydown(event)"
-            oninput="autoResizeTextarea(this)"
-          ></textarea>
-          <button class="btn-send" id="btnSend" onclick="handleSendOrAbort()" title="Отправить сообщение">
-            <svg id="iconSend" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-            <svg id="iconStop" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
-              <rect x="5" y="5" width="14" height="14" rx="2"></rect>
-            </svg>
-          </button>
+        <div class="input-box" id="inputBox">
+          <div class="attachments-tray" id="attachmentsTray" style="display: none;"></div>
+          <div class="input-row">
+            <button class="btn-attach" id="btnAttach" type="button" onclick="document.getElementById('fileInput').click()" title="Прикрепить файл (таблицы, документы, код, изображения)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3.5 3.5 0 0 1 4.95 4.95l-9.2 9.19a1.5 1.5 0 0 1-2.12-2.12l8.49-8.48"></path>
+              </svg>
+            </button>
+            <input type="file" id="fileInput" multiple hidden accept=".txt,.md,.json,.py,.js,.ts,.html,.css,.csv,.xlsx,.xls,.pdf,image/png,image/jpeg,image/webp" onchange="handleFileSelect(this.files)">
+            <textarea 
+              id="messageInput" 
+              class="input-textarea" 
+              placeholder="Напишите ваш запрос... (или прикрепите файл для анализа)"
+              rows="1"
+              onkeydown="handleInputKeydown(event)"
+              oninput="autoResizeTextarea(this)"
+            ></textarea>
+            <button class="btn-send" id="btnSend" onclick="handleSendOrAbort()" title="Отправить сообщение">
+              <svg id="iconSend" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+              <svg id="iconStop" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                <rect x="5" y="5" width="14" height="14" rx="2"></rect>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div class="input-meta-hint">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-          <span>Shift + Enter — перенос строки. Мгновенная доставка потоком (SSE) без ожидания.</span>
+          <span>Shift + Enter — перенос строки. Поддерживаются PDF, Excel, CSV, код и изображения.</span>
         </div>
       </div>
 
@@ -1477,6 +1712,90 @@
         renderHistoryList();
         renderActiveChat();
       }
+
+      if (window.pdfjsLib) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      }
+      initDragAndDropAndPaste();
+      initMobileGestures();
+    }
+
+    function initDragAndDropAndPaste() {
+      ['dragenter', 'dragover'].forEach(eventName => {
+        window.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const box = document.getElementById('inputBox');
+          if (box) box.classList.add('drag-active');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        window.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const box = document.getElementById('inputBox');
+          if (box) box.classList.remove('drag-active');
+        }, false);
+      });
+
+      window.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const dt = e.dataTransfer;
+        if (dt && dt.files && dt.files.length > 0) {
+          handleFileSelect(dt.files);
+        }
+      });
+
+      window.addEventListener('paste', (e) => {
+        if (!e.clipboardData || !e.clipboardData.items) return;
+        const items = e.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].kind === 'file') {
+            const file = items[i].getAsFile();
+            if (file) {
+              processAndAddFile(file);
+            }
+          }
+        }
+      });
+    }
+
+    function initMobileGestures() {
+      let touchStartX = 0;
+      let touchStartY = 0;
+      const sidebar = document.getElementById('appSidebar');
+
+      // Swipe gesture listeners
+      window.addEventListener('touchstart', e => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      window.addEventListener('touchend', e => {
+        const diffX = e.changedTouches[0].clientX - touchStartX;
+        const diffY = Math.abs(e.changedTouches[0].clientY - touchStartY);
+        
+        // Edge swipe right to open (started within 35px from left edge)
+        if (touchStartX < 35 && diffX > 60 && diffY < 50 && sidebar && !sidebar.classList.contains('open')) {
+          toggleSidebar();
+        }
+        // Swipe left on open sidebar to close
+        else if (sidebar && sidebar.classList.contains('open') && -diffX > 50) {
+          toggleSidebar();
+        }
+      }, { passive: true });
+
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+          const kbInset = Math.max(0, window.innerHeight - window.visualViewport.height);
+          const inputContainer = document.querySelector('.input-bar-container');
+          if (inputContainer) {
+            inputContainer.style.bottom = kbInset > 0 ? `${kbInset}px` : '0px';
+          }
+        });
+      }
     }
 
     function changeModel(val) {
@@ -1509,11 +1828,39 @@
         renderHistoryList();
         renderActiveChat();
       }
+
+      // Close mobile drawer if opened
+      const sidebar = document.getElementById('appSidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (window.innerWidth <= 768 && sidebar) {
+        sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
+      }
     }
 
     function saveChats() {
-      localStorage.setItem('ai_duo_chats', JSON.stringify(chats));
-      localStorage.setItem('ai_duo_active_chat', currentChatId);
+      try {
+        localStorage.setItem('ai_duo_chats', JSON.stringify(chats));
+        localStorage.setItem('ai_duo_active_chat', currentChatId);
+      } catch (e) {
+        console.warn('LocalStorage quota warning:', e);
+        // Clear cached dataUrls from messages if quota exceeded
+        chats.forEach(c => {
+          c.messages.forEach(m => {
+            if (m.files) {
+              m.files.forEach(f => { f.dataUrl = null; });
+            }
+          });
+        });
+        try {
+          localStorage.setItem('ai_duo_chats', JSON.stringify(chats));
+        } catch (e2) {
+          if (chats.length > 5) {
+            chats = chats.slice(0, 5);
+            try { localStorage.setItem('ai_duo_chats', JSON.stringify(chats)); } catch(e3) {}
+          }
+        }
+      }
     }
 
     function getActiveChat() {
@@ -1528,8 +1875,10 @@
 
       // Close mobile drawer if opened
       const sidebar = document.getElementById('appSidebar');
+      const overlay = document.getElementById('sidebarOverlay');
       if (window.innerWidth <= 768 && sidebar) {
         sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
       }
     }
 
@@ -1609,8 +1958,24 @@
             </div>
           `;
         } else {
+          let filesHtml = '';
+          if (msg.files && msg.files.length > 0) {
+            filesHtml = '<div class="user-attached-files">' + msg.files.map(f => {
+              if (f.type === 'image' && f.dataUrl) {
+                return `<div class="user-file-chip img-chip"><img src="${f.dataUrl}" alt="" class="user-file-thumb"><span>${escapeHtml(f.name)}</span></div>`;
+              }
+              let fIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>`;
+              if (f.type === 'spreadsheet') {
+                fIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+              } else if (f.type === 'pdf') {
+                fIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>`;
+              }
+              return `<div class="user-file-chip">${fIcon}<span>${escapeHtml(f.name)} (${f.size || ''})</span></div>`;
+            }).join('') + '</div>';
+          }
+          const textHtml = msg.content ? escapeHtml(stripEmoji(msg.content)).replace(/\n/g, '<br>') : '';
           row.innerHTML = `
-            <div class="bubble">${escapeHtml(stripEmoji(msg.content)).replace(/\n/g, '<br>')}</div>
+            <div class="bubble">${filesHtml}${textHtml}</div>
           `;
         }
 
@@ -1662,28 +2027,292 @@
       }
     }
 
+    // -------------------------------------------------------------
+    // File Upload & Attachment Processing Subsystem
+    // -------------------------------------------------------------
+    let attachedFiles = [];
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    async function handleFileSelect(fileList) {
+      if (!fileList || fileList.length === 0) return;
+      for (let i = 0; i < fileList.length; i++) {
+        await processAndAddFile(fileList[i]);
+      }
+      const fileInput = document.getElementById('fileInput');
+      if (fileInput) fileInput.value = '';
+    }
+
+    async function processAndAddFile(file) {
+      if (!file) return;
+
+      if (attachedFiles.length >= 5) {
+        showToast('Максимум 5 прикрепленных файлов');
+        return;
+      }
+
+      const isImg = file.type.startsWith('image/');
+      const maxBytes = isImg ? 6 * 1024 * 1024 : 5 * 1024 * 1024;
+      if (file.size > maxBytes) {
+        showToast(`Файл ${file.name} превышает лимит (${isImg ? '6' : '5'} МБ)`);
+        return;
+      }
+
+      showToast('Обработка файла ' + file.name + '...');
+
+      try {
+        const ext = file.name.split('.').pop().toLowerCase();
+        const allowedTextExts = ['txt', 'md', 'json', 'py', 'js', 'ts', 'html', 'css', 'csv', 'xml', 'yaml', 'yml', 'sql', 'log', 'sh', 'c', 'cpp', 'h', 'cs', 'java', 'go', 'rs', 'rb', 'php', 'bat', 'ps1', 'r', 'env', 'ini', 'conf'];
+
+        if (!isImg && ext !== 'xlsx' && ext !== 'xls' && ext !== 'pdf' && !allowedTextExts.includes(ext)) {
+          showToast(`Формат .${ext} не поддерживается для анализа (поддерживаются PDF, Excel, CSV, код, текст и изображения)`);
+          return;
+        }
+
+        let fileType = 'text';
+        let textData = '';
+        let dataUrl = null;
+
+        if (isImg) {
+          fileType = 'image';
+          dataUrl = await parseImageFile(file);
+        } else if (ext === 'xlsx' || ext === 'xls') {
+          fileType = 'spreadsheet';
+          textData = await parseExcelFile(file);
+        } else if (ext === 'pdf') {
+          fileType = 'pdf';
+          textData = await parsePdfFile(file);
+        } else {
+          fileType = 'code';
+          textData = await parseTextFile(file);
+        }
+
+        const fileObj = {
+          id: 'att_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+          name: file.name,
+          size: formatFileSize(file.size),
+          type: fileType,
+          ext: ext,
+          dataUrl: dataUrl,
+          textData: textData
+        };
+
+        attachedFiles.push(fileObj);
+        renderAttachmentsTray();
+        showToast('Файл добавлен: ' + file.name);
+      } catch (err) {
+        console.error('File parsing error:', err);
+        showToast('Не удалось обработать файл ' + file.name);
+      }
+    }
+
+    function removeAttachment(id) {
+      attachedFiles = attachedFiles.filter(f => f.id !== id);
+      renderAttachmentsTray();
+    }
+
+    function renderAttachmentsTray() {
+      const tray = document.getElementById('attachmentsTray');
+      if (!tray) return;
+
+      if (attachedFiles.length === 0) {
+        tray.style.display = 'none';
+        tray.innerHTML = '';
+        return;
+      }
+
+      tray.style.display = 'flex';
+      tray.innerHTML = attachedFiles.map(f => {
+        let iconHtml = '';
+        if (f.type === 'image' && f.dataUrl) {
+          iconHtml = `<img src="${f.dataUrl}" alt="" class="chip-thumb">`;
+        } else if (f.type === 'spreadsheet') {
+          iconHtml = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+        } else if (f.type === 'pdf') {
+          iconHtml = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>`;
+        } else {
+          iconHtml = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>`;
+        }
+
+        return `
+          <div class="attachment-chip" id="${f.id}">
+            ${iconHtml}
+            <span class="chip-name" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</span>
+            <span class="chip-size">${f.size}</span>
+            <button class="btn-remove-attachment" type="button" onclick="removeAttachment('${f.id}')" title="Удалить">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function parseTextFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          let text = reader.result || '';
+          if (text.length > 15000) {
+            text = text.slice(0, 15000) + '\n... [Обрезано: показаны первые 15 000 символов]';
+          }
+          resolve(text);
+        };
+        reader.onerror = reject;
+        reader.readAsText(file, 'utf-8');
+      });
+    }
+
+    function parseExcelFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            if (!window.XLSX) {
+              resolve('Библиотека для чтения таблиц Excel недоступна.');
+              return;
+            }
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            let allSheetsText = '';
+            workbook.SheetNames.slice(0, 3).forEach(sheetName => {
+              const sheet = workbook.Sheets[sheetName];
+              const csv = XLSX.utils.sheet_to_csv(sheet);
+              allSheetsText += `--- Лист: ${sheetName} ---\n${csv}\n\n`;
+            });
+            if (allSheetsText.length > 15000) {
+              allSheetsText = allSheetsText.slice(0, 15000) + '\n... [Обрезано: показаны первые 15 000 символов таблицы]';
+            }
+            resolve(allSheetsText.trim() || 'Таблица пуста.');
+          } catch(err) {
+            console.warn('Excel parse error:', err);
+            reject(err);
+          }
+        };
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    function parsePdfFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            if (!window.pdfjsLib) {
+              resolve('Библиотека для чтения PDF недоступна.');
+              return;
+            }
+            const typedarray = new Uint8Array(e.target.result);
+            const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+            let fullText = '';
+            const maxPages = Math.min(pdf.numPages, 10);
+            for (let i = 1; i <= maxPages; i++) {
+              const page = await pdf.getPage(i);
+              const textContent = await page.getTextContent();
+              const pageText = textContent.items.map(item => item.str).join(' ');
+              if (pageText.trim()) {
+                fullText += `[Страница ${i}]:\n${pageText}\n\n`;
+              }
+              if (fullText.length > 15000) break;
+            }
+            if (!fullText.trim()) {
+              resolve('В документе PDF не обнаружен текстовый слой (возможно, файл содержит отсканированное изображение).');
+            } else {
+              if (fullText.length > 15000) {
+                fullText = fullText.slice(0, 15000) + '\n... [Обрезано: показаны первые 10 страниц / 15 000 символов]';
+              }
+              resolve(fullText.trim());
+            }
+          } catch (err) {
+            console.warn('PDF parse error:', err);
+            reject(err);
+          }
+        };
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    function parseImageFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const maxDimension = 1400;
+            let width = img.width;
+            let height = img.height;
+            if (width <= maxDimension && height <= maxDimension && file.size < 600000) {
+              resolve(e.target.result);
+              return;
+            }
+            if (width > height) {
+              if (width > maxDimension) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              }
+            } else {
+              if (height > maxDimension) {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.82));
+          };
+          img.onerror = () => resolve(e.target.result);
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
     async function sendMessage() {
       const input = document.getElementById('messageInput');
       const text = input.value.trim();
-      if (!text || isGenerating) return;
+      const filesToSend = [...attachedFiles];
+
+      if ((!text && filesToSend.length === 0) || isGenerating) return;
 
       const genId = ++currentGenerationId;
       const chat = getActiveChat();
 
-      // Add user message
-      chat.messages.push({
+      // Clear input and attachments
+      input.value = '';
+      autoResizeTextarea(input);
+      attachedFiles = [];
+      renderAttachmentsTray();
+
+      // Store in chat.messages (lightweight metadata only for localStorage safety)
+      const userMessage = {
         role: 'user',
         content: text,
+        files: filesToSend.map(f => ({
+          name: f.name,
+          size: f.size,
+          type: f.type,
+          dataUrl: (f.type === 'image' && f.dataUrl && f.dataUrl.length < 250000) ? f.dataUrl : null
+        })),
         timestamp: Date.now()
-      });
+      };
+
+      chat.messages.push(userMessage);
 
       // Update chat title if first message
       if (chat.messages.length === 1) {
-        chat.title = text.slice(0, 32) + (text.length > 32 ? '...' : '');
+        const titleSource = text || (filesToSend[0] ? filesToSend[0].name : 'Новый диалог');
+        chat.title = titleSource.slice(0, 32) + (titleSource.length > 32 ? '...' : '');
       }
 
-      input.value = '';
-      autoResizeTextarea(input);
       saveChats();
       renderHistoryList();
       renderActiveChat();
@@ -1797,21 +2426,68 @@ gantt
 3. Для табличных данных используй стандартные Markdown таблицы или блок \`\`\`csv.
 Перед графиком напиши одно краткое пояснение, а затем сразу выводи блок визуализации.`.trim();
 
+        const fileInstruction = filesToSend.length > 0
+          ? '\n\nПользователь прикрепил файл(ы). Внимательно изучи их данные, выдели главные показатели и ответь на вопрос.'
+          : '';
+
         const systemPrompt = 'Ты полезный технический ассистент AI Studio. Отвечай на русском языке четко и структурированно. ' 
           + brevityInstruction + '\n\n'
-          + visualInstruction + '\n\n'
+          + visualInstruction + fileInstruction + '\n\n'
           + 'СТРОГО БЕЗ ЭМОДЗИ (ни в тексте, ни в списках, ни в подписях графиков).';
 
         const apiMessages = [
           { role: 'system', content: systemPrompt }
         ];
 
-        const contextHistory = chat.messages.slice(-6);
+        const contextHistory = chat.messages.slice(-6, -1);
         contextHistory.forEach(m => {
-          apiMessages.push({ role: m.role, content: m.content });
+          if (m.content) {
+            apiMessages.push({ role: m.role, content: m.content });
+          }
         });
 
+        // Build active user prompt with attached files
+        let promptWithFiles = '';
+        let attachedImages = [];
+
+        filesToSend.forEach(f => {
+          if (f.type === 'image') {
+            if (f.dataUrl) attachedImages.push(f.dataUrl);
+          } else if (f.textData) {
+            const langTag = f.type === 'spreadsheet' ? 'csv' : (f.ext || 'text');
+            promptWithFiles += `[Прикреплён файл: ${f.name} (${f.size})]\n\`\`\`${langTag}\n${f.textData}\n\`\`\`\n\n`;
+          }
+        });
+
+        if (text) {
+          promptWithFiles += text;
+        } else if (attachedImages.length > 0) {
+          promptWithFiles += 'Проанализируй прикрепленное изображение и подробно опиши его содержание.';
+        } else {
+          promptWithFiles += 'Проанализируй прикрепленный файл и предоставь краткую сводку, ключевые данные и выводы.';
+        }
+
         const isGroq = (currentProvider === 'groq' || currentModel === 'groq-llama') && groqApiKey;
+        const hasImages = attachedImages.length > 0;
+
+        if (hasImages) {
+          apiMessages.push({
+            role: 'user',
+            content: [
+              { type: 'text', text: promptWithFiles },
+              ...attachedImages.map(url => ({
+                type: 'image_url',
+                image_url: { url: url }
+              }))
+            ]
+          });
+        } else {
+          apiMessages.push({
+            role: 'user',
+            content: promptWithFiles
+          });
+        }
+
         const endpoint = isGroq 
           ? 'https://api.groq.com/openai/v1/chat/completions' 
           : 'https://text.pollinations.ai/openai/chat/completions';
@@ -1820,8 +2496,8 @@ gantt
         if (isGroq) headers['Authorization'] = 'Bearer ' + groqApiKey;
 
         const targetModel = isGroq 
-          ? 'llama-3.3-70b-versatile' 
-          : (currentModel === 'deepseek' ? 'deepseek' : 'openai-fast');
+          ? (hasImages ? 'llama-3.2-11b-vision-preview' : 'llama-3.3-70b-versatile')
+          : (hasImages ? 'openai' : (currentModel === 'deepseek' ? 'deepseek' : 'openai-fast'));
 
         const response = await fetch(endpoint, {
           method: 'POST',
@@ -2052,14 +2728,14 @@ gantt
         const rows = match.trim().split('\n');
         if (rows.length < 2) return match;
 
-        let tableHtml = '<table>';
+        let tableHtml = '<div class="table-scroll"><table>';
         rows.forEach((row, i) => {
           if (row.includes('---')) return; // skip divider
           const cells = row.split('|').filter((c, idx, arr) => idx > 0 && idx < arr.length - 1);
           const tag = i === 0 ? 'th' : 'td';
           tableHtml += '<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>';
         });
-        tableHtml += '</table>';
+        tableHtml += '</table></div>';
         return tableHtml;
       });
 
@@ -2205,14 +2881,15 @@ gantt
                   </span>
                   <button class="btn-chart-action" onclick="downloadCsv('${encodeURIComponent(rawCode)}')">Скачать CSV</button>
                 </div>
-                <table>
+                <div class="table-scroll">
+                  <table>
             `;
             csvLines.forEach((line, rowIdx) => {
               const cells = line.split(',').map(c => c.trim().replace(/^["']|["']$/g, ''));
               const tag = rowIdx === 0 ? 'th' : 'td';
               csvTableHtml += '<tr>' + cells.map(c => `<${tag}>${escapeHtml(c)}</${tag}>`).join('') + '</tr>';
             });
-            csvTableHtml += '</table></div>';
+            csvTableHtml += '</table></div></div>';
             formatted = formatted.replace(token, csvTableHtml);
             return;
           }
@@ -2590,7 +3267,9 @@ gantt
     // -------------------------------------------------------------
     function toggleSidebar() {
       const sidebar = document.getElementById('appSidebar');
-      sidebar.classList.toggle('open');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (sidebar) sidebar.classList.toggle('open');
+      if (overlay) overlay.classList.toggle('active');
     }
 
     function toggleTheme() {
