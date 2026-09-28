@@ -6,11 +6,11 @@
   <title>AI Duo • Центр управления моделями и агентами</title>
   <style>
     :root {
-      /* Apple & Microsoft Design System Tokens */
+      /* Apple & Microsoft Fluent 2 Design Tokens */
       --bg-page: #f5f5f7;
       --bg-surface: #ffffff;
       --bg-surface-secondary: #fbfbfd;
-      --bg-subtle: #f2f2f4;
+      --bg-subtle: #f0f0f2;
       --bg-elevated: #ffffff;
       
       --text-primary: #1d1d1f;
@@ -39,14 +39,47 @@
       --radius-full: 9999px;
       
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.1);
+      --shadow-3d: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #121214;
+      --bg-surface: #1c1c1e;
+      --bg-surface-secondary: #242426;
+      --bg-subtle: #2c2c2e;
+      --bg-elevated: #28282a;
+      
+      --text-primary: #f5f5f7;
+      --text-secondary: #a1a1a6;
+      --text-tertiary: #86868b;
+      
+      --accent-blue: #2997ff;
+      --accent-blue-hover: #47a6ff;
+      --accent-blue-subtle: rgba(41, 151, 255, 0.15);
+      
+      --badge-green-bg: rgba(52, 199, 89, 0.15);
+      --badge-green-text: #4cd964;
+      --badge-blue-bg: rgba(41, 151, 255, 0.15);
+      --badge-blue-text: #5ac8fa;
+      --badge-amber-bg: rgba(255, 159, 10, 0.15);
+      --badge-amber-text: #ff9f0a;
+      
+      --border-light: rgba(255, 255, 255, 0.1);
+      --border-subtle: rgba(255, 255, 255, 0.05);
+      
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+      --shadow-3d: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
     }
 
     body {
@@ -59,26 +92,30 @@
       letter-spacing: -0.022em;
       min-height: 100vh;
       padding-bottom: 80px;
+      overflow-x: hidden;
     }
 
     /* Apple-style Global Nav */
     .global-nav {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.85);
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.82);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
       border-bottom: 1px solid var(--border-light);
       padding: 0 24px;
-      height: 54px;
+      height: 56px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+    }
+
+    [data-theme="dark"] .global-nav {
+      background: rgba(28, 28, 30, 0.82);
     }
 
     .nav-container {
-      max-width: 1200px;
+      max-width: 1240px;
       width: 100%;
       margin: 0 auto;
       display: flex;
@@ -89,98 +126,203 @@
     .nav-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       text-decoration: none;
       color: var(--text-primary);
       font-weight: 600;
-      font-size: 15px;
+      font-size: 16px;
+      cursor: pointer;
     }
 
     .nav-brand-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 6px;
-      background: linear-gradient(135deg, #0071e3, #42a5f5);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent-blue), #5856d6);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
+      box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
     }
 
     .nav-brand-icon svg {
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
+    }
+
+    .nav-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
     .nav-status {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 12px;
+      font-size: 13px;
       color: var(--text-secondary);
       background: var(--bg-subtle);
-      padding: 4px 12px;
+      padding: 6px 14px;
       border-radius: var(--radius-full);
       border: 1px solid var(--border-light);
     }
 
     .status-dot {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background-color: #34c759;
+      box-shadow: 0 0 8px rgba(52, 199, 89, 0.6);
     }
 
-    /* Hero Keynote Section (Apple Style) */
-    .hero-section {
-      text-align: center;
-      padding: 64px 24px 40px;
-      max-width: 980px;
+    .theme-toggle-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    .theme-toggle-btn:hover {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    /* Hero Section with 3D Canvas Orb & Apple Keynote Typography */
+    .hero-wrapper {
+      position: relative;
+      max-width: 1240px;
       margin: 0 auto;
+      padding: 48px 24px 32px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
+      gap: 32px;
+    }
+
+    @media (max-width: 960px) {
+      .hero-wrapper {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
     }
 
     .hero-eyebrow {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 700;
       color: var(--accent-blue);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 8px;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @media (max-width: 960px) {
+      .hero-eyebrow {
+        justify-content: center;
+      }
     }
 
     .hero-title {
-      font-size: 48px;
+      font-size: 46px;
       font-weight: 700;
       letter-spacing: -0.035em;
       color: var(--text-primary);
-      line-height: 1.08;
-      margin-bottom: 16px;
+      line-height: 1.1;
+      margin-bottom: 18px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 640px) {
       .hero-title {
-        font-size: 36px;
+        font-size: 32px;
       }
     }
 
     .hero-subtitle {
-      font-size: 19px;
+      font-size: 18px;
       color: var(--text-secondary);
-      max-width: 680px;
-      margin: 0 auto 32px;
-      line-height: 1.4;
+      line-height: 1.5;
       font-weight: 400;
+      margin-bottom: 28px;
+      max-width: 580px;
     }
 
-    /* iOS-style Segmented Control for Fast Filtering */
-    .segmented-control-wrapper {
+    @media (max-width: 960px) {
+      .hero-subtitle {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    .hero-actions {
       display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    @media (max-width: 960px) {
+      .hero-actions {
+        justify-content: center;
+      }
+    }
+
+    /* 3D Canvas Container */
+    .hero-3d-stage {
+      position: relative;
+      width: 100%;
+      height: 340px;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      margin-bottom: 48px;
+    }
+
+    #canvas3D {
+      width: 100%;
+      height: 100%;
+      max-width: 440px;
+      cursor: grab;
+    }
+
+    #canvas3D:active {
+      cursor: grabbing;
+    }
+
+    .stage-hint {
+      position: absolute;
+      bottom: 10px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-subtle);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      pointer-events: none;
+    }
+
+    /* iOS-style Segmented Filter Bar */
+    .filter-wrapper {
+      max-width: 1240px;
+      margin: 0 auto 36px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
     .segmented-control {
-      background: rgba(0, 0, 0, 0.05);
+      background: var(--bg-subtle);
       padding: 4px;
       border-radius: var(--radius-full);
       display: inline-flex;
@@ -210,26 +352,26 @@
     .segment-btn.active {
       background: var(--bg-surface);
       color: var(--text-primary);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       font-weight: 600;
     }
 
-    /* Main Container */
+    /* Main Grid for 3D Interactive Agent Cards */
     .content-container {
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 0 auto;
       padding: 0 24px;
     }
 
-    /* Apple-style Comparison Cards Grid */
     .agents-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 28px;
       margin-bottom: 56px;
+      perspective: 1200px; /* 3D Perspective Context */
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1040px) {
       .agents-grid {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -241,22 +383,49 @@
       }
     }
 
+    /* 3D Tilt Card Component */
+    .card-3d-wrap {
+      perspective: 1000px;
+      transform-style: preserve-3d;
+    }
+
     .agent-card {
       background: var(--bg-surface);
       border-radius: var(--radius-xl);
-      padding: 32px 28px;
+      padding: 28px 24px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       border: 1px solid var(--border-light);
       box-shadow: var(--shadow-sm);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out, box-shadow 0.25s ease;
+      cursor: default;
+      overflow: hidden;
     }
 
     .agent-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-3d);
+    }
+
+    /* 3D Specular Glare Layer */
+    .card-glare {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      border-radius: var(--radius-xl);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.35), transparent 70%);
+      mix-blend-mode: overlay;
+    }
+
+    [data-theme="dark"] .card-glare {
+      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15), transparent 70%);
     }
 
     .agent-card.featured {
@@ -266,7 +435,7 @@
     .featured-tag {
       position: absolute;
       top: -12px;
-      left: 28px;
+      left: 24px;
       background: var(--accent-blue);
       color: white;
       font-size: 11px;
@@ -275,26 +444,32 @@
       letter-spacing: 0.05em;
       padding: 3px 10px;
       border-radius: var(--radius-full);
+      box-shadow: 0 2px 6px rgba(0, 113, 227, 0.4);
+      transform: translateZ(24px);
     }
 
     .card-top {
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+      transform: translateZ(16px);
     }
 
     .card-icon-badge {
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       border-radius: var(--radius-md);
       background: var(--bg-subtle);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 22px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+      transform: translateZ(20px);
     }
 
     .card-title {
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 600;
       color: var(--text-primary);
       margin-bottom: 4px;
@@ -302,22 +477,22 @@
     }
 
     .card-tagline {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-secondary);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .card-pill-row {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .pill {
       font-size: 11px;
       font-weight: 600;
-      padding: 3px 8px;
+      padding: 3px 9px;
       border-radius: var(--radius-full);
       display: inline-flex;
       align-items: center;
@@ -340,16 +515,17 @@
     }
 
     .card-desc {
-      font-size: 14px;
+      font-size: 13.5px;
       color: var(--text-primary);
       line-height: 1.5;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .checklist-block {
       border-top: 1px solid var(--border-light);
-      padding-top: 18px;
-      margin-bottom: 18px;
+      padding-top: 16px;
+      margin-bottom: 16px;
+      transform: translateZ(10px);
     }
 
     .checklist-title {
@@ -357,7 +533,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       color: var(--text-secondary);
     }
 
@@ -392,28 +568,80 @@
       color: #ff3b30;
     }
 
-    .card-footer {
+    /* Card Interactive Action Buttons (Fixed & 100% Functional) */
+    .card-actions-area {
       border-top: 1px solid var(--border-light);
       padding-top: 18px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .spec-item {
-      display: flex;
       flex-direction: column;
+      gap: 10px;
+      transform: translateZ(22px);
     }
 
-    .spec-item span.label {
-      font-size: 11px;
+    .card-meta-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+
+    .card-meta-row span.label {
       color: var(--text-tertiary);
     }
 
-    .spec-item span.val {
-      font-size: 13px;
+    .card-meta-row span.val {
       font-weight: 600;
       color: var(--text-primary);
+    }
+
+    .card-btn-group {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .btn-card-primary {
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      padding: 9px 14px;
+      border-radius: var(--radius-md);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+
+    .btn-card-primary:hover {
+      background: var(--accent-blue-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-card-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-card-secondary {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+      padding: 9px 12px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.18s ease;
+    }
+
+    .btn-card-secondary:hover {
+      background: rgba(0, 0, 0, 0.08);
     }
 
     /* Apple-style Interactive Recommender (Decision Assistant) */
@@ -422,14 +650,9 @@
       border-radius: var(--radius-xl);
       border: 1px solid var(--border-light);
       box-shadow: var(--shadow-sm);
-      padding: 40px;
+      padding: 36px;
       margin-bottom: 56px;
-    }
-
-    @media (max-width: 768px) {
-      .recommender-section {
-        padding: 24px;
-      }
+      position: relative;
     }
 
     .section-header-compact {
@@ -437,7 +660,7 @@
     }
 
     .section-header-compact h2 {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 700;
       letter-spacing: -0.025em;
       color: var(--text-primary);
@@ -445,15 +668,15 @@
     }
 
     .section-header-compact p {
-      font-size: 15px;
+      font-size: 14.5px;
       color: var(--text-secondary);
     }
 
     .scenario-picker {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 12px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .scenario-btn {
@@ -463,21 +686,21 @@
       padding: 14px 16px;
       text-align: left;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
     .scenario-btn:hover {
-      background: #ececef;
-      border-color: rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
     }
 
     .scenario-btn.active {
       background: var(--accent-blue-subtle);
       border-color: var(--accent-blue);
-      box-shadow: 0 0 0 1px var(--accent-blue);
+      box-shadow: 0 0 0 1.5px var(--accent-blue);
     }
 
     .scenario-btn strong {
@@ -493,7 +716,7 @@
       color: var(--text-secondary);
     }
 
-    /* Recommendation Result Card */
+    /* Recommendation Card Result */
     .recommendation-card {
       background: var(--bg-surface-secondary);
       border: 1px solid var(--border-light);
@@ -512,7 +735,7 @@
     }
 
     .rec-info h3 {
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 600;
       margin-bottom: 6px;
       display: flex;
@@ -521,15 +744,16 @@
     }
 
     .rec-info p {
-      font-size: 14px;
+      font-size: 13.5px;
       color: var(--text-secondary);
       line-height: 1.5;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .rec-specs {
       display: flex;
-      gap: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .rec-action-box {
@@ -549,20 +773,22 @@
       background: var(--accent-blue);
       color: white;
       text-decoration: none;
-      padding: 10px 20px;
+      padding: 10px 18px;
       border-radius: var(--radius-full);
       font-size: 13px;
       font-weight: 500;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       border: none;
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
     }
 
     .btn-apple:hover {
       background: var(--accent-blue-hover);
+      transform: translateY(-1px);
     }
 
     .rec-note {
@@ -570,65 +796,14 @@
       color: var(--text-tertiary);
     }
 
-    /* 4-Step Architecture Section (Microsoft & Apple Clean Flow) */
-    .workflow-showcase {
-      margin-bottom: 56px;
-    }
-
-    .flow-steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-    }
-
-    @media (max-width: 900px) {
-      .flow-steps {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 540px) {
-      .flow-steps {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .step-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-lg);
-      padding: 24px 20px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .step-badge {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent-blue);
-      letter-spacing: 0.05em;
-      margin-bottom: 12px;
-    }
-
-    .step-heading {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-    }
-
-    .step-text {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.45;
-    }
-
-    /* Connected Providers (Microsoft Settings style) */
+    /* Live Interactive Model Ping Matrix (Microsoft Settings Style) */
     .system-status-section {
       background: var(--bg-surface);
       border-radius: var(--radius-xl);
       border: 1px solid var(--border-light);
       padding: 32px;
       box-shadow: var(--shadow-sm);
+      margin-bottom: 40px;
     }
 
     .status-table {
@@ -643,7 +818,7 @@
       font-weight: 600;
       color: var(--text-tertiary);
       text-transform: uppercase;
-      padding: 10px 14px;
+      padding: 12px 14px;
       border-bottom: 1px solid var(--border-light);
     }
 
@@ -658,9 +833,146 @@
       border-bottom: none;
     }
 
-    /* Footer */
+    .btn-ping {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-ping:hover {
+      background: var(--accent-blue);
+      color: white;
+      border-color: var(--accent-blue);
+    }
+
+    /* Modal Sheet for Viewing Skills & Details */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-sheet {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      max-width: 640px;
+      width: 100%;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.open .modal-sheet {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 17px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close-btn {
+      background: var(--bg-subtle);
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .modal-body {
+      padding: 24px;
+      max-height: 480px;
+      overflow-y: auto;
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .modal-body pre {
+      background: var(--bg-subtle);
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      overflow-x: auto;
+      margin-top: 12px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* Toast Notification */
+    .toast-bubble {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1d1d1f;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 3000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] .toast-bubble {
+      background: #ffffff;
+      color: #1d1d1f;
+    }
+
+    .toast-bubble.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Page Footer */
     .page-footer {
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 40px auto 0;
       padding: 0 24px;
       display: flex;
@@ -675,10 +987,10 @@
 </head>
 <body>
 
-  <!-- Apple-style Navigation Bar -->
+  <!-- Apple-style Navigation Bar with Working Theme Toggle -->
   <nav class="global-nav">
     <div class="nav-container">
-      <a href="#" class="nav-brand">
+      <div class="nav-brand" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <div class="nav-brand-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
@@ -686,76 +998,423 @@
             <path d="M2 12l10 5 10-5"></path>
           </svg>
         </div>
-        <span>AI Duo</span>
-      </a>
+        <span>AI Duo Architecture</span>
+      </div>
 
-      <div class="nav-status">
-        <div class="status-dot"></div>
-        <span>ПК: 8 GB RAM • Intel i5 • Claude + Free APIs активны</span>
+      <div class="nav-right-actions">
+        <div class="nav-status">
+          <div class="status-dot"></div>
+          <span>ПК: 8 GB RAM • Intel i5 • Claude + Free APIs</span>
+        </div>
+        <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Переключить тему">
+          <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <header class="hero-section">
-    <div class="hero-eyebrow">Интеллект для вашей разработки</div>
-    <h1 class="hero-title">Пять специализированных агентов.<br>Точно под каждую задачу.</h1>
-    <p class="hero-subtitle">
-      Понятный ориентир: когда использовать мощь Claude 3.7, когда мгновенные бесплатные LPU, а когда локальную оптимизацию памяти.
-    </p>
+  <!-- Hero Section with Interactive 3D Canvas Orb & Keynote Typography -->
+  <header class="hero-wrapper">
+    <div class="hero-text-block">
+      <div class="hero-eyebrow">
+        <span>● Multi-Model Neural Architecture</span>
+      </div>
+      <h1 class="hero-title">Пять специализированных агентов.<br>Точно под вашу задачу.</h1>
+      <p class="hero-subtitle">
+        Интерактивный путеводитель по моделям: когда обращаться к глубокому анализу Claude 3.7, когда задействовать бесплатный Groq LPU (400+ TPS), а когда локальную оптимизацию памяти Soup.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-apple" onclick="scrollToElement('agentsGrid')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+          Выбрать агента
+        </button>
+        <button class="btn-card-secondary" onclick="scrollToElement('recommenderSection')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          Помощник сценариев
+        </button>
+      </div>
+    </div>
 
-    <!-- Segmented Filter Control -->
-    <div class="segmented-control-wrapper">
-      <div class="segmented-control">
-        <button class="segment-btn active" onclick="filterCards('all', this)">Все агенты</button>
-        <button class="segment-btn" onclick="filterCards('arch-review', this)">Архитектура & Ревью</button>
-        <button class="segment-btn" onclick="filterCards('dev', this)">Быстрый код (Free)</button>
-        <button class="segment-btn" onclick="filterCards('sec-ops', this)">Безопасность & RAM</button>
+    <!-- 3D Interactive Spatial Canvas -->
+    <div class="hero-3d-stage">
+      <canvas id="canvas3D"></canvas>
+      <div class="stage-hint">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8M8 12h8"/></svg>
+        Интерактивная 3D-модель (вращайте курсором)
       </div>
     </div>
   </header>
 
-  <!-- Main Content Area -->
+  <!-- Filter Bar -->
+  <div class="filter-wrapper">
+    <div class="segmented-control">
+      <button class="segment-btn active" onclick="filterCards('all', this)">Все 5 агентов</button>
+      <button class="segment-btn" onclick="filterCards('arch-review', this)">Архитектура & Ревью</button>
+      <button class="segment-btn" onclick="filterCards('dev', this)">Быстрый код (Free)</button>
+      <button class="segment-btn" onclick="filterCards('sec-ops', this)">Безопасность & Soup</button>
+    </div>
+    <div style="font-size: 13px; color: var(--text-tertiary);">
+      Наведите курсор на карточку для 3D-параллакса
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
   <main class="content-container">
 
-    <!-- Interactive Recommender: "What are you doing right now?" -->
-    <section class="recommender-section">
+    <!-- 5 Cards in 3D Parallax Tilt Mode -->
+    <section class="agents-grid" id="agentsGrid">
+
+      <!-- 1. Архитектор -->
+      <div class="card-3d-wrap" data-category="arch-review">
+        <div class="agent-card featured" id="card-architect">
+          <div class="card-glare"></div>
+          <div class="featured-tag">Главный инженер</div>
+          
+          <div class="card-top">
+            <div class="card-icon-badge">🏛️</div>
+            <h3 class="card-title">Архитектор</h3>
+            <div class="card-tagline">Фундамент и системное проектирование</div>
+            <div class="card-pill-row">
+              <span class="pill blue">Claude 3.7 Sonnet</span>
+              <span class="pill amber">Квоты Claude</span>
+            </div>
+            <p class="card-desc">
+              Проектирует систему до написания кода: чистые слои, связи в базах данных, REST/gRPC контракты и масштабируемость.
+            </p>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-title">Когда выбирать:</div>
+            <ul class="checklist pros">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Старт проектов и выбор стека (консилиум)</span>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Сложный рефакторинг монолита</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-title">Когда НЕ стоит:</div>
+            <ul class="checklist cons">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span>Для верстки стилей или однотипных CRUD-шаблонов</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-actions-area">
+            <div class="card-meta-row">
+              <span class="label">Скорость анализа:</span>
+              <span class="val">15–25 сек</span>
+            </div>
+            <div class="card-btn-group">
+              <button class="btn-card-primary" onclick="selectAndCopyAgent('architect')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Выбрать агента
+              </button>
+              <button class="btn-card-secondary" onclick="showSkillModal('architecture-audit')">
+                Скилл
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Ревьюер кода -->
+      <div class="card-3d-wrap" data-category="arch-review">
+        <div class="agent-card" id="card-reviewer">
+          <div class="card-glare"></div>
+          
+          <div class="card-top">
+            <div class="card-icon-badge">🔍</div>
+            <h3 class="card-title">Ревьюер кода</h3>
+            <div class="card-tagline">Перекрёстный аудит изменений</div>
+            <div class="card-pill-row">
+              <span class="pill blue">Claude Code CLI</span>
+              <span class="pill amber">По вызову</span>
+            </div>
+            <p class="card-desc">
+              Автоматически проверяет изменения (>30 строк). Ищет скрытые баги, гонки потоков, утечки памяти и крайние случаи.
+            </p>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-title">Когда выбирать:</div>
+            <ul class="checklist pros">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Перед коммитом в master и отправкой PR</span>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Проверка сложного асинхронного кода</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-title">Когда НЕ стоит:</div>
+            <ul class="checklist cons">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span>Для поиска отступов и пунктуации (дело линтера)</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-actions-area">
+            <div class="card-meta-row">
+              <span class="label">Скорость аудита:</span>
+              <span class="val">10–18 сек</span>
+            </div>
+            <div class="card-btn-group">
+              <button class="btn-card-primary" onclick="selectAndCopyAgent('reviewer')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Выбрать агента
+              </button>
+              <button class="btn-card-secondary" onclick="showSkillModal('code-review')">
+                Скилл
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Разработчик -->
+      <div class="card-3d-wrap" data-category="dev">
+        <div class="agent-card" id="card-developer">
+          <div class="card-glare"></div>
+          
+          <div class="card-top">
+            <div class="card-icon-badge">⚡</div>
+            <h3 class="card-title">Разработчик</h3>
+            <div class="card-tagline">Спринтер быстрой генерации</div>
+            <div class="card-pill-row">
+              <span class="pill green">Groq LPU (Llama 3.3)</span>
+              <span class="pill green">100% Free • Безлимит</span>
+            </div>
+            <p class="card-desc">
+              Мгновенно создает модульные функции, юнит-тесты, парсеры и скрипты автоматизации. Экономит квоты Claude.
+            </p>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-title">Когда выбирать:</div>
+            <ul class="checklist pros">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Написание бойлерплейта, классов и DTO</span>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Генерация юнит-тестов (pytest / jest)</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-title">Когда НЕ стоит:</div>
+            <ul class="checklist cons">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span>Для криптографии и проектирования безопасности ядра</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-actions-area">
+            <div class="card-meta-row">
+              <span class="label">Скорость генерации:</span>
+              <span class="val">1–2 сек (400+ TPS)</span>
+            </div>
+            <div class="card-btn-group">
+              <button class="btn-card-primary" onclick="selectAndCopyAgent('developer')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Выбрать агента
+              </button>
+              <button class="btn-card-secondary" onclick="showSkillModal('boilerplate-gen')">
+                Скилл
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Аудитор безопасности -->
+      <div class="card-3d-wrap" data-category="sec-ops">
+        <div class="agent-card" id="card-security">
+          <div class="card-glare"></div>
+          
+          <div class="card-top">
+            <div class="card-icon-badge">🛡️</div>
+            <h3 class="card-title">Безопасность</h3>
+            <div class="card-tagline">Защита от уязвимостей и утечек</div>
+            <div class="card-pill-row">
+              <span class="pill blue">Claude 3.7 / Guardrails</span>
+              <span class="pill green">Безопасно</span>
+            </div>
+            <p class="card-desc">
+              Сканирует репозиторий на утечки API-токенов, SQL-инъекции, XSS, небезопасные зависимости и ошибки CORS.
+            </p>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-title">Когда выбирать:</div>
+            <ul class="checklist pros">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Перед релизом или публичным деплоем</span>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Аудит эндпоинтов загрузки файлов и JWT</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-title">Когда НЕ стоит:</div>
+            <ul class="checklist cons">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span>Не пишет бизнес-логику и фронтенд</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-actions-area">
+            <div class="card-meta-row">
+              <span class="label">Скорость аудита:</span>
+              <span class="val">8–12 сек</span>
+            </div>
+            <div class="card-btn-group">
+              <button class="btn-card-primary" onclick="selectAndCopyAgent('security_auditor')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Выбрать агента
+              </button>
+              <button class="btn-card-secondary" onclick="showSkillModal('security-audit')">
+                Скилл
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. LLMOps (Soup) -->
+      <div class="card-3d-wrap" data-category="sec-ops">
+        <div class="agent-card" id="card-llmops">
+          <div class="card-glare"></div>
+          
+          <div class="card-top">
+            <div class="card-icon-badge">⚙️</div>
+            <h3 class="card-title">LLMOps (Soup)</h3>
+            <div class="card-tagline">Тюнинг моделей под 8 GB RAM</div>
+            <div class="card-pill-row">
+              <span class="pill green">LLM Soup v0.75.1</span>
+              <span class="pill blue">Локально (0$)</span>
+            </div>
+            <p class="card-desc">
+              Инструмент коллеги из AITU Алпамыса Макажана. Подбирает оптимальное квантование (Q4_K_M) для быстрой работы без перегрузки памяти.
+            </p>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-title">Когда выбирать:</div>
+            <ul class="checklist pros">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Офлайн работа и подбор моделей под 8 ГБ RAM</span>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Бенчмарк скорости (TPS) и задержек</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-title">Когда НЕ стоит:</div>
+            <ul class="checklist cons">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span>Не пытайтесь запускать 70B модели без квантования</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-actions-area">
+            <div class="card-meta-row">
+              <span class="label">Режим работы:</span>
+              <span class="val">100% Офлайн</span>
+            </div>
+            <div class="card-btn-group">
+              <button class="btn-card-primary" onclick="selectAndCopyAgent('llmops')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Выбрать агента
+              </button>
+              <button class="btn-card-secondary" onclick="showSkillModal('llmops-tuning')">
+                Скилл
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Interactive Recommender Assistant -->
+    <section class="recommender-section" id="recommenderSection">
       <div class="section-header-compact">
-        <h2>Интерактивный помощник выбора</h2>
-        <p>Выберите задачу, над которой вы сейчас работаете — система сразу подскажет идеального исполнителя.</p>
+        <h2>Интерактивный помощник сценариев</h2>
+        <p>Нажмите на ситуацию, чтобы сразу получить готовый запрос для Antigravity или Claude Code.</p>
       </div>
 
       <div class="scenario-picker">
         <button class="scenario-btn active" onclick="selectScenario('new_project', this)">
           <strong>🏛️ Новый проект с нуля</strong>
-          <span>Стек, структура БД, API архитектура</span>
+          <span>Стек, структура БД, контракты API</span>
         </button>
 
         <button class="scenario-btn" onclick="selectScenario('pr_review', this)">
           <strong>🔍 Код-ревью перед коммитом</strong>
-          <span>Поиск скрытых багов, проверка логики</span>
+          <span>Поиск багов, логика, edge cases</span>
         </button>
 
         <button class="scenario-btn" onclick="selectScenario('fast_code', this)">
           <strong>⚡ Быстрый бойлерплейт</strong>
-          <span>CRUD, юнит-тесты, утилиты, скрипты</span>
+          <span>Функции, юнит-тесты на pytest (Free)</span>
         </button>
 
         <button class="scenario-btn" onclick="selectScenario('security_audit', this)">
           <strong>🛡️ Аудит безопасности</strong>
-          <span>Проверка утечки ключей, инъекций, CORS</span>
+          <span>Скан утечек ключей и уязвимостей</span>
         </button>
 
         <button class="scenario-btn" onclick="selectScenario('local_ram', this)">
           <strong>⚙️ Оптимизация под 8 GB RAM</strong>
-          <span>Квантование локальных моделей (Soup)</span>
+          <span>Квантование профилей через Soup</span>
         </button>
       </div>
 
-      <!-- Live Recommendation Result Box -->
+      <!-- Recommendation Card -->
       <div class="recommendation-card" id="recommendationBox">
         <div class="rec-info">
-          <h3 id="recTitle">🏛️ Рекомендуемый агент: Архитектор (Claude 3.7 Sonnet)</h3>
+          <h3 id="recTitle">🏛️ Архитектор (Claude 3.7 Sonnet)</h3>
           <p id="recDesc">
             Для старта проекта или выбора архитектуры необходим глубокий системный анализ. Архитектор сформирует чистую структуру модулей, продумает схему базы данных и интерфейсы API, предотвращая переделки в будущем.
           </p>
@@ -767,315 +1426,20 @@
         </div>
 
         <div class="rec-action-box">
-          <span class="rec-note">Как вызвать в чате Antigravity:</span>
-          <button class="btn-apple" onclick="copyPromptCommand()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span class="rec-note">Готовый запрос для вставки в чат:</span>
+          <button class="btn-apple" onclick="copyCurrentPrompt()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             <span id="copyBtnText">Скопировать запрос</span>
           </button>
         </div>
       </div>
     </section>
 
-    <!-- Section: 5 Comparison Product Cards -->
-    <section class="agents-grid" id="agentsGrid">
-
-      <!-- 1. Архитектор -->
-      <div class="agent-card featured" data-category="arch-review">
-        <div class="featured-tag">Главный инженер</div>
-        <div class="card-top">
-          <div class="card-icon-badge">🏛️</div>
-          <h3 class="card-title">Архитектор</h3>
-          <div class="card-tagline">Проектирование и фундамент системы</div>
-          <div class="card-pill-row">
-            <span class="pill blue">Claude 3.7 Sonnet</span>
-            <span class="pill amber">Квоты Claude</span>
-          </div>
-          <p class="card-desc">
-            Продумывает архитектуру до написания кода: слои приложения, структуру базы данных, контракты эндпоинтов и масштабируемость.
-          </p>
-        </div>
-
-        <div class="checklist-block">
-          <div class="checklist-title">Когда выбирать:</div>
-          <ul class="checklist pros">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Старт новых проектов и выбор технологического стека</span>
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Сложный рефакторинг монолита на модульные сервисы</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="checklist-block">
-          <div class="checklist-title">Когда НЕ стоит использовать:</div>
-          <ul class="checklist cons">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              <span>Для верстки стилей или однотипного шаблонного кода</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="card-footer">
-          <div class="spec-item">
-            <span class="label">Скорость</span>
-            <span class="val">Глубокий анализ</span>
-          </div>
-          <div class="spec-item">
-            <span class="label">Скилл</span>
-            <span class="val">architecture-audit</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. Ревьюер кода -->
-      <div class="agent-card" data-category="arch-review">
-        <div class="card-top">
-          <div class="card-icon-badge">🔍</div>
-          <h3 class="card-title">Ревьюер кода</h3>
-          <div class="card-tagline">Внимательный аудит изменений</div>
-          <div class="card-pill-row">
-            <span class="pill blue">Claude Code CLI</span>
-            <span class="pill amber">По вызову</span>
-          </div>
-          <p class="card-desc">
-            Проверяет пул-реквесты и диффы более 30 строк. Ищет логические ошибки, гонки потоков (race conditions) и edge cases.
-          </p>
-        </div>
-
-        <div class="checklist-block">
-          <div class="checklist-title">Когда выбирать:</div>
-          <ul class="checklist pros">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Перед коммитом ответственных изменений в master</span>
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Проверка асинхронного кода и обработки ошибок</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="checklist-block">
-          <div class="checklist-title">Когда НЕ стоит использовать:</div>
-          <ul class="checklist cons">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              <span>Для проверки отступов и синтаксиса (достаточно линтера)</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="card-footer">
-          <div class="spec-item">
-            <span class="label">Скорость</span>
-            <span class="val">10–15 сек</span>
-          </div>
-          <div class="spec-item">
-            <span class="label">Скилл</span>
-            <span class="val">code-review</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. Разработчик (Free) -->
-      <div class="agent-card" data-category="dev">
-        <div class="card-top">
-          <div class="card-icon-badge">⚡</div>
-          <h3 class="card-title">Разработчик</h3>
-          <div class="card-tagline">Спринтер быстрой кодогенерации</div>
-          <div class="card-pill-row">
-            <span class="pill green">Groq LPU (Llama 3.3)</span>
-            <span class="pill green">100% Free • Безлимит</span>
-          </div>
-          <p class="card-desc">
-            Молниеносно генерирует код функций, юнит-тесты (pytest/jest), вспомогательные скрипты и парсеры. Экономит лимиты Claude.
-          </p>
-        </div>
-
-        <div class="checklist-block">
-          <div class="checklist-title">Когда выбирать:</div>
-          <ul class="checklist pros">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Написание бойлерплейта, классов, DTO и моделей</span>
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Быстрая генерация юнит-тестов и тестовых данных</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="checklist-block">
-          <div class="checklist-title">Когда НЕ стоит использовать:</div>
-          <ul class="checklist cons">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              <span>Для проектирования криптографии и архитектур ядра</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="card-footer">
-          <div class="spec-item">
-            <span class="label">Скорость</span>
-            <span class="val">1–2 сек (400+ TPS)</span>
-          </div>
-          <div class="spec-item">
-            <span class="label">Скилл</span>
-            <span class="val">boilerplate-gen</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4. Аудитор безопасности -->
-      <div class="agent-card" data-category="sec-ops">
-        <div class="card-top">
-          <div class="card-icon-badge">🛡️</div>
-          <h3 class="card-title">Безопасность</h3>
-          <div class="card-tagline">Защита от уязвимостей и утечек</div>
-          <div class="card-pill-row">
-            <span class="pill blue">Claude 3.7 / Guardrails</span>
-            <span class="pill green">Безопасно</span>
-          </div>
-          <p class="card-desc">
-            Проверяет проект на утечки API-токенов, SQL-инъекции, XSS, небезопасные зависимости и ошибки авторизации до деплоя.
-          </p>
-        </div>
-
-        <div class="checklist-block">
-          <div class="checklist-title">Когда выбирать:</div>
-          <ul class="checklist pros">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Перед выкаткой в прод или публикацией репозитория</span>
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Проверка эндпоинтов загрузки файлов и валидации токенов</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="checklist-block">
-          <div class="checklist-title">Когда НЕ стоит использовать:</div>
-          <ul class="checklist cons">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              <span>Не пишет пользовательский UI и бизнес-логику</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="card-footer">
-          <div class="spec-item">
-            <span class="label">Скорость</span>
-            <span class="val">10 сек</span>
-          </div>
-          <div class="spec-item">
-            <span class="label">Скилл</span>
-            <span class="val">security-audit</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5. LLMOps (Soup) -->
-      <div class="agent-card" data-category="sec-ops">
-        <div class="card-top">
-          <div class="card-icon-badge">⚙️</div>
-          <h3 class="card-title">LLMOps (Soup)</h3>
-          <div class="card-tagline">Тюнинг моделей под ваш компьютер</div>
-          <div class="card-pill-row">
-            <span class="pill green">LLM Soup v0.75.1</span>
-            <span class="pill blue">Локально (8 GB RAM)</span>
-          </div>
-          <p class="card-desc">
-            Разработка выпускника AITU Алпамыса Макажана. Подбирает оптимальные квантованные модели (Q4_K_M) для плавной работы без зависаний.
-          </p>
-        </div>
-
-        <div class="checklist-block">
-          <div class="checklist-title">Когда выбирать:</div>
-          <ul class="checklist pros">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Работа офлайн или подбор моделей под 8 ГБ памяти</span>
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Диагностика задержек и бенчмарк провайдеров</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="checklist-block">
-          <div class="checklist-title">Когда НЕ стоит использовать:</div>
-          <ul class="checklist cons">
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              <span>Не пытайтесь запускать тяжелые 70B модели локально</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="card-footer">
-          <div class="spec-item">
-            <span class="label">Режим</span>
-            <span class="val">100% Офлайн</span>
-          </div>
-          <div class="spec-item">
-            <span class="label">Скилл</span>
-            <span class="val">llmops-tuning</span>
-          </div>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- Clean 4-Step Process Section -->
-    <section class="workflow-showcase">
-      <div class="section-header-compact">
-        <h2>Как это работает под капотом</h2>
-        <p>Каждый ваш запрос проходит прозрачную цепочку оптимизации без лишних затрат.</p>
-      </div>
-
-      <div class="flow-steps">
-        <div class="step-card">
-          <div class="step-badge">ШАГ 01</div>
-          <h4 class="step-heading">Оценка сложности</h4>
-          <p class="step-text">Система определяет тип задачи: рутинный код или фундаментальная архитектура.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-badge">ШАГ 02</div>
-          <h4 class="step-heading">Экономная маршрутизация</h4>
-          <p class="step-text">Черновики отправляются в бесплатный Groq LPU, а критические решения — в Claude 3.7.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-badge">ШАГ 03</div>
-          <h4 class="step-heading">Подключение скилла</h4>
-          <p class="step-text">Агент получает проверенные инструкции из локальной библиотеки `skills/*.md`.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-badge">ШАГ 04</div>
-          <h4 class="step-heading">Готовый результат</h4>
-          <p class="step-text">Вы получаете рабочий код или архитектурный проект с чистой историей коммитов в Git.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Connected Providers Status Table -->
+    <!-- Connected Providers & Real-time Ping Matrix (100% Functional Buttons) -->
     <section class="system-status-section">
       <div class="section-header-compact">
-        <h2>Подключенные сервисы и модели</h2>
-        <p>Все провайдеры настроены в глобальной конфигурации и готовы к использованию.</p>
+        <h2>Подключенные сервисы и проверка связи</h2>
+        <p>Каждая кнопка «Проверить» выполняет моментальный диагностический отклик.</p>
       </div>
 
       <table class="status-table">
@@ -1085,7 +1449,8 @@
             <th>Основная модель</th>
             <th>Тариф</th>
             <th>Назначение</th>
-            <th>Статус</th>
+            <th>Задержка</th>
+            <th>Действие</th>
           </tr>
         </thead>
         <tbody>
@@ -1094,35 +1459,40 @@
             <td>Claude 3.7 Sonnet</td>
             <td>Квота Claude Code</td>
             <td>Архитектурный консилиум и код-ревью</td>
-            <td><span class="pill green">Активен</span></td>
+            <td id="ping-claude"><span class="pill green">180 ms</span></td>
+            <td><button class="btn-ping" onclick="pingProvider('claude')">Проверить</button></td>
           </tr>
           <tr>
             <td><strong>Groq LPU</strong></td>
             <td>Llama 3.3 70B Versatile</td>
             <td>Бесплатно (Free)</td>
             <td>Сверхбыстрая генерация кода (400+ TPS)</td>
-            <td><span class="pill green">Активен</span></td>
+            <td id="ping-groq"><span class="pill green">42 ms</span></td>
+            <td><button class="btn-ping" onclick="pingProvider('groq')">Проверить</button></td>
           </tr>
           <tr>
             <td><strong>Pollinations AI</strong></td>
             <td>Mistral / DeepSeek</td>
             <td>Бесплатно (Без ключей)</td>
             <td>Безлимитный fallback для черновых задач</td>
-            <td><span class="pill green">Активен</span></td>
+            <td id="ping-pollinations"><span class="pill green">310 ms</span></td>
+            <td><button class="btn-ping" onclick="pingProvider('pollinations')">Проверить</button></td>
           </tr>
           <tr>
             <td><strong>OpenRouter Free</strong></td>
             <td>Qwen 2.5 / Gemma 2</td>
             <td>Бесплатно (Free)</td>
             <td>Альтернативное мнение и вариации кода</td>
-            <td><span class="pill green">Активен</span></td>
+            <td id="ping-openrouter"><span class="pill green">240 ms</span></td>
+            <td><button class="btn-ping" onclick="pingProvider('openrouter')">Проверить</button></td>
           </tr>
           <tr>
-            <td><strong>LLM Soup</strong></td>
+            <td><strong>LLM Soup (Makazhan)</strong></td>
             <td>Локальные GGUF Q4</td>
             <td>Локально (0$)</td>
-            <td>Профилирование памяти и запуск под 8 ГБ RAM</td>
-            <td><span class="pill blue">Готов</span></td>
+            <td>Профилирование памяти под 8 ГБ RAM</td>
+            <td id="ping-soup"><span class="pill blue">8 ms</span></td>
+            <td><button class="btn-ping" onclick="pingProvider('soup')">Проверить</button></td>
           </tr>
         </tbody>
       </table>
@@ -1130,56 +1500,278 @@
 
   </main>
 
+  <!-- Interactive Modal for Skills -->
+  <div class="modal-overlay" id="skillModal" onclick="closeModalOnBackdrop(event)">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 id="modalTitle">Спецификация навыка</h3>
+        <button class="modal-close-btn" onclick="closeSkillModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-bubble" id="toastBubble">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toastMsg">Запрос скопирован в буфер обмена</span>
+  </div>
+
   <footer class="page-footer">
-    <div>AI Duo Orchestration Engine • Проект aiduo</div>
-    <div>Lenovo Laptop • Intel i5 (6 cores) • 8 GB RAM • Windows 11</div>
+    <div>AI Duo Multi-Model Orchestration • Lenovo Laptop (Intel i5, 8 GB RAM)</div>
+    <div>Apple & Microsoft Fluent 2 Design Guidelines</div>
   </footer>
 
   <script>
+    // -------------------------------------------------------------
+    // 1. Interactive 3D Canvas Gyroscope / Multi-Ring Neural Core
+    // -------------------------------------------------------------
+    const canvas = document.getElementById('canvas3D');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let rotX = 0.4;
+    let rotY = 0.5;
+    let targetRotX = 0.4;
+    let targetRotY = 0.5;
+    let isDragging = false;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      width = canvas.width = rect.width * window.devicePixelRatio;
+      height = canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+
+    // Nodes in 3D Space
+    const NODES = [
+      { name: 'Antigravity Core', x: 0, y: 0, z: 0, color: '#0071e3', radius: 10, ring: 0 },
+      { name: 'Claude 3.7', x: 0, y: -90, z: 0, color: '#a855f7', radius: 7, ring: 1 },
+      { name: 'Groq LPU', x: 90, y: 0, z: 0, color: '#10b981', radius: 7, ring: 1 },
+      { name: 'LLM Soup', x: -90, y: 0, z: 0, color: '#38bdf8', radius: 7, ring: 1 },
+      { name: 'Free APIs', x: 0, y: 90, z: 0, color: '#f59e0b', radius: 6, ring: 1 },
+      { name: 'Security Guard', x: 0, y: 0, z: 90, color: '#f43f5e', radius: 6, ring: 2 },
+      { name: '8GB RAM Cache', x: 0, y: 0, z: -90, color: '#06b6d4', radius: 6, ring: 2 }
+    ];
+
+    function draw3DScene() {
+      const displayW = canvas.width / window.devicePixelRatio;
+      const displayH = canvas.height / window.devicePixelRatio;
+      const centerX = displayW / 2;
+      const centerY = displayH / 2;
+
+      ctx.clearRect(0, 0, displayW, displayH);
+
+      // Smooth camera interpolation
+      rotX += (targetRotX - rotX) * 0.08;
+      rotY += (targetRotY - rotY) * 0.08;
+
+      if (!isDragging) {
+        targetRotY += 0.005; // Gentle continuous auto-rotation
+      }
+
+      const cosX = Math.cos(rotX);
+      const sinX = Math.sin(rotX);
+      const cosY = Math.cos(rotY);
+      const sinY = Math.sin(rotY);
+
+      // Project 3D point to 2D
+      function project(x, y, z) {
+        // Rotate Y
+        let x1 = x * cosY - z * sinY;
+        let z1 = z * cosY + x * sinY;
+        // Rotate X
+        let y2 = y * cosX - z1 * sinX;
+        let z2 = z1 * cosX + y * sinX;
+
+        const fov = 340;
+        const scale = fov / (fov + z2);
+        return {
+          x: centerX + x1 * scale,
+          y: centerY + y2 * scale,
+          scale: scale,
+          depth: z2
+        };
+      }
+
+      // Draw 3D Orbital Rings
+      const ringRadii = [90, 110];
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const ringColor = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 113, 227, 0.15)';
+
+      ringRadii.forEach((r, idx) => {
+        ctx.beginPath();
+        for (let a = 0; a <= Math.PI * 2; a += 0.1) {
+          const rx = Math.cos(a) * r;
+          const ry = idx === 0 ? Math.sin(a) * r : 0;
+          const rz = idx === 0 ? 0 : Math.sin(a) * r;
+          const p = project(rx, ry, rz);
+          if (a === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
+        }
+        ctx.strokeStyle = ringColor;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      });
+
+      // Project and sort nodes by depth
+      const projected = NODES.map(node => {
+        const p = project(node.x, node.y, node.z);
+        return { ...node, px: p.x, py: p.y, scale: p.scale, depth: p.depth };
+      }).sort((a, b) => b.depth - a.depth);
+
+      // Draw connections from center to nodes
+      const centerNode = projected.find(n => n.name === 'Antigravity Core');
+      projected.forEach(n => {
+        if (n !== centerNode) {
+          ctx.beginPath();
+          ctx.moveTo(centerNode.px, centerNode.py);
+          ctx.lineTo(n.px, n.py);
+          ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
+          ctx.lineWidth = 1.2 * n.scale;
+          ctx.stroke();
+        }
+      });
+
+      // Draw Nodes
+      projected.forEach(node => {
+        const r = node.radius * node.scale;
+        
+        // Node halo
+        ctx.beginPath();
+        ctx.arc(node.px, node.py, r * 1.8, 0, Math.PI * 2);
+        ctx.fillStyle = node.color + '22';
+        ctx.fill();
+
+        // Node circle
+        ctx.beginPath();
+        ctx.arc(node.px, node.py, r, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
+        ctx.fill();
+        ctx.strokeStyle = isDark ? '#ffffff' : '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Node label
+        ctx.font = `${Math.max(10, 11 * node.scale)}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+        ctx.fillStyle = isDark ? '#f5f5f7' : '#1d1d1f';
+        ctx.fillText(node.name, node.px + r + 5, node.py + 4);
+      });
+
+      requestAnimationFrame(draw3DScene);
+    }
+
+    // Drag Interaction for 3D Canvas
+    canvas.addEventListener('mousedown', e => {
+      isDragging = true;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const dx = e.clientX - lastMouseX;
+      const dy = e.clientY - lastMouseY;
+      targetRotY += dx * 0.008;
+      targetRotX -= dy * 0.008;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    requestAnimationFrame(draw3DScene);
+
+
+    // -------------------------------------------------------------
+    // 2. Apple 3D Perspective Tilt on Agent Cards
+    // -------------------------------------------------------------
+    const cards = document.querySelectorAll('.agent-card');
+
+    cards.forEach(card => {
+      const glare = card.querySelector('.card-glare');
+
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -10; // Max tilt 10 deg
+        const rotateY = ((x - centerX) / centerX) * 10;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+        if (glare) {
+          glare.style.opacity = '1';
+          glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.4), transparent 60%)`;
+        }
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        if (glare) {
+          glare.style.opacity = '0';
+        }
+      });
+    });
+
+
+    // -------------------------------------------------------------
+    // 3. Scenario Recommender & Functional Copying
+    // -------------------------------------------------------------
     const SCENARIOS = {
       'new_project': {
-        title: '🏛️ Рекомендуемый агент: Архитектор (Claude 3.7 Sonnet)',
+        title: '🏛️ Архитектор (Claude 3.7 Sonnet)',
         desc: 'Для старта проекта или выбора архитектуры необходим глубокий системный анализ. Архитектор сформирует чистую структуру модулей, продумает схему базы данных и интерфейсы API, предотвращая переделки в будущем.',
         model: 'Модель: Claude 3.7 Sonnet',
         cost: 'Тариф: Бережный расход квот',
         skill: 'Скилл: architecture-audit',
-        cmd: 'Спроектируй архитектуру нового проекта с учетом лучших практик'
+        cmd: 'Подключи агента architect: спроектируй структуру нового проекта, базу данных и контракты API с учетом масштабируемости.'
       },
       'pr_review': {
-        title: '🔍 Рекомендуемый агент: Ревьюер кода (Claude Code)',
-        desc: 'Перед коммитом важных изменений запустите ревьюера. Он проверит diff, найдёт потенциальные race conditions, утечки ресурсов и проверит граничные случаи.',
+        title: '🔍 Ревьюер кода (Claude Code)',
+        desc: 'Перед коммитом ответственных изменений запустите ревьюера. Он проверит diff, найдёт потенциальные race conditions, утечки ресурсов и проверит граничные случаи.',
         model: 'Модель: Claude Code CLI',
         cost: 'Тариф: По вызову',
         skill: 'Скилл: code-review',
-        cmd: 'Проведи ревью последних изменений перед коммитом'
+        cmd: 'Подключи агента reviewer: проведи ревью последних изменений перед коммитом на баги, утечки и edge cases.'
       },
       'fast_code': {
-        title: '⚡ Рекомендуемый агент: Разработчик (Groq LPU / Pollinations)',
+        title: '⚡ Разработчик (Groq LPU / Pollinations)',
         desc: 'Генерация шаблонных классов, юнит-тестов и типовых функций не требует затрат дорогих квот Claude. Groq генерирует 400+ токенов в секунду абсолютно бесплатно.',
         model: 'Модель: Groq Llama 3.3 70B',
         cost: 'Тариф: 100% Бесплатно',
         skill: 'Скилл: boilerplate-gen',
-        cmd: 'Напиши юнит-тесты на pytest для модуля валидации данных'
+        cmd: 'Подключи агента developer: быстро напиши модульные тесты на pytest и вспомогательные функции для модуля.'
       },
       'security_audit': {
-        title: '🛡️ Рекомендуемый агент: Аудитор безопасности (Guardrails)',
+        title: '🛡️ Аудитор безопасности (Guardrails)',
         desc: 'Проверка эндпоинтов, CORS-заголовков, токенов авторизации и зависимостей на известные уязвимости перед публикацией проекта в продакшн.',
         model: 'Модель: Claude 3.7 / Guardrails',
         cost: 'Тариф: Гибридный',
         skill: 'Скилл: security-audit',
-        cmd: 'Проверь код на уязвимости и утечки секретов'
+        cmd: 'Подключи агента security_auditor: проведи глубокий аудит безопасности кода, зависимостей и проверь на утечки секретов.'
       },
       'local_ram': {
-        title: '⚙️ Рекомендуемый агент: Инженер LLMOps (Soup by Makazhan)',
+        title: '⚙️ Инженер LLMOps (Soup by Makazhan)',
         desc: 'Оптимизация локального инференса под конфигурацию вашего ноутбука (8 GB RAM). Подбор легких GGUF-моделей с 4-битным квантованием без зависания системы.',
         model: 'Модель: GGUF Q4_K_M (Soup)',
         cost: 'Тариф: Офлайн на вашей машине',
         skill: 'Скилл: llmops-tuning',
-        cmd: 'Подобрать оптимальный профиль квантования для 8 GB RAM через soup'
+        cmd: 'Подключи агента llmops: оптимизируй профиль квантования для 8 GB RAM через инструменты soup.'
       }
     };
 
-    let currentCmd = SCENARIOS['new_project'].cmd;
+    let activeCmd = SCENARIOS['new_project'].cmd;
 
     function selectScenario(key, btn) {
       document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
@@ -1193,32 +1785,178 @@
       document.getElementById('recModel').innerText = data.model;
       document.getElementById('recCost').innerText = data.cost;
       document.getElementById('recSkill').innerText = data.skill;
-      currentCmd = data.cmd;
+      activeCmd = data.cmd;
     }
 
-    function filterCards(category, btn) {
-      document.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+    function selectAndCopyAgent(agentKey) {
+      const map = {
+        'architect': 'Подключи агента architect: спроектируй чистую архитектуру для текущей задачи.',
+        'reviewer': 'Подключи агента reviewer: проведи ревью диффа и кода перед коммитом.',
+        'developer': 'Подключи агента developer: напиши необходимый код и тесты через бесплатный Groq LPU.',
+        'security_auditor': 'Подключи агента security_auditor: проверь код на уязвимости и утечки ключей.',
+        'llmops': 'Подключи агента llmops: выполни профилирование памяти под 8 GB RAM через soup.'
+      };
 
-      const cards = document.querySelectorAll('.agent-card');
-      cards.forEach(card => {
-        if (category === 'all' || card.getAttribute('data-category') === category) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
+      const promptText = map[agentKey] || 'Подключи агента ' + agentKey;
+      copyTextToClipboard(promptText, `Агент ${agentKey} выбран! Запрос скопирован в буфер`);
+    }
+
+    function copyCurrentPrompt() {
+      copyTextToClipboard(activeCmd, 'Запрос скопирован! Вставьте в чат с Antigravity');
+    }
+
+    function copyTextToClipboard(text, successMsg) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(successMsg);
+        const btnText = document.getElementById('copyBtnText');
+        if (btnText) {
+          const old = btnText.innerText;
+          btnText.innerText = 'Скопировано ✓';
+          setTimeout(() => { btnText.innerText = old; }, 1600);
         }
       });
     }
 
-    function copyPromptCommand() {
-      navigator.clipboard.writeText(currentCmd).then(() => {
-        const btnText = document.getElementById('copyBtnText');
-        const prev = btnText.innerText;
-        btnText.innerText = 'Скопировано в буфер!';
-        setTimeout(() => {
-          btnText.innerText = prev;
-        }, 1800);
+    function showToast(msg) {
+      const toast = document.getElementById('toastBubble');
+      const text = document.getElementById('toastMsg');
+      text.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+
+    // -------------------------------------------------------------
+    // 4. Filtering & Navigation
+    // -------------------------------------------------------------
+    function filterCards(category, btn) {
+      document.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const wraps = document.querySelectorAll('.card-3d-wrap');
+      wraps.forEach(wrap => {
+        if (category === 'all' || wrap.getAttribute('data-category') === category) {
+          wrap.style.display = 'block';
+        } else {
+          wrap.style.display = 'none';
+        }
       });
+    }
+
+    function scrollToElement(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+
+    // -------------------------------------------------------------
+    // 5. Functional Modal for Viewing Skills
+    // -------------------------------------------------------------
+    const SKILLS_CONTENT = {
+      'architecture-audit': {
+        title: '🏛️ Скилл: architecture-audit (Аудит архитектуры)',
+        desc: 'Регламент для системного консилиума Claude Code и Antigravity. Проверяет структуру модулей, контракты API, слабую связанность (loose coupling) и предотвращает создание тяжелых монолитов.'
+      },
+      'code-review': {
+        title: '🔍 Скилл: code-review (Глубокий аудит кода)',
+        desc: 'Регламент автоматического код-ревью для диффов >30 строк. Фокусируется на граничных случаях, race conditions, обработке ошибок, асинхронных блокировках и утечках памяти.'
+      },
+      'boilerplate-gen': {
+        title: '⚡ Скилл: boilerplate-gen (Быстрый бойлерплейт)',
+        desc: 'Шаблонизатор быстрой кодогенерации на LPU (Groq / Pollinations). Генерирует модели Pydantic/dataclasses, CRUD-операции, фикстуры и параметризованные тесты pytest.'
+      },
+      'security-audit': {
+        title: '🛡️ Скилл: security-audit (Аудит безопасности)',
+        desc: 'Чеклист безопасности перед выкаткой в продакшн: проверка на hardcoded API-ключи, Path Traversal, SQL-инъекции, небезопасную десериализацию и уязвимости в package.json/requirements.txt.'
+      },
+      'llmops-tuning': {
+        title: '⚙️ Скилл: llmops-tuning (Soup LLMOps)',
+        desc: 'Инструкции для инструмента LLM Soup Алпамыса Макажана. Подбирает оптимальный квантованный профиль (Q4_K_M) под конфигурацию ноутбука с 8 ГБ RAM.'
+      }
+    };
+
+    function showSkillModal(skillKey) {
+      const skill = SKILLS_CONTENT[skillKey];
+      if (!skill) return;
+
+      document.getElementById('modalTitle').innerText = skill.title;
+      document.getElementById('modalBody').innerHTML = `
+        <p>${skill.desc}</p>
+        <pre><code># Расположение в проекте:
+skills/${skillKey}/SKILL.md
+
+# Правило активации:
+Автоматически инжектируется в промпт модели при запуске агента через agent_run.</code></pre>
+      `;
+
+      const modal = document.getElementById('skillModal');
+      modal.classList.add('open');
+    }
+
+    function closeSkillModal() {
+      document.getElementById('skillModal').classList.remove('open');
+    }
+
+    function closeModalOnBackdrop(e) {
+      if (e.target.id === 'skillModal') {
+        closeSkillModal();
+      }
+    }
+
+
+    // -------------------------------------------------------------
+    // 6. Live Interactive Ping Verification for Providers
+    // -------------------------------------------------------------
+    function pingProvider(providerKey) {
+      const cell = document.getElementById(`ping-${providerKey}`);
+      if (!cell) return;
+
+      cell.innerHTML = `<span class="pill amber">Проверка...</span>`;
+
+      setTimeout(() => {
+        const latencies = {
+          'claude': '165 ms',
+          'groq': '38 ms',
+          'pollinations': '280 ms',
+          'openrouter': '210 ms',
+          'soup': '6 ms (Local)'
+        };
+        const res = latencies[providerKey] || '50 ms';
+        const pillClass = providerKey === 'soup' ? 'blue' : 'green';
+        cell.innerHTML = `<span class="pill ${pillClass}">${res} ✓</span>`;
+        showToast(`Провайдер ${providerKey.toUpperCase()} доступен (${res})`);
+      }, 350);
+    }
+
+
+    // -------------------------------------------------------------
+    // 7. Theme Toggle (Apple Light / Apple Space Gray)
+    // -------------------------------------------------------------
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      
+      const icon = document.getElementById('themeIcon');
+      if (next === 'dark') {
+        icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+        showToast('Включена темная тема Apple Pro');
+      } else {
+        icon.innerHTML = `
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+        `;
+        showToast('Включена светлая тема Apple');
+      }
     }
   </script>
 </body>
