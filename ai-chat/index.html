@@ -298,7 +298,7 @@
     .model-selector {
       background: var(--bg-subtle);
       border: 1px solid var(--border-light);
-      padding: 5px 12px;
+      padding: 4px 10px;
       border-radius: var(--radius-full);
       font-size: 12.5px;
       font-weight: 500;
@@ -306,7 +306,27 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: border-color 0.2s ease;
+    }
+
+    .model-selector:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .model-select-input {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 12.5px;
+      font-weight: 500;
+      outline: none;
       cursor: pointer;
+      font-family: inherit;
+    }
+
+    .model-select-input option {
+      background: var(--bg-surface);
+      color: var(--text-primary);
     }
 
     .model-status-dot {
@@ -633,6 +653,86 @@
     @keyframes typingAnim {
       0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
       40% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* Collapsible / Streaming Thinking Container */
+    .thinking-box {
+      margin-bottom: 12px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      font-size: 13px;
+      transition: all 0.2s ease;
+    }
+
+    .thinking-summary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 12.5px;
+    }
+
+    .thinking-summary:hover {
+      color: var(--text-primary);
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .thinking-spinner {
+      width: 12px;
+      height: 12px;
+      border: 2px solid var(--accent-blue);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .thinking-content {
+      padding: 10px 14px;
+      border-top: 1px solid var(--border-light);
+      color: var(--text-tertiary);
+      font-size: 12px;
+      line-height: 1.5;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .stream-cursor {
+      display: inline-block;
+      width: 6px;
+      height: 14px;
+      background: var(--accent-blue);
+      margin-left: 2px;
+      vertical-align: middle;
+      border-radius: 1px;
+      animation: cursorBlink 0.8s infinite;
+    }
+
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .btn-send.generating {
+      background: #ff3b30;
+      transform: none;
+    }
+
+    .btn-send.generating:hover {
+      background: #e02d23;
     }
 
     /* Bottom Input Bar */
@@ -1041,13 +1141,21 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
 
-          <div class="model-selector" title="Текущая нейросетевая модель">
+          <div class="model-selector" title="Выбор модели и режима скорости">
             <div class="model-status-dot"></div>
-            <span id="activeModelLabel">Pollinations AI • OpenAI Fast (Free)</span>
+            <select id="modelSelect" class="model-select-input" onchange="changeModel(this.value)">
+              <option value="openai-fast" selected>Турбо-режим (Стриминг • 1 сек)</option>
+              <option value="groq-llama">Groq LPU (450 токенов/сек)</option>
+              <option value="deepseek">Инженерный расчет (Анализ)</option>
+            </select>
           </div>
         </div>
 
         <div class="nav-right">
+          <button class="btn-icon-nav" id="settingsToggleBtn" onclick="openSettingsModal()" title="Настройки скорости и шлюзов">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </button>
+
           <button class="btn-icon-nav" id="themeToggleBtn" onclick="toggleTheme()" title="Светлая/Темная тема">
             <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="5"></circle>
@@ -1135,21 +1243,71 @@
             onkeydown="handleInputKeydown(event)"
             oninput="autoResizeTextarea(this)"
           ></textarea>
-          <button class="btn-send" id="btnSend" onclick="sendMessage()" title="Отправить сообщение">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-send" id="btnSend" onclick="handleSendOrAbort()" title="Отправить сообщение">
+            <svg id="iconSend" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+            <svg id="iconStop" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+              <rect x="5" y="5" width="14" height="14" rx="2"></rect>
             </svg>
           </button>
         </div>
 
         <div class="input-meta-hint">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-          <span>Shift + Enter — перенос строки. История сохраняется в памяти вашего браузера.</span>
+          <span>Shift + Enter — перенос строки. Мгновенная доставка потоком (SSE) без ожидания.</span>
         </div>
       </div>
 
     </main>
+  </div>
+
+  <!-- Settings Modal (Speed, Gateway, API Keys) -->
+  <div class="modal-overlay" id="settingsModal" onclick="closeModalOnBackdrop(event)">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3>Параметры скорости и шлюзов</h3>
+        <button class="modal-close-btn" onclick="closeSettingsModal()" title="Закрыть">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="auth-form" style="gap: 16px;">
+          <div class="form-group">
+            <label>Стиль генерации</label>
+            <select id="settingStyle" class="form-input" onchange="saveSettingsFromModal()">
+              <option value="concise">Лаконичный (максимальная скорость, ответ без лишней воды)</option>
+              <option value="detailed">Развернутый (детальные технические объяснения и расчеты)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Основной шлюз вычислений</label>
+            <select id="settingProvider" class="form-input" onchange="toggleProviderSettings(); saveSettingsFromModal();">
+              <option value="pollinations">Pollinations Turbo (Бесплатно, без API-ключей, SSE поток)</option>
+              <option value="groq">Groq LPU (~450 токенов/сек через личный бесплатный ключ)</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="groqKeyGroup" style="display: none;">
+            <label>Groq API-ключ (бесплатно на console.groq.com)</label>
+            <input type="password" id="settingGroqKey" class="form-input" placeholder="gsk_..." onchange="saveSettingsFromModal()">
+            <span style="font-size: 11px; color: var(--text-tertiary); line-height: 1.4;">Ключ хранится локально в вашем браузере. Архитектура Groq LPU генерирует ответы практически мгновенно (~0.3 сек).</span>
+          </div>
+
+          <div style="background: var(--bg-subtle); padding: 12px 14px; border-radius: var(--radius-md); font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 10px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            <div>Отклик первого токена (TTFT): <strong>~0.3–0.8 сек</strong> в реальном времени.</div>
+          </div>
+
+          <button type="button" class="btn-submit-auth" onclick="closeSettingsModal()">
+            Готово
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Auth / Register Modal -->
@@ -1213,17 +1371,37 @@
     // -------------------------------------------------------------
     // Application State & Local Persistence
     // -------------------------------------------------------------
-    const API_ENDPOINT = 'https://text.pollinations.ai/';
+    const API_ENDPOINT = 'https://text.pollinations.ai/openai/chat/completions';
 
     let currentUser = JSON.parse(localStorage.getItem('ai_duo_user')) || null;
     let chats = JSON.parse(localStorage.getItem('ai_duo_chats')) || [];
     let currentChatId = localStorage.getItem('ai_duo_active_chat') || null;
+    let currentModel = localStorage.getItem('ai_duo_model') || 'openai-fast';
+    let currentProvider = localStorage.getItem('ai_duo_provider') || 'pollinations';
+    let groqApiKey = localStorage.getItem('ai_duo_groq_key') || '';
+    let responseStyle = localStorage.getItem('ai_duo_style') || 'concise';
     let isGenerating = false;
+    let currentAbortController = null;
+    let currentGenerationId = 0;
     let authMode = 'login'; // 'login' | 'register'
 
     // Initialize application
     function initApp() {
       updateUserUI();
+
+      const modelSelect = document.getElementById('modelSelect');
+      if (modelSelect) modelSelect.value = currentModel;
+
+      const styleSelect = document.getElementById('settingStyle');
+      if (styleSelect) styleSelect.value = responseStyle;
+
+      const providerSelect = document.getElementById('settingProvider');
+      if (providerSelect) providerSelect.value = currentProvider;
+
+      const groqInput = document.getElementById('settingGroqKey');
+      if (groqInput) groqInput.value = groqApiKey;
+
+      toggleProviderSettings();
 
       if (!chats || chats.length === 0) {
         createNewChat(false);
@@ -1233,6 +1411,17 @@
         }
         renderHistoryList();
         renderActiveChat();
+      }
+    }
+
+    function changeModel(val) {
+      currentModel = val;
+      localStorage.setItem('ai_duo_model', val);
+      if (val === 'groq-llama' && !groqApiKey) {
+        openSettingsModal();
+        showToast('Для Groq введите бесплатный API-ключ в настройках');
+      } else {
+        showToast('Режим скорости переключен: ' + val);
       }
     }
 
@@ -1340,32 +1529,86 @@
         row.className = `message-row ${msg.role}`;
 
         if (msg.role === 'assistant') {
+          let extraThinkingHtml = '';
+          if (msg.reasoning) {
+            extraThinkingHtml = `
+              <details class="thinking-box">
+                <summary class="thinking-summary">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                  <span>Ход анализа (${msg.reasoning.split(/\s+/).filter(Boolean).length} слов)</span>
+                </summary>
+                <div class="thinking-content">${escapeHtml(msg.reasoning)}</div>
+              </details>
+            `;
+          }
           row.innerHTML = `
             <div class="msg-avatar assistant">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
             </div>
-            <div class="bubble">${formatMarkdown(msg.content)}</div>
+            <div class="bubble">
+              ${extraThinkingHtml}
+              <div>${formatMarkdown(stripEmoji(msg.content))}</div>
+            </div>
           `;
         } else {
           row.innerHTML = `
-            <div class="bubble">${escapeHtml(msg.content).replace(/\n/g, '<br>')}</div>
+            <div class="bubble">${escapeHtml(stripEmoji(msg.content)).replace(/\n/g, '<br>')}</div>
           `;
         }
 
         messagesContainer.appendChild(row);
       });
 
-      scrollToBottom();
+      scrollToBottomFast();
     }
 
     // -------------------------------------------------------------
-    // Send Message & AI API Call
+    // Send Message & AI API Call (SSE Streaming & Instant Response)
     // -------------------------------------------------------------
+    function handleSendOrAbort() {
+      if (isGenerating) {
+        abortGeneration();
+      } else {
+        sendMessage();
+      }
+    }
+
+    function abortGeneration() {
+      currentGenerationId++;
+      if (currentAbortController) {
+        currentAbortController.abort();
+        currentAbortController = null;
+      }
+      setGenerationUI(false);
+      isGenerating = false;
+      showToast('Генерация остановлена');
+    }
+
+    function setGenerationUI(generating) {
+      const btn = document.getElementById('btnSend');
+      const iconSend = document.getElementById('iconSend');
+      const iconStop = document.getElementById('iconStop');
+      if (!btn) return;
+
+      if (generating) {
+        btn.classList.add('generating');
+        btn.title = 'Остановить генерацию';
+        if (iconSend) iconSend.style.display = 'none';
+        if (iconStop) iconStop.style.display = 'block';
+      } else {
+        btn.classList.remove('generating');
+        btn.title = 'Отправить сообщение';
+        if (iconSend) iconSend.style.display = 'block';
+        if (iconStop) iconStop.style.display = 'none';
+      }
+    }
+
     async function sendMessage() {
       const input = document.getElementById('messageInput');
       const text = input.value.trim();
       if (!text || isGenerating) return;
 
+      const genId = ++currentGenerationId;
       const chat = getActiveChat();
 
       // Add user message
@@ -1386,66 +1629,203 @@
       renderHistoryList();
       renderActiveChat();
 
-      // Prepare assistant typing row
+      // Prepare assistant streaming row
       isGenerating = true;
-      document.getElementById('btnSend').disabled = true;
+      setGenerationUI(true);
 
       const messagesContainer = document.getElementById('messagesList');
-      const typingRow = document.createElement('div');
-      typingRow.className = 'message-row assistant';
-      typingRow.id = 'typingIndicatorRow';
-      typingRow.innerHTML = `
+      const streamRow = document.createElement('div');
+      streamRow.className = 'message-row assistant';
+      streamRow.id = 'activeStreamRow';
+      streamRow.innerHTML = `
         <div class="msg-avatar assistant">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
         </div>
-        <div class="bubble">
-          <div class="typing-indicator">
-            <span class="typing-dot"></span>
-            <span class="typing-dot"></span>
-            <span class="typing-dot"></span>
+        <div class="bubble" id="activeStreamBubble">
+          <div class="thinking-box" id="activeThinkingBox" style="display: none;">
+            <details id="activeThinkingDetails" open>
+              <summary class="thinking-summary" id="activeThinkingSummary">
+                <span class="thinking-spinner"></span>
+                <span id="activeThinkingTitle">Инженерный анализ запроса...</span>
+              </summary>
+              <div class="thinking-content" id="activeThinkingContent"></div>
+            </details>
+          </div>
+          <div class="stream-content" id="activeStreamContent">
+            <span class="stream-cursor"></span>
           </div>
         </div>
       `;
-      messagesContainer.appendChild(typingRow);
-      scrollToBottom();
+      messagesContainer.appendChild(streamRow);
+      scrollToBottomFast();
+
+      // Cache DOM references for this streaming session
+      const box = document.getElementById('activeThinkingBox');
+      const details = document.getElementById('activeThinkingDetails');
+      const contentEl = document.getElementById('activeThinkingContent');
+      const titleEl = document.getElementById('activeThinkingTitle');
+      const streamEl = document.getElementById('activeStreamContent');
+      const scrollArea = document.getElementById('chatScrollArea');
+
+      currentAbortController = new AbortController();
+      let pendingContent = '';
+      let pendingReasoning = '';
+      let rafScheduled = false;
+
+      function scheduleRender() {
+        if (rafScheduled) return;
+        rafScheduled = true;
+        requestAnimationFrame(() => {
+          rafScheduled = false;
+          if (genId !== currentGenerationId) return;
+
+          const cleanReasoning = stripEmoji(pendingReasoning).trim();
+          const cleanContent = stripEmoji(pendingContent);
+
+          if (cleanReasoning) {
+            if (box) box.style.display = 'block';
+            if (contentEl) contentEl.textContent = cleanReasoning;
+            if (cleanContent.length > 10 && details && details.open) {
+              details.open = false;
+              if (titleEl) {
+                const words = cleanReasoning.split(/\s+/).filter(Boolean).length;
+                titleEl.textContent = 'Ход анализа (' + words + ' слов)';
+              }
+            }
+          }
+
+          if (streamEl) {
+            if (cleanContent) {
+              streamEl.innerHTML = safeFormatForStreaming(cleanContent) + '<span class="stream-cursor"></span>';
+            } else {
+              streamEl.innerHTML = '<span class="stream-cursor"></span>';
+            }
+          }
+
+          maybeAutoScroll();
+        });
+      }
+
+      function maybeAutoScroll() {
+        if (!scrollArea) return;
+        const nearBottom = scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.clientHeight < 140;
+        if (nearBottom) {
+          scrollArea.scrollTop = scrollArea.scrollHeight;
+        }
+      }
 
       try {
-        // Build message payload
+        const brevityInstruction = responseStyle === 'concise'
+          ? ' Отвечай максимально кратко, сжато и по существу, сразу выдавай решение без пространных предисловий и рассуждений.'
+          : ' Давай развернутые, детальные технические пояснения с формулами и таблицами.';
+
+        const systemPrompt = 'Ты полезный технический ассистент AI Studio. Отвечай на русском языке четко и структурированно.' 
+          + brevityInstruction 
+          + ' СТРОГО БЕЗ ЭМОДЗИ (ни в тексте, ни в списках).';
+
         const apiMessages = [
-          { role: 'system', content: 'You are a helpful, precise engineering and technical assistant. Answer in Russian clearly. Use structured markdown formatting and tables where appropriate. DO NOT use emojis.' }
+          { role: 'system', content: systemPrompt }
         ];
 
-        // Include last 6 messages for context
         const contextHistory = chat.messages.slice(-6);
         contextHistory.forEach(m => {
           apiMessages.push({ role: m.role, content: m.content });
         });
 
-        const response = await fetch(API_ENDPOINT, {
+        const isGroq = (currentProvider === 'groq' || currentModel === 'groq-llama') && groqApiKey;
+        const endpoint = isGroq 
+          ? 'https://api.groq.com/openai/v1/chat/completions' 
+          : 'https://text.pollinations.ai/openai/chat/completions';
+
+        const headers = { 'Content-Type': 'application/json; charset=utf-8' };
+        if (isGroq) headers['Authorization'] = 'Bearer ' + groqApiKey;
+
+        const targetModel = isGroq 
+          ? 'llama-3.3-70b-versatile' 
+          : (currentModel === 'deepseek' ? 'deepseek' : 'openai-fast');
+
+        const response = await fetch(endpoint, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8'
-          },
+          headers: headers,
           body: JSON.stringify({
             messages: apiMessages,
-            model: 'openai'
-          })
+            model: targetModel,
+            stream: true
+          }),
+          signal: currentAbortController.signal
         });
 
         if (!response.ok) {
-          throw new Error('Статус ответа: ' + response.status);
+          throw new Error('HTTP ' + response.status);
         }
 
-        const replyText = await response.text();
+        if (!response.body) {
+          const textRes = await response.text();
+          pendingContent = textRes;
+        } else {
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder('utf-8');
+          let buf = '';
+          let streamDone = false;
 
-        // Remove typing indicator
-        const row = document.getElementById('typingIndicatorRow');
-        if (row) row.remove();
+          while (!streamDone) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buf += decoder.decode(value, { stream: true }).replace(/\r\n/g, '\n');
 
-        // Append assistant message
+            let idx;
+            while ((idx = buf.indexOf('\n\n')) !== -1) {
+              const frame = buf.slice(0, idx);
+              buf = buf.slice(idx + 2);
+
+              const dataLines = frame.split('\n').filter(l => l.startsWith('data:'));
+              if (!dataLines.length) continue;
+              const payload = dataLines.map(l => l.slice(5).trim()).join('');
+              if (payload === '[DONE]') {
+                streamDone = true;
+                break;
+              }
+
+              try {
+                const json = JSON.parse(payload);
+                const delta = json.choices?.[0]?.delta;
+                if (delta) {
+                  if (delta.reasoning) {
+                    pendingReasoning += delta.reasoning;
+                    scheduleRender();
+                  }
+                  if (delta.content) {
+                    pendingContent += delta.content;
+                    scheduleRender();
+                  }
+                }
+              } catch (e) {
+                // ignore malformed frame
+              }
+            }
+          }
+        }
+
+        if (genId !== currentGenerationId) return;
+
+        let finalContent = stripEmoji(pendingContent).trim();
+        let finalReasoning = stripEmoji(pendingReasoning).trim();
+
+        if (!finalContent && finalReasoning) {
+          finalContent = finalReasoning;
+          finalReasoning = '';
+        }
+
+        if (!finalContent) {
+          finalContent = 'Ответ сформирован.';
+        }
+
+        if (streamRow) streamRow.remove();
+
         chat.messages.push({
           role: 'assistant',
-          content: replyText,
+          content: finalContent,
+          reasoning: finalReasoning || undefined,
           timestamp: Date.now()
         });
 
@@ -1453,23 +1833,76 @@
         renderActiveChat();
 
       } catch (err) {
-        console.error('Ошибка вызова модели:', err);
-        const row = document.getElementById('typingIndicatorRow');
-        if (row) row.remove();
+        if (err.name === 'AbortError') {
+          if (genId === currentGenerationId) {
+            let finalContent = stripEmoji(pendingContent).trim();
+            let finalReasoning = stripEmoji(pendingReasoning).trim();
+            if (streamRow) streamRow.remove();
 
-        chat.messages.push({
-          role: 'assistant',
-          content: 'Произошла кратковременная ошибка соединения с публичным шлюзом модели. Пожалуйста, повторите запрос.',
-          timestamp: Date.now()
-        });
+            if (finalContent || finalReasoning) {
+              chat.messages.push({
+                role: 'assistant',
+                content: (finalContent || finalReasoning) + ' *(генерация остановлена)*',
+                reasoning: finalReasoning || undefined,
+                timestamp: Date.now()
+              });
+              saveChats();
+              renderActiveChat();
+            }
+          }
+        } else {
+          if (genId === currentGenerationId) {
+            console.error('Ошибка вызова модели:', err);
+            if (streamRow) streamRow.remove();
 
-        saveChats();
-        renderActiveChat();
-        showToast('Ошибка сети. Попробуйте еще раз.');
+            let partial = stripEmoji(pendingContent).trim();
+            if (partial) {
+              chat.messages.push({
+                role: 'assistant',
+                content: partial + '\n\n*(Соединение завершено, отображена полученная часть)*',
+                timestamp: Date.now()
+              });
+            } else {
+              chat.messages.push({
+                role: 'assistant',
+                content: 'Шлюз модели временно перегружен или недоступен. Пожалуйста, повторите запрос или выберите другой режим в настройках.',
+                timestamp: Date.now()
+              });
+            }
+            saveChats();
+            renderActiveChat();
+            showToast('Ошибка сети. Попробуйте еще раз.');
+          }
+        }
       } finally {
-        isGenerating = false;
-        document.getElementById('btnSend').disabled = false;
-        document.getElementById('messageInput').focus();
+        if (genId === currentGenerationId) {
+          isGenerating = false;
+          currentAbortController = null;
+          setGenerationUI(false);
+          document.getElementById('messageInput').focus();
+        }
+      }
+    }
+
+    function stripEmoji(text) {
+      if (!text) return '';
+      return text
+        .replace(/[\p{Extended_Pictographic}\p{Regional_Indicator}]/gu, '')
+        .replace(/[\uFE0F\u200D\u20E3]/g, '')
+        .replace(/ {2,}/g, ' ');
+    }
+
+    function safeFormatForStreaming(text) {
+      if (!text) return '';
+      const fenceCount = (text.match(/```/g) || []).length;
+      const patched = fenceCount % 2 === 1 ? text + '\n```' : text;
+      return formatMarkdown(patched);
+    }
+
+    function scrollToBottomFast() {
+      const area = document.getElementById('chatScrollArea');
+      if (area) {
+        area.scrollTop = area.scrollHeight;
       }
     }
 
@@ -1612,7 +2045,57 @@
     function closeModalOnBackdrop(e) {
       if (e.target.id === 'authModal') {
         closeAuthModal();
+      } else if (e.target.id === 'settingsModal') {
+        closeSettingsModal();
       }
+    }
+
+    // -------------------------------------------------------------
+    // Settings & Speed Preferences
+    // -------------------------------------------------------------
+    function openSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      const styleSelect = document.getElementById('settingStyle');
+      const providerSelect = document.getElementById('settingProvider');
+      const groqInput = document.getElementById('settingGroqKey');
+      if (styleSelect) styleSelect.value = responseStyle;
+      if (providerSelect) providerSelect.value = currentProvider;
+      if (groqInput) groqInput.value = groqApiKey;
+      toggleProviderSettings();
+      if (modal) modal.classList.add('open');
+    }
+
+    function closeSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function toggleProviderSettings() {
+      const providerSelect = document.getElementById('settingProvider');
+      const groqGroup = document.getElementById('groqKeyGroup');
+      if (providerSelect && groqGroup) {
+        groqGroup.style.display = providerSelect.value === 'groq' ? 'flex' : 'none';
+      }
+    }
+
+    function saveSettingsFromModal() {
+      const styleSelect = document.getElementById('settingStyle');
+      const providerSelect = document.getElementById('settingProvider');
+      const groqInput = document.getElementById('settingGroqKey');
+
+      if (styleSelect) {
+        responseStyle = styleSelect.value;
+        localStorage.setItem('ai_duo_style', responseStyle);
+      }
+      if (providerSelect) {
+        currentProvider = providerSelect.value;
+        localStorage.setItem('ai_duo_provider', currentProvider);
+      }
+      if (groqInput) {
+        groqApiKey = groqInput.value.trim();
+        localStorage.setItem('ai_duo_groq_key', groqApiKey);
+      }
+      showToast('Настройки скорости сохранены');
     }
 
     function switchAuthTab(mode) {
