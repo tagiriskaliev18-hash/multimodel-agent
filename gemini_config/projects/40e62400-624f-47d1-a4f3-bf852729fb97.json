@@ -1,0 +1,20 @@
+{
+  "id": "40e62400-624f-47d1-a4f3-bf852729fb97",
+  "name": "aiduo1",
+  "projectResources": {
+    "resources": [
+      {
+        "gitFolder": {
+          "folderUri": "file:///c%3A/projects/aiduo"
+        }
+      }
+    ]
+  },
+  "settings": {
+    "fileAccessPolicy": "AGENT_SETTING_POLICY_ALLOW",
+    "sandboxMode": false,
+    "autoExecutionPolicy": "CASCADE_COMMANDS_AUTO_EXECUTION_EAGER",
+    "artifactReviewMode": "ARTIFACT_REVIEW_MODE_TURBO"
+  },
+  "isWorkspaceOnly": false
+}

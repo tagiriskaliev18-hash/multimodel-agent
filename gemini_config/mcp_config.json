@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "claude-bridge": {
+      "command": "python",
+      "args": [
+        "C:\\projects\\tools\\claude_bridge.py"
+      ]
+    }
+  }
+}
