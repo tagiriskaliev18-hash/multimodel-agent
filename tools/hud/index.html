@@ -214,11 +214,11 @@
     }
 
     .hero-eyebrow {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--accent-blue);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -309,7 +309,7 @@
       pointer-events: none;
     }
 
-    /* iOS-style Segmented Filter Bar */
+    /* Filter Bar */
     .filter-wrapper {
       max-width: 1240px;
       margin: 0 auto 36px;
@@ -368,7 +368,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 28px;
       margin-bottom: 56px;
-      perspective: 1200px; /* 3D Perspective Context */
+      perspective: 1200px;
     }
 
     @media (max-width: 1040px) {
@@ -461,11 +461,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
       margin-bottom: 14px;
       border: 1px solid var(--border-light);
       box-shadow: var(--shadow-sm);
       transform: translateZ(20px);
+      color: var(--accent-blue);
+    }
+
+    .card-icon-badge svg {
+      width: 22px;
+      height: 22px;
     }
 
     .card-title {
@@ -568,7 +573,7 @@
       color: #ff3b30;
     }
 
-    /* Card Interactive Action Buttons (Fixed & 100% Functional) */
+    /* Card Interactive Action Buttons */
     .card-actions-area {
       border-top: 1px solid var(--border-light);
       padding-top: 18px;
@@ -644,7 +649,7 @@
       background: rgba(0, 0, 0, 0.08);
     }
 
-    /* Apple-style Interactive Recommender (Decision Assistant) */
+    /* Apple-style Interactive Recommender */
     .recommender-section {
       background: var(--bg-surface);
       border-radius: var(--radius-xl);
@@ -703,17 +708,28 @@
       box-shadow: 0 0 0 1.5px var(--accent-blue);
     }
 
+    .scenario-btn-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scenario-btn-head svg {
+      width: 16px;
+      height: 16px;
+      color: var(--accent-blue);
+      flex-shrink: 0;
+    }
+
     .scenario-btn strong {
       font-size: 13px;
       color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .scenario-btn span {
       font-size: 12px;
       color: var(--text-secondary);
+      padding-left: 24px;
     }
 
     /* Recommendation Card Result */
@@ -796,7 +812,7 @@
       color: var(--text-tertiary);
     }
 
-    /* Live Interactive Model Ping Matrix (Microsoft Settings Style) */
+    /* Live Interactive Model Ping Matrix */
     .system-status-section {
       background: var(--bg-surface);
       border-radius: var(--radius-xl);
@@ -851,7 +867,7 @@
       border-color: var(--accent-blue);
     }
 
-    /* Modal Sheet for Viewing Skills & Details */
+    /* Modal Sheet for Viewing Skills */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -987,15 +1003,15 @@
 </head>
 <body>
 
-  <!-- Apple-style Navigation Bar with Working Theme Toggle -->
+  <!-- Navigation Bar with Working Theme Toggle -->
   <nav class="global-nav">
     <div class="nav-container">
       <div class="nav-brand" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <div class="nav-brand-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-            <path d="M2 17l10 5 10-5"></path>
-            <path d="M2 12l10 5 10-5"></path>
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
           </svg>
         </div>
         <span>AI Duo Architecture</span>
@@ -1027,7 +1043,7 @@
   <header class="hero-wrapper">
     <div class="hero-text-block">
       <div class="hero-eyebrow">
-        <span>● Multi-Model Neural Architecture</span>
+        <span>MULTI-MODEL NEURAL ARCHITECTURE</span>
       </div>
       <h1 class="hero-title">Пять специализированных агентов.<br>Точно под вашу задачу.</h1>
       <p class="hero-subtitle">
@@ -1081,7 +1097,13 @@
           <div class="featured-tag">Главный инженер</div>
           
           <div class="card-top">
-            <div class="card-icon-badge">🏛️</div>
+            <div class="card-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+            </div>
             <h3 class="card-title">Архитектор</h3>
             <div class="card-tagline">Фундамент и системное проектирование</div>
             <div class="card-pill-row">
@@ -1141,7 +1163,14 @@
           <div class="card-glare"></div>
           
           <div class="card-top">
-            <div class="card-icon-badge">🔍</div>
+            <div class="card-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="18" r="3"></circle>
+                <circle cx="6" cy="6" r="3"></circle>
+                <path d="M13 6h3a2 2 0 0 1 2 2v7"></path>
+                <line x1="6" y1="9" x2="6" y2="21"></line>
+              </svg>
+            </div>
             <h3 class="card-title">Ревьюер кода</h3>
             <div class="card-tagline">Перекрёстный аудит изменений</div>
             <div class="card-pill-row">
@@ -1201,7 +1230,12 @@
           <div class="card-glare"></div>
           
           <div class="card-top">
-            <div class="card-icon-badge">⚡</div>
+            <div class="card-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
             <h3 class="card-title">Разработчик</h3>
             <div class="card-tagline">Спринтер быстрой генерации</div>
             <div class="card-pill-row">
@@ -1261,7 +1295,11 @@
           <div class="card-glare"></div>
           
           <div class="card-top">
-            <div class="card-icon-badge">🛡️</div>
+            <div class="card-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
             <h3 class="card-title">Безопасность</h3>
             <div class="card-tagline">Защита от уязвимостей и утечек</div>
             <div class="card-pill-row">
@@ -1321,7 +1359,20 @@
           <div class="card-glare"></div>
           
           <div class="card-top">
-            <div class="card-icon-badge">⚙️</div>
+            <div class="card-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                <rect x="9" y="9" width="6" height="6"></rect>
+                <line x1="9" y1="1" x2="9" y2="4"></line>
+                <line x1="15" y1="1" x2="15" y2="4"></line>
+                <line x1="9" y1="20" x2="9" y2="23"></line>
+                <line x1="15" y1="20" x2="15" y2="23"></line>
+                <line x1="20" y1="9" x2="23" y2="9"></line>
+                <line x1="20" y1="14" x2="23" y2="14"></line>
+                <line x1="1" y1="9" x2="4" y2="9"></line>
+                <line x1="1" y1="14" x2="4" y2="14"></line>
+              </svg>
+            </div>
             <h3 class="card-title">LLMOps (Soup)</h3>
             <div class="card-tagline">Тюнинг моделей под 8 GB RAM</div>
             <div class="card-pill-row">
@@ -1386,27 +1437,42 @@
 
       <div class="scenario-picker">
         <button class="scenario-btn active" onclick="selectScenario('new_project', this)">
-          <strong>🏛️ Новый проект с нуля</strong>
+          <div class="scenario-btn-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <strong>Новый проект с нуля</strong>
+          </div>
           <span>Стек, структура БД, контракты API</span>
         </button>
 
         <button class="scenario-btn" onclick="selectScenario('pr_review', this)">
-          <strong>🔍 Код-ревью перед коммитом</strong>
+          <div class="scenario-btn-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><path d="M13 6h3a2 2 0 0 1 2 2v7"></path><line x1="6" y1="9" x2="6" y2="21"></line></svg>
+            <strong>Код-ревью перед коммитом</strong>
+          </div>
           <span>Поиск багов, логика, edge cases</span>
         </button>
 
         <button class="scenario-btn" onclick="selectScenario('fast_code', this)">
-          <strong>⚡ Быстрый бойлерплейт</strong>
+          <div class="scenario-btn-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            <strong>Быстрый бойлерплейт</strong>
+          </div>
           <span>Функции, юнит-тесты на pytest (Free)</span>
         </button>
 
         <button class="scenario-btn" onclick="selectScenario('security_audit', this)">
-          <strong>🛡️ Аудит безопасности</strong>
+          <div class="scenario-btn-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <strong>Аудит безопасности</strong>
+          </div>
           <span>Скан утечек ключей и уязвимостей</span>
         </button>
 
         <button class="scenario-btn" onclick="selectScenario('local_ram', this)">
-          <strong>⚙️ Оптимизация под 8 GB RAM</strong>
+          <div class="scenario-btn-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg>
+            <strong>Оптимизация под 8 GB RAM</strong>
+          </div>
           <span>Квантование профилей через Soup</span>
         </button>
       </div>
@@ -1414,7 +1480,7 @@
       <!-- Recommendation Card -->
       <div class="recommendation-card" id="recommendationBox">
         <div class="rec-info">
-          <h3 id="recTitle">🏛️ Архитектор (Claude 3.7 Sonnet)</h3>
+          <h3 id="recTitle">Архитектор (Claude 3.7 Sonnet)</h3>
           <p id="recDesc">
             Для старта проекта или выбора архитектуры необходим глубокий системный анализ. Архитектор сформирует чистую структуру модулей, продумает схему базы данных и интерфейсы API, предотвращая переделки в будущем.
           </p>
@@ -1435,7 +1501,7 @@
       </div>
     </section>
 
-    <!-- Connected Providers & Real-time Ping Matrix (100% Functional Buttons) -->
+    <!-- Connected Providers & Real-time Ping Matrix -->
     <section class="system-status-section">
       <div class="section-header-compact">
         <h2>Подключенные сервисы и проверка связи</h2>
@@ -1505,7 +1571,9 @@
     <div class="modal-sheet">
       <div class="modal-header">
         <h3 id="modalTitle">Спецификация навыка</h3>
-        <button class="modal-close-btn" onclick="closeSkillModal()">✕</button>
+        <button class="modal-close-btn" onclick="closeSkillModal()" title="Закрыть">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
       <div class="modal-body" id="modalBody">
         <!-- Injected via JS -->
@@ -1565,12 +1633,11 @@
 
       ctx.clearRect(0, 0, displayW, displayH);
 
-      // Smooth camera interpolation
       rotX += (targetRotX - rotX) * 0.08;
       rotY += (targetRotY - rotY) * 0.08;
 
       if (!isDragging) {
-        targetRotY += 0.005; // Gentle continuous auto-rotation
+        targetRotY += 0.005;
       }
 
       const cosX = Math.cos(rotX);
@@ -1578,12 +1645,9 @@
       const cosY = Math.cos(rotY);
       const sinY = Math.sin(rotY);
 
-      // Project 3D point to 2D
       function project(x, y, z) {
-        // Rotate Y
         let x1 = x * cosY - z * sinY;
         let z1 = z * cosY + x * sinY;
-        // Rotate X
         let y2 = y * cosX - z1 * sinX;
         let z2 = z1 * cosX + y * sinX;
 
@@ -1597,7 +1661,6 @@
         };
       }
 
-      // Draw 3D Orbital Rings
       const ringRadii = [90, 110];
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const ringColor = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 113, 227, 0.15)';
@@ -1617,13 +1680,11 @@
         ctx.stroke();
       });
 
-      // Project and sort nodes by depth
       const projected = NODES.map(node => {
         const p = project(node.x, node.y, node.z);
         return { ...node, px: p.x, py: p.y, scale: p.scale, depth: p.depth };
       }).sort((a, b) => b.depth - a.depth);
 
-      // Draw connections from center to nodes
       const centerNode = projected.find(n => n.name === 'Antigravity Core');
       projected.forEach(n => {
         if (n !== centerNode) {
@@ -1636,26 +1697,22 @@
         }
       });
 
-      // Draw Nodes
       projected.forEach(node => {
         const r = node.radius * node.scale;
         
-        // Node halo
         ctx.beginPath();
         ctx.arc(node.px, node.py, r * 1.8, 0, Math.PI * 2);
         ctx.fillStyle = node.color + '22';
         ctx.fill();
 
-        // Node circle
         ctx.beginPath();
         ctx.arc(node.px, node.py, r, 0, Math.PI * 2);
         ctx.fillStyle = node.color;
         ctx.fill();
-        ctx.strokeStyle = isDark ? '#ffffff' : '#ffffff';
+        ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        // Node label
         ctx.font = `${Math.max(10, 11 * node.scale)}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
         ctx.fillStyle = isDark ? '#f5f5f7' : '#1d1d1f';
         ctx.fillText(node.name, node.px + r + 5, node.py + 4);
@@ -1664,7 +1721,6 @@
       requestAnimationFrame(draw3DScene);
     }
 
-    // Drag Interaction for 3D Canvas
     canvas.addEventListener('mousedown', e => {
       isDragging = true;
       lastMouseX = e.clientX;
@@ -1705,7 +1761,7 @@
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
 
-        const rotateX = ((y - centerY) / centerY) * -10; // Max tilt 10 deg
+        const rotateX = ((y - centerY) / centerY) * -10;
         const rotateY = ((x - centerX) / centerX) * 10;
 
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
@@ -1726,11 +1782,11 @@
 
 
     // -------------------------------------------------------------
-    // 3. Scenario Recommender & Functional Copying
+    // 3. Scenario Recommender & Functional Copying (No Emojis)
     // -------------------------------------------------------------
     const SCENARIOS = {
       'new_project': {
-        title: '🏛️ Архитектор (Claude 3.7 Sonnet)',
+        title: 'Архитектор (Claude 3.7 Sonnet)',
         desc: 'Для старта проекта или выбора архитектуры необходим глубокий системный анализ. Архитектор сформирует чистую структуру модулей, продумает схему базы данных и интерфейсы API, предотвращая переделки в будущем.',
         model: 'Модель: Claude 3.7 Sonnet',
         cost: 'Тариф: Бережный расход квот',
@@ -1738,7 +1794,7 @@
         cmd: 'Подключи агента architect: спроектируй структуру нового проекта, базу данных и контракты API с учетом масштабируемости.'
       },
       'pr_review': {
-        title: '🔍 Ревьюер кода (Claude Code)',
+        title: 'Ревьюер кода (Claude Code)',
         desc: 'Перед коммитом ответственных изменений запустите ревьюера. Он проверит diff, найдёт потенциальные race conditions, утечки ресурсов и проверит граничные случаи.',
         model: 'Модель: Claude Code CLI',
         cost: 'Тариф: По вызову',
@@ -1746,7 +1802,7 @@
         cmd: 'Подключи агента reviewer: проведи ревью последних изменений перед коммитом на баги, утечки и edge cases.'
       },
       'fast_code': {
-        title: '⚡ Разработчик (Groq LPU / Pollinations)',
+        title: 'Разработчик (Groq LPU / Pollinations)',
         desc: 'Генерация шаблонных классов, юнит-тестов и типовых функций не требует затрат дорогих квот Claude. Groq генерирует 400+ токенов в секунду абсолютно бесплатно.',
         model: 'Модель: Groq Llama 3.3 70B',
         cost: 'Тариф: 100% Бесплатно',
@@ -1754,7 +1810,7 @@
         cmd: 'Подключи агента developer: быстро напиши модульные тесты на pytest и вспомогательные функции для модуля.'
       },
       'security_audit': {
-        title: '🛡️ Аудитор безопасности (Guardrails)',
+        title: 'Аудитор безопасности (Guardrails)',
         desc: 'Проверка эндпоинтов, CORS-заголовков, токенов авторизации и зависимостей на известные уязвимости перед публикацией проекта в продакшн.',
         model: 'Модель: Claude 3.7 / Guardrails',
         cost: 'Тариф: Гибридный',
@@ -1762,7 +1818,7 @@
         cmd: 'Подключи агента security_auditor: проведи глубокий аудит безопасности кода, зависимостей и проверь на утечки секретов.'
       },
       'local_ram': {
-        title: '⚙️ Инженер LLMOps (Soup by Makazhan)',
+        title: 'Инженер LLMOps (Soup by Makazhan)',
         desc: 'Оптимизация локального инференса под конфигурацию вашего ноутбука (8 GB RAM). Подбор легких GGUF-моделей с 4-битным квантованием без зависания системы.',
         model: 'Модель: GGUF Q4_K_M (Soup)',
         cost: 'Тариф: Офлайн на вашей машине',
@@ -1798,11 +1854,11 @@
       };
 
       const promptText = map[agentKey] || 'Подключи агента ' + agentKey;
-      copyTextToClipboard(promptText, `Агент ${agentKey} выбран! Запрос скопирован в буфер`);
+      copyTextToClipboard(promptText, `Агент ${agentKey} выбран. Запрос скопирован в буфер.`);
     }
 
     function copyCurrentPrompt() {
-      copyTextToClipboard(activeCmd, 'Запрос скопирован! Вставьте в чат с Antigravity');
+      copyTextToClipboard(activeCmd, 'Запрос скопирован. Вставьте его в диалог.');
     }
 
     function copyTextToClipboard(text, successMsg) {
@@ -1811,7 +1867,7 @@
         const btnText = document.getElementById('copyBtnText');
         if (btnText) {
           const old = btnText.innerText;
-          btnText.innerText = 'Скопировано ✓';
+          btnText.innerText = 'Скопировано';
           setTimeout(() => { btnText.innerText = old; }, 1600);
         }
       });
@@ -1858,23 +1914,23 @@
     // -------------------------------------------------------------
     const SKILLS_CONTENT = {
       'architecture-audit': {
-        title: '🏛️ Скилл: architecture-audit (Аудит архитектуры)',
+        title: 'Скилл: architecture-audit (Аудит архитектуры)',
         desc: 'Регламент для системного консилиума Claude Code и Antigravity. Проверяет структуру модулей, контракты API, слабую связанность (loose coupling) и предотвращает создание тяжелых монолитов.'
       },
       'code-review': {
-        title: '🔍 Скилл: code-review (Глубокий аудит кода)',
+        title: 'Скилл: code-review (Глубокий аудит кода)',
         desc: 'Регламент автоматического код-ревью для диффов >30 строк. Фокусируется на граничных случаях, race conditions, обработке ошибок, асинхронных блокировках и утечках памяти.'
       },
       'boilerplate-gen': {
-        title: '⚡ Скилл: boilerplate-gen (Быстрый бойлерплейт)',
+        title: 'Скилл: boilerplate-gen (Быстрый бойлерплейт)',
         desc: 'Шаблонизатор быстрой кодогенерации на LPU (Groq / Pollinations). Генерирует модели Pydantic/dataclasses, CRUD-операции, фикстуры и параметризованные тесты pytest.'
       },
       'security-audit': {
-        title: '🛡️ Скилл: security-audit (Аудит безопасности)',
-        desc: 'Чеклист безопасности перед выкаткой в продакшн: проверка на hardcoded API-ключи, Path Traversal, SQL-инъекции, небезопасную десериализацию и уязвимости в package.json/requirements.txt.'
+        title: 'Скилл: security-audit (Аудит безопасности)',
+        desc: 'Чеклист безопасности перед выкаткой в продакшн: проверка на hardcoded API-ключи, Path Traversal, SQL-инъекции, небезопасную десериализацию и уязвимости в зависимостях.'
       },
       'llmops-tuning': {
-        title: '⚙️ Скилл: llmops-tuning (Soup LLMOps)',
+        title: 'Скилл: llmops-tuning (Soup LLMOps)',
         desc: 'Инструкции для инструмента LLM Soup Алпамыса Макажана. Подбирает оптимальный квантованный профиль (Q4_K_M) под конфигурацию ноутбука с 8 ГБ RAM.'
       }
     };
@@ -1927,7 +1983,7 @@ skills/${skillKey}/SKILL.md
         };
         const res = latencies[providerKey] || '50 ms';
         const pillClass = providerKey === 'soup' ? 'blue' : 'green';
-        cell.innerHTML = `<span class="pill ${pillClass}">${res} ✓</span>`;
+        cell.innerHTML = `<span class="pill ${pillClass}">${res} OK</span>`;
         showToast(`Провайдер ${providerKey.toUpperCase()} доступен (${res})`);
       }, 350);
     }
@@ -1944,7 +2000,7 @@ skills/${skillKey}/SKILL.md
       const icon = document.getElementById('themeIcon');
       if (next === 'dark') {
         icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
-        showToast('Включена темная тема Apple Pro');
+        showToast('Включена темная тема интерфейса');
       } else {
         icon.innerHTML = `
           <circle cx="12" cy="12" r="5"></circle>
@@ -1955,7 +2011,7 @@ skills/${skillKey}/SKILL.md
           <line x1="1" y1="12" x2="3" y2="12"></line>
           <line x1="21" y1="12" x2="23" y2="12"></line>
         `;
-        showToast('Включена светлая тема Apple');
+        showToast('Включена светлая тема интерфейса');
       }
     }
   </script>
