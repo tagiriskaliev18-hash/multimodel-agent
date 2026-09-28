@@ -115,7 +115,7 @@
     }
 
     .nav-container {
-      max-width: 1240px;
+      max-width: min(1140px, 94vw);
       width: 100%;
       margin: 0 auto;
       display: flex;
@@ -197,9 +197,10 @@
     /* Hero Section with 3D Canvas Orb & Apple Keynote Typography */
     .hero-wrapper {
       position: relative;
-      max-width: 1240px;
+      max-width: min(1140px, 94vw);
+      width: 100%;
       margin: 0 auto;
-      padding: 48px 24px 32px;
+      padding: 40px 16px 28px;
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
       align-items: center;
@@ -210,6 +211,7 @@
       .hero-wrapper {
         grid-template-columns: 1fr;
         text-align: center;
+        padding: 28px 12px 20px;
       }
     }
 
@@ -311,9 +313,10 @@
 
     /* Filter Bar */
     .filter-wrapper {
-      max-width: 1240px;
-      margin: 0 auto 36px;
-      padding: 0 24px;
+      max-width: min(1140px, 94vw);
+      width: 100%;
+      margin: 0 auto 32px;
+      padding: 0 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -326,6 +329,7 @@
       padding: 4px;
       border-radius: var(--radius-full);
       display: inline-flex;
+      flex-wrap: wrap;
       gap: 4px;
       border: 1px solid var(--border-light);
     }
@@ -333,7 +337,7 @@
     .segment-btn {
       background: transparent;
       border: none;
-      padding: 8px 18px;
+      padding: 8px 16px;
       border-radius: var(--radius-full);
       font-size: 13px;
       font-weight: 500;
@@ -343,6 +347,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
     }
 
     .segment-btn:hover {
@@ -358,28 +363,32 @@
 
     /* Main Grid for 3D Interactive Agent Cards */
     .content-container {
-      max-width: 1240px;
+      max-width: min(1140px, 94vw);
+      width: 100%;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 16px;
+      box-sizing: border-box;
     }
 
     .agents-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
-      margin-bottom: 56px;
+      gap: 20px;
+      margin-bottom: 48px;
       perspective: 1200px;
     }
 
-    @media (max-width: 1040px) {
+    @media (max-width: 1140px) {
       .agents-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
       }
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 720px) {
       .agents-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
       }
     }
 
@@ -659,8 +668,226 @@
       border-radius: var(--radius-xl);
       border: 1px solid var(--border-light);
       box-shadow: var(--shadow-sm);
-      padding: 36px;
-      margin-bottom: 56px;
+      padding: 32px 28px;
+      margin-bottom: 48px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+      .realtime-monitor-section {
+        padding: 20px 16px;
+      }
+    }
+
+    /* KPI Metrics Row */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .kpi-card {
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      border-color: rgba(0, 113, 227, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .kpi-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .kpi-value {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      font-feature-settings: "tnum";
+    }
+
+    .kpi-delta {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .kpi-delta.green {
+      background: var(--badge-green-bg);
+      color: var(--badge-green-text);
+    }
+
+    .kpi-delta.blue {
+      background: var(--badge-blue-bg);
+      color: var(--badge-blue-text);
+    }
+
+    .kpi-subtext {
+      font-size: 11.5px;
+      color: var(--text-tertiary);
+    }
+
+    /* Live Telemetry Chart Container */
+    .telemetry-chart-card {
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      margin-bottom: 26px;
+      position: relative;
+    }
+
+    .chart-controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .chart-title-group h3 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-title-group p {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s ease;
+    }
+
+    .legend-item:hover {
+      background: var(--bg-subtle);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    .legend-dot.tps {
+      background: #10b981;
+    }
+
+    .legend-dot.ram {
+      background: #0071e3;
+    }
+
+    .legend-dot.lat {
+      background: #f59e0b;
+    }
+
+    .chart-svg-wrap {
+      width: 100%;
+      height: 230px;
+      position: relative;
+    }
+
+    .chart-svg-wrap svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    .chart-axis-text {
+      font-size: 11px;
+      fill: var(--text-tertiary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .chart-grid-line {
+      stroke: var(--border-light);
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+    }
+
+    .chart-path-line {
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: d 0.35s ease;
+    }
+
+    .chart-path-line.tps {
+      stroke: #10b981;
+    }
+
+    .chart-path-line.ram {
+      stroke: #0071e3;
+    }
+
+    .chart-path-line.lat {
+      stroke: #f59e0b;
+      stroke-dasharray: 5 4;
+    }
+
+    .chart-path-area {
+      transition: d 0.35s ease;
+    }
+
+    /* Table Scroll Container */
+    .table-scroll-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 16px;
     }
 
     .monitor-top-row {
@@ -1627,6 +1854,7 @@
           </div>
         </div>
       </div>
+    </section>
 
     <!-- Real-time Agent Workload & Telemetry Monitor -->
     <section class="realtime-monitor-section" id="realtimeMonitorSection">
@@ -1636,18 +1864,144 @@
             Нагрузка и работа агентов в реальном времени
           </h2>
           <p style="font-size: 13.5px; color: var(--text-secondary);">
-            Мониторинг текущих процессов, очередей запросов и использования ресурсов ПК.
+            Мониторинг текущих процессов, скорости генерации (TPS) и использования ресурсов ПК.
           </p>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
           <div class="monitor-badge-pulse">
             <span class="pulse-dot"></span>
             <span>Телеметрия активна</span>
           </div>
+          <button class="btn-card-primary" id="btnBurstLoad" onclick="triggerBurstSimulation()" title="Смоделировать пиковый всплеск запросов">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            <span>Всплеск нагрузки</span>
+          </button>
           <button class="btn-card-secondary" id="btnToggleSim" onclick="toggleWorkloadSimulation()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-            <span id="simBtnLabel">Тестовый поток задач</span>
+            <span id="simBtnLabel">Пауза</span>
           </button>
+        </div>
+      </div>
+
+      <!-- 4 Live KPI Cards -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Скорость инференса (Groq)</span>
+            <span class="kpi-delta green">Высокая</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpi-tps">428 TPS</span>
+          </div>
+          <div class="kpi-subtext">Llama 3.3 70B • 0$ Free Tier</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Память RAM ноутбука</span>
+            <span class="kpi-delta blue" id="kpi-ram-pct">65%</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpi-ram">5.2 / 8 GB</span>
+          </div>
+          <div class="kpi-subtext">Запас 2.8 GB • Профиль Soup Q4</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Задержка первого токена (TTFT)</span>
+            <span class="kpi-delta green">38 ms</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpi-latency">38 ms</span>
+          </div>
+          <div class="kpi-subtext">LPU аппаратный отклик</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Очередь задач</span>
+            <span class="kpi-delta blue">2 потока</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpi-queue">0 в очереди</span>
+          </div>
+          <div class="kpi-subtext">Агенты готовы к новым запросам</div>
+        </div>
+      </div>
+
+      <!-- Visual Telemetry SVG Timeseries Chart -->
+      <div class="telemetry-chart-card">
+        <div class="chart-controls-bar">
+          <div class="chart-title-group">
+            <h3>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              <span>График телеметрии и загрузки моделей в реальном времени</span>
+            </h3>
+            <p>Динамика за последние 30 секунд: скорость генерации токенов (TPS), занятая память (RAM) и задержка отклика</p>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item" onclick="toggleMetric('tps')" title="Нажмите, чтобы включить/скрыть">
+              <span class="legend-dot tps"></span>
+              <span>Скорость (TPS)</span>
+            </div>
+            <div class="legend-item" onclick="toggleMetric('ram')" title="Нажмите, чтобы включить/скрыть">
+              <span class="legend-dot ram"></span>
+              <span>Память RAM (%)</span>
+            </div>
+            <div class="legend-item" onclick="toggleMetric('lat')" title="Нажмите, чтобы включить/скрыть">
+              <span class="legend-dot lat"></span>
+              <span>Задержка (мс / 2)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-svg-wrap" id="chartSvgWrap">
+          <svg id="telemetrySvg" viewBox="0 0 800 220" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="gradTps" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+              </linearGradient>
+              <linearGradient id="gradRam" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0071e3" stop-opacity="0.20"/>
+                <stop offset="100%" stop-color="#0071e3" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Grid Lines -->
+            <line x1="50" y1="20" x2="780" y2="20" class="chart-grid-line" />
+            <line x1="50" y1="65" x2="780" y2="65" class="chart-grid-line" />
+            <line x1="50" y1="110" x2="780" y2="110" class="chart-grid-line" />
+            <line x1="50" y1="155" x2="780" y2="155" class="chart-grid-line" />
+
+            <!-- Y Axis Labels -->
+            <text x="40" y="24" text-anchor="end" class="chart-axis-text">500</text>
+            <text x="40" y="69" text-anchor="end" class="chart-axis-text">375</text>
+            <text x="40" y="114" text-anchor="end" class="chart-axis-text">250</text>
+            <text x="40" y="159" text-anchor="end" class="chart-axis-text">125</text>
+            <text x="40" y="195" text-anchor="end" class="chart-axis-text">0</text>
+
+            <!-- Time X Axis Labels -->
+            <text x="50" y="212" text-anchor="start" class="chart-axis-text">-30с</text>
+            <text x="232" y="212" text-anchor="middle" class="chart-axis-text">-20с</text>
+            <text x="415" y="212" text-anchor="middle" class="chart-axis-text">-10с</text>
+            <text x="597" y="212" text-anchor="middle" class="chart-axis-text">-5с</text>
+            <text x="780" y="212" text-anchor="end" class="chart-axis-text">Сейчас</text>
+
+            <!-- Area Fills -->
+            <path id="areaTps" class="chart-path-area" fill="url(#gradTps)" d="" />
+            <path id="areaRam" class="chart-path-area" fill="url(#gradRam)" d="" />
+
+            <!-- Dynamic Lines -->
+            <path id="lineTps" class="chart-path-line tps" d="" />
+            <path id="lineRam" class="chart-path-line ram" d="" />
+            <path id="lineLat" class="chart-path-line lat" d="" />
+
+            <!-- Live Points at the right edge -->
+            <circle id="livePointTps" cx="780" cy="85" r="4.5" fill="#10b981" stroke="#ffffff" stroke-width="2" />
+            <circle id="livePointRam" cx="780" cy="115" r="4.5" fill="#0071e3" stroke="#ffffff" stroke-width="2" />
+          </svg>
         </div>
       </div>
 
@@ -1864,60 +2218,62 @@
         <p>Каждая кнопка «Проверить» выполняет моментальный диагностический отклик.</p>
       </div>
 
-      <table class="status-table">
-        <thead>
-          <tr>
-            <th>Провайдер</th>
-            <th>Основная модель</th>
-            <th>Тариф</th>
-            <th>Назначение</th>
-            <th>Задержка</th>
-            <th>Действие</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Claude Code CLI</strong></td>
-            <td>Claude 3.7 Sonnet</td>
-            <td>Квота Claude Code</td>
-            <td>Архитектурный консилиум и код-ревью</td>
-            <td id="ping-claude"><span class="pill green">180 ms</span></td>
-            <td><button class="btn-ping" onclick="pingProvider('claude')">Проверить</button></td>
-          </tr>
-          <tr>
-            <td><strong>Groq LPU</strong></td>
-            <td>Llama 3.3 70B Versatile</td>
-            <td>Бесплатно (Free)</td>
-            <td>Сверхбыстрая генерация кода (400+ TPS)</td>
-            <td id="ping-groq"><span class="pill green">42 ms</span></td>
-            <td><button class="btn-ping" onclick="pingProvider('groq')">Проверить</button></td>
-          </tr>
-          <tr>
-            <td><strong>Pollinations AI</strong></td>
-            <td>Mistral / DeepSeek</td>
-            <td>Бесплатно (Без ключей)</td>
-            <td>Безлимитный fallback для черновых задач</td>
-            <td id="ping-pollinations"><span class="pill green">310 ms</span></td>
-            <td><button class="btn-ping" onclick="pingProvider('pollinations')">Проверить</button></td>
-          </tr>
-          <tr>
-            <td><strong>OpenRouter Free</strong></td>
-            <td>Qwen 2.5 / Gemma 2</td>
-            <td>Бесплатно (Free)</td>
-            <td>Альтернативное мнение и вариации кода</td>
-            <td id="ping-openrouter"><span class="pill green">240 ms</span></td>
-            <td><button class="btn-ping" onclick="pingProvider('openrouter')">Проверить</button></td>
-          </tr>
-          <tr>
-            <td><strong>LLM Soup (Makazhan)</strong></td>
-            <td>Локальные GGUF Q4</td>
-            <td>Локально (0$)</td>
-            <td>Профилирование памяти под 8 ГБ RAM</td>
-            <td id="ping-soup"><span class="pill blue">8 ms</span></td>
-            <td><button class="btn-ping" onclick="pingProvider('soup')">Проверить</button></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-scroll-container">
+        <table class="status-table">
+          <thead>
+            <tr>
+              <th>Провайдер</th>
+              <th>Основная модель</th>
+              <th>Тариф</th>
+              <th>Назначение</th>
+              <th>Задержка</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Claude Code CLI</strong></td>
+              <td>Claude 3.7 Sonnet</td>
+              <td>Квота Claude Code</td>
+              <td>Архитектурный консилиум и код-ревью</td>
+              <td id="ping-claude"><span class="pill green">180 ms</span></td>
+              <td><button class="btn-ping" onclick="pingProvider('claude')">Проверить</button></td>
+            </tr>
+            <tr>
+              <td><strong>Groq LPU</strong></td>
+              <td>Llama 3.3 70B Versatile</td>
+              <td>Бесплатно (Free)</td>
+              <td>Сверхбыстрая генерация кода (400+ TPS)</td>
+              <td id="ping-groq"><span class="pill green">42 ms</span></td>
+              <td><button class="btn-ping" onclick="pingProvider('groq')">Проверить</button></td>
+            </tr>
+            <tr>
+              <td><strong>Pollinations AI</strong></td>
+              <td>Mistral / DeepSeek</td>
+              <td>Бесплатно (Без ключей)</td>
+              <td>Безлимитный fallback для черновых задач</td>
+              <td id="ping-pollinations"><span class="pill green">310 ms</span></td>
+              <td><button class="btn-ping" onclick="pingProvider('pollinations')">Проверить</button></td>
+            </tr>
+            <tr>
+              <td><strong>OpenRouter Free</strong></td>
+              <td>Qwen 2.5 / Gemma 2</td>
+              <td>Бесплатно (Free)</td>
+              <td>Альтернативное мнение и вариации кода</td>
+              <td id="ping-openrouter"><span class="pill green">240 ms</span></td>
+              <td><button class="btn-ping" onclick="pingProvider('openrouter')">Проверить</button></td>
+            </tr>
+            <tr>
+              <td><strong>LLM Soup (Makazhan)</strong></td>
+              <td>Локальные GGUF Q4</td>
+              <td>Локально (0$)</td>
+              <td>Профилирование памяти под 8 ГБ RAM</td>
+              <td id="ping-soup"><span class="pill blue">8 ms</span></td>
+              <td><button class="btn-ping" onclick="pingProvider('soup')">Проверить</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
   </main>
@@ -2406,9 +2762,30 @@ skills/${skillKey}/SKILL.md
 
 
     // -------------------------------------------------------------
-    // 8. Real-Time Agent Workload Telemetry & Activity Stream
+    // 8. Real-Time Agent Workload Telemetry & SVG Timeseries Chart
     // -------------------------------------------------------------
     let isSimulating = true;
+    let burstActive = false;
+
+    // Visibility toggles for chart metrics
+    const METRIC_VISIBLE = {
+      tps: true,
+      ram: true,
+      lat: true
+    };
+
+    // 20 Historical Data Points for SVG Timeseries Chart
+    const CHART_HISTORY = [];
+    const TOTAL_POINTS = 20;
+
+    // Seed initial historical points
+    for (let i = 0; i < TOTAL_POINTS; i++) {
+      CHART_HISTORY.push({
+        tps: Math.floor(390 + Math.sin(i * 0.5) * 40 + Math.random() * 25),
+        ram: 63 + Math.floor(Math.sin(i * 0.3) * 4),
+        lat: Math.floor(32 + Math.random() * 18)
+      });
+    }
 
     const AGENT_WORKLOAD_STATE = {
       architect: { pct: 24, tokens: '18.4K токенов', state: 'Активен', tagClass: 'active', task: 'Сверка контрактов REST API с базой данных PostgreSQL' },
@@ -2425,6 +2802,147 @@ skills/${skillKey}/SKILL.md
       { agent: 'LLMOps (Soup)', badge: 'active', text: 'Утилизация RAM стабильна: 5.1 GB из 8.0 GB (запас 2.9 GB).' },
       { agent: 'Ревьюер', badge: 'idle', text: 'Получен сигнал о чистом дереве git master (коммит f1ef109).' }
     ];
+
+    // Helper: Map data value to SVG Y coordinate (viewBox 800x220, active area Y: 20..195)
+    function mapY(val, maxVal) {
+      const topY = 20;
+      const bottomY = 195;
+      const clamped = Math.max(0, Math.min(val, maxVal));
+      return bottomY - (clamped / maxVal) * (bottomY - topY);
+    }
+
+    // Helper: Build smooth Catmull-Rom or bezier path from coordinates
+    function buildSmoothPath(points) {
+      if (points.length < 2) return '';
+      let d = `M ${points[0].x.toFixed(1)},${points[0].y.toFixed(1)}`;
+      for (let i = 0; i < points.length - 1; i++) {
+        const p0 = points[i === 0 ? 0 : i - 1];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[i + 2 < points.length ? i + 2 : i + 1];
+
+        const cp1x = p1.x + (p2.x - p0.x) / 6;
+        const cp1y = p1.y + (p2.y - p0.y) / 6;
+        const cp2x = p2.x - (p3.x - p1.x) / 6;
+        const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+        d += ` C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
+      }
+      return d;
+    }
+
+    function renderSvgChart() {
+      const startX = 50;
+      const endX = 780;
+      const stepX = (endX - startX) / (CHART_HISTORY.length - 1);
+
+      const tpsPoints = [];
+      const ramPoints = [];
+      const latPoints = [];
+
+      CHART_HISTORY.forEach((pt, idx) => {
+        const x = startX + idx * stepX;
+        tpsPoints.push({ x: x, y: mapY(pt.tps, 500) });
+        // RAM mapped to 0-100%
+        ramPoints.push({ x: x, y: mapY(pt.ram, 100) });
+        // Latency mapped (0-200ms -> scale of 500)
+        latPoints.push({ x: x, y: mapY(pt.lat * 2.5, 500) });
+      });
+
+      // Update Lines
+      const lineTps = document.getElementById('lineTps');
+      const areaTps = document.getElementById('areaTps');
+      const lineRam = document.getElementById('lineRam');
+      const areaRam = document.getElementById('areaRam');
+      const lineLat = document.getElementById('lineLat');
+
+      const liveTps = document.getElementById('livePointTps');
+      const liveRam = document.getElementById('livePointRam');
+
+      const bottomY = 195;
+
+      if (METRIC_VISIBLE.tps) {
+        const pathTps = buildSmoothPath(tpsPoints);
+        lineTps.setAttribute('d', pathTps);
+        lineTps.style.display = 'block';
+
+        const areaPathTps = `${pathTps} L ${endX},${bottomY} L ${startX},${bottomY} Z`;
+        areaTps.setAttribute('d', areaPathTps);
+        areaTps.style.display = 'block';
+
+        const lastPt = tpsPoints[tpsPoints.length - 1];
+        liveTps.setAttribute('cx', lastPt.x.toFixed(1));
+        liveTps.setAttribute('cy', lastPt.y.toFixed(1));
+        liveTps.style.display = 'block';
+      } else {
+        lineTps.style.display = 'none';
+        areaTps.style.display = 'none';
+        liveTps.style.display = 'none';
+      }
+
+      if (METRIC_VISIBLE.ram) {
+        const pathRam = buildSmoothPath(ramPoints);
+        lineRam.setAttribute('d', pathRam);
+        lineRam.style.display = 'block';
+
+        const areaPathRam = `${pathRam} L ${endX},${bottomY} L ${startX},${bottomY} Z`;
+        areaRam.setAttribute('d', areaPathRam);
+        areaRam.style.display = 'block';
+
+        const lastPtRam = ramPoints[ramPoints.length - 1];
+        liveRam.setAttribute('cx', lastPtRam.x.toFixed(1));
+        liveRam.setAttribute('cy', lastPtRam.y.toFixed(1));
+        liveRam.style.display = 'block';
+      } else {
+        lineRam.style.display = 'none';
+        areaRam.style.display = 'none';
+        liveRam.style.display = 'none';
+      }
+
+      if (METRIC_VISIBLE.lat) {
+        lineLat.setAttribute('d', buildSmoothPath(latPoints));
+        lineLat.style.display = 'block';
+      } else {
+        lineLat.style.display = 'none';
+      }
+    }
+
+    function toggleMetric(metric) {
+      METRIC_VISIBLE[metric] = !METRIC_VISIBLE[metric];
+      renderSvgChart();
+      showToast(`Метрика ${metric.toUpperCase()} ${METRIC_VISIBLE[metric] ? 'включена' : 'скрыта'}`);
+    }
+
+    function triggerBurstSimulation() {
+      burstActive = true;
+      const burstTps = 482;
+      const burstRam = 69;
+      const burstLat = 46;
+
+      CHART_HISTORY.shift();
+      CHART_HISTORY.push({ tps: burstTps, ram: burstRam, lat: burstLat });
+
+      AGENT_WORKLOAD_STATE.developer.pct = 95;
+      AGENT_WORKLOAD_STATE.developer.tokens = `${burstTps} TPS`;
+      AGENT_WORKLOAD_STATE.developer.state = 'LPU BURST';
+
+      document.getElementById('kpi-tps').innerText = `${burstTps} TPS`;
+      document.getElementById('kpi-ram').innerText = `5.5 / 8 GB`;
+      document.getElementById('kpi-ram-pct').innerText = `69%`;
+      document.getElementById('kpi-latency').innerText = `${burstLat} ms`;
+      document.getElementById('kpi-queue').innerText = `4 в очереди`;
+
+      renderSvgChart();
+      updateWorkloadUI();
+      addStreamEvent('Разработчик', 'busy', 'Всплеск нагрузки (Burst): 482 TPS через Groq LPU.');
+      showToast('Пиковый всплеск нагрузки: 482 TPS (Llama 3.3 70B)');
+
+      setTimeout(() => {
+        burstActive = false;
+        document.getElementById('kpi-queue').innerText = `0 в очереди`;
+        AGENT_WORKLOAD_STATE.developer.state = 'Groq LPU';
+      }, 4000);
+    }
 
     function updateWorkloadUI() {
       for (const [key, val] of Object.entries(AGENT_WORKLOAD_STATE)) {
@@ -2470,39 +2988,69 @@ skills/${skillKey}/SKILL.md
     }
 
     function runTelemetryTick() {
-      if (!isSimulating) return;
+      if (!isSimulating || burstActive) return;
 
-      AGENT_WORKLOAD_STATE.developer.pct = Math.floor(45 + Math.random() * 45);
-      AGENT_WORKLOAD_STATE.developer.tokens = `${Math.floor(380 + Math.random() * 80)} TPS`;
+      const currentTps = Math.floor(395 + Math.random() * 55);
+      const currentRamPct = Math.floor(62 + Math.random() * 5);
+      const currentRamGb = (8 * (currentRamPct / 100)).toFixed(1);
+      const currentLat = Math.floor(34 + Math.random() * 16);
 
-      AGENT_WORKLOAD_STATE.architect.pct = Math.floor(15 + Math.random() * 35);
-      AGENT_WORKLOAD_STATE.architect.tokens = `${(15 + Math.random() * 8).toFixed(1)}K токенов`;
+      // Advance timeseries history
+      CHART_HISTORY.shift();
+      CHART_HISTORY.push({
+        tps: currentTps,
+        ram: currentRamPct,
+        lat: currentLat
+      });
 
-      AGENT_WORKLOAD_STATE.llmops.pct = Math.floor(58 + Math.random() * 10);
-      AGENT_WORKLOAD_STATE.llmops.tokens = `${(5.0 + Math.random() * 0.4).toFixed(1)} / 8 GB`;
+      // Update KPI widgets
+      const kpiTps = document.getElementById('kpi-tps');
+      const kpiRam = document.getElementById('kpi-ram');
+      const kpiRamPct = document.getElementById('kpi-ram-pct');
+      const kpiLat = document.getElementById('kpi-latency');
+
+      if (kpiTps) kpiTps.innerText = `${currentTps} TPS`;
+      if (kpiRam) kpiRam.innerText = `${currentRamGb} / 8 GB`;
+      if (kpiRamPct) kpiRamPct.innerText = `${currentRamPct}%`;
+      if (kpiLat) kpiLat.innerText = `${currentLat} ms`;
+
+      renderSvgChart();
+
+      // Update Agent cards
+      AGENT_WORKLOAD_STATE.developer.pct = Math.floor(45 + Math.random() * 40);
+      AGENT_WORKLOAD_STATE.developer.tokens = `${currentTps} TPS`;
+
+      AGENT_WORKLOAD_STATE.architect.pct = Math.floor(15 + Math.random() * 25);
+      AGENT_WORKLOAD_STATE.architect.tokens = `${(15 + Math.random() * 6).toFixed(1)}K токенов`;
+
+      AGENT_WORKLOAD_STATE.llmops.pct = currentRamPct;
+      AGENT_WORKLOAD_STATE.llmops.tokens = `${currentRamGb} / 8 GB`;
 
       updateWorkloadUI();
 
-      const item = STREAM_TEMPLATES[Math.floor(Math.random() * STREAM_TEMPLATES.length)];
-      addStreamEvent(item.agent, item.badge, item.text);
+      if (Math.random() > 0.4) {
+        const item = STREAM_TEMPLATES[Math.floor(Math.random() * STREAM_TEMPLATES.length)];
+        addStreamEvent(item.agent, item.badge, item.text);
+      }
     }
 
     function toggleWorkloadSimulation() {
       isSimulating = !isSimulating;
       const label = document.getElementById('simBtnLabel');
       if (isSimulating) {
-        label.innerText = 'Остановить поток';
-        showToast('Живой поток нагрузки агентов запущен');
+        label.innerText = 'Пауза';
+        showToast('Живой поток телеметрии запущен');
       } else {
-        label.innerText = 'Возобновить поток';
-        showToast('Поток нагрузки переведен в паузу');
+        label.innerText = 'Возобновить';
+        showToast('Поток телеметрии на паузе');
       }
     }
 
-    // Initialize telemetry
+    // Initialize telemetry & SVG chart
+    renderSvgChart();
     updateWorkloadUI();
     STREAM_TEMPLATES.forEach(item => addStreamEvent(item.agent, item.badge, item.text));
-    setInterval(runTelemetryTick, 2800);
+    setInterval(runTelemetryTick, 2000);
   </script>
 </body>
 </html>
