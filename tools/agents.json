@@ -1,0 +1,50 @@
+{
+  "default_agent": "developer",
+  "agents": {
+    "architect": {
+      "name": "Архитектор систем (System Architect)",
+      "primary_provider": "claude",
+      "fallback_providers": ["deepseek", "openrouter_free"],
+      "skills": ["architecture-audit"],
+      "allowed_tools": "Read,Grep,Glob",
+      "write_access": false,
+      "description": "Проектирование архитектуры, выбор стека технологий, декомпозиция сервисов и консилиум решений"
+    },
+    "reviewer": {
+      "name": "Старший код-ревьюер (Senior Code Reviewer)",
+      "primary_provider": "claude",
+      "fallback_providers": ["groq", "deepseek"],
+      "skills": ["code-review"],
+      "allowed_tools": "Read,Grep,Glob",
+      "write_access": false,
+      "description": "Глубокое код-ревью изменений, проверка качества, соблюдения стандартов и отсутствия регрессий"
+    },
+    "developer": {
+      "name": "Инженер-разработчик (Core Developer)",
+      "primary_provider": "groq",
+      "fallback_providers": ["pollinations", "ollama", "claude"],
+      "skills": ["boilerplate-gen"],
+      "allowed_tools": "Read,Grep,Glob",
+      "write_access": false,
+      "description": "Быстрая генерация кода, реализация модулей, написание тестов и вспомогательных скриптов"
+    },
+    "security_auditor": {
+      "name": "Аудитор информационной безопасности (Security Auditor)",
+      "primary_provider": "claude",
+      "fallback_providers": ["deepseek"],
+      "skills": ["security-audit"],
+      "allowed_tools": "Read,Grep,Glob",
+      "write_access": false,
+      "description": "Анализ защищенности кода, поиск уязвимостей OWASP Top 10, утечек секретов и валидация ввода"
+    },
+    "llmops": {
+      "name": "LLMOps & Soup специалист (LLMOps Engineer)",
+      "primary_provider": "ollama",
+      "fallback_providers": ["soup_local", "groq", "claude"],
+      "skills": ["llmops-tuning"],
+      "allowed_tools": "Read,Grep,Glob",
+      "write_access": false,
+      "description": "Управление моделями, квантование, интеграция с LLM Soup, layer streaming и бенчмаркинг"
+    }
+  }
+}

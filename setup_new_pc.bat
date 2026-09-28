@@ -5,10 +5,13 @@ echo ========================================================
 echo   ⚡ AI DUO + LLM SOUP: Установка связки на ПК ⚡
 echo ========================================================
 echo.
-echo [1/4] Копирование инструментов моста в C:\projects\tools...
+echo [1/4] Копирование инструментов моста, базы агентов и навыков в C:\projects\tools...
 mkdir "C:\projects\tools" 2>nul
 copy /y "tools\claude_bridge.py" "C:\projects\tools\"
 copy /y "tools\providers.json" "C:\projects\tools\"
+copy /y "tools\agents.json" "C:\projects\tools\"
+mkdir "C:\projects\tools\skills" 2>nul
+xcopy /s /e /y /q "tools\skills\*" "C:\projects\tools\skills\"
 
 echo [2/4] Восстановление правил и глобальной MCP конфигурации Gemini...
 mkdir "%USERPROFILE%\.gemini\config" 2>nul

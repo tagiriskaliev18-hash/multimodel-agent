@@ -5,35 +5,71 @@
       "type": "cli",
       "command": "claude",
       "model": "sonnet",
-      "description": "Claude Code CLI (старший ревьюер и архитектор)"
+      "tier": "premium",
+      "privacy": "private",
+      "description": "Claude Code CLI (главный архитектор, ревьюер и аудитор безопасности)"
+    },
+    "pollinations": {
+      "type": "openai_compatible",
+      "base_url": "https://text.pollinations.ai/openai",
+      "model": "openai-fast",
+      "tier": "free",
+      "privacy": "public",
+      "description": "FREE LLM API (Pollinations) — открытый шлюз без API-ключей для публичных/шаблонных задач"
+    },
+    "groq": {
+      "type": "openai_compatible",
+      "base_url": "https://api.groq.com/openai/v1",
+      "model": "llama-3.3-70b-versatile",
+      "api_key_env": "GROQ_API_KEY",
+      "tier": "free",
+      "privacy": "private",
+      "description": "Groq Free Tier — сверхбыстрый инференс Llama 3.3 70B (до 30 req/min бесплатно)"
+    },
+    "openrouter_free": {
+      "type": "openai_compatible",
+      "base_url": "https://openrouter.ai/api/v1",
+      "model": "meta-llama/llama-3.3-70b-instruct:free",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "tier": "free",
+      "privacy": "private",
+      "description": "OpenRouter Free Pool — бесплатные модели :free (Llama 3.3, DeepSeek R1)"
+    },
+    "github_models": {
+      "type": "openai_compatible",
+      "base_url": "https://models.inference.ai.azure.com",
+      "model": "gpt-4o-mini",
+      "api_key_env": "GITHUB_TOKEN",
+      "tier": "free",
+      "privacy": "private",
+      "description": "GitHub Models — бесплатный доступ к GPT-4o-mini / Llama через личный токен GitHub"
     },
     "ollama": {
       "type": "openai_compatible",
       "base_url": "http://127.0.0.1:11434/v1",
       "model": "qwen2.5-coder:1.5b",
       "api_key": "ollama",
-      "description": "Локальный Ollama (быстрая легковесная модель на CPU)"
+      "tier": "free",
+      "privacy": "private",
+      "description": "Локальный Ollama (быстрая легковесная офлайн-модель на CPU)"
     },
     "soup_local": {
       "type": "openai_compatible",
       "base_url": "http://127.0.0.1:8080/v1",
       "model": "default",
       "api_key": "soup",
-      "description": "Локальный llama.cpp / Soup llama-server"
+      "tier": "free",
+      "privacy": "private",
+      "description": "Локальный llama.cpp / Soup llama-server (офлайн)"
     },
     "deepseek": {
       "type": "openai_compatible",
       "base_url": "https://api.deepseek.com/v1",
       "model": "deepseek-coder",
       "api_key_env": "DEEPSEEK_API_KEY",
-      "description": "DeepSeek API (высокоточный код и рассуждения)"
-    },
-    "openrouter": {
-      "type": "openai_compatible",
-      "base_url": "https://openrouter.ai/api/v1",
-      "model": "meta-llama/llama-3.3-70b-instruct",
-      "api_key_env": "OPENROUTER_API_KEY",
-      "description": "OpenRouter Gateway (универсальный доступ к любым открытым и закрытым LLM)"
+      "tier": "premium",
+      "privacy": "private",
+      "description": "DeepSeek API (высокоточный код и математические рассуждения)"
     }
   }
 }
