@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Studio • Интеллектуальный ассистент без регистрации</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
   <style>
     :root {
       /* Apple & Microsoft Fluent 2 Design Tokens */
@@ -655,7 +657,123 @@
       40% { transform: translateY(-5px); opacity: 1; }
     }
 
+    /* Glassmorphic Chart & Diagram Cards */
+    .chart-card, .diagram-card, .csv-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 16px 18px;
+      margin: 12px 0;
+      position: relative;
+    }
 
+    [data-theme="dark"] .chart-card, 
+    [data-theme="dark"] .diagram-card, 
+    [data-theme="dark"] .csv-card {
+      background: #1c1c1e;
+      border: 1px solid var(--border-light);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .chart-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chart-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-chart-action {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-chart-action:hover {
+      background: var(--accent-blue-subtle);
+      color: var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+
+    .btn-visualize-code {
+      background: var(--accent-blue-subtle);
+      color: var(--accent-blue);
+      border: 1px solid rgba(0, 113, 227, 0.3);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .btn-visualize-code:hover {
+      background: var(--accent-blue);
+      color: #ffffff;
+    }
+
+    .chart-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 280px;
+    }
+
+    .chart-skeleton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 180px;
+      border: 1px dashed var(--border-light);
+      border-radius: var(--radius-md);
+      color: var(--text-tertiary);
+      font-size: 12.5px;
+      background: var(--bg-subtle);
+      animation: pulseShimmer 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseShimmer {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.95; }
+    }
+
+    .diagram-svg-container {
+      width: 100%;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+      padding: 8px 0;
+    }
+
+    .diagram-svg-container svg {
+      max-width: 100%;
+      height: auto;
+    }
 
     .stream-cursor {
       display: inline-block;
@@ -1147,12 +1265,12 @@
                 <div class="prompt-chip-sub">Спецификация, требования ЕСКД, допуски и посадки</div>
               </div>
 
-              <div class="prompt-chip" onclick="applyPresetPrompt('Построение графика: помоги составить оптимальную структуру и расписание посещений спортивной секции на неделю с разбивкой по часам.')">
+              <div class="prompt-chip" onclick="applyPresetPrompt('Построение графика: составь наглядный график и расписание посещений спортивной секции на неделю с разбивкой по часам в виде интерактивной диаграммы.')">
                 <div class="prompt-chip-head">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
                   <span>Помощь с графиком</span>
                 </div>
-                <div class="prompt-chip-sub">Расписание, учет часов, спортивные и рабочие графики</div>
+                <div class="prompt-chip-sub">Интерактивные графики, расписания, учет часов и тренды</div>
               </div>
 
               <div class="prompt-chip" onclick="applyPresetPrompt('Оптимизация кода: напиши чистую функцию на JavaScript/Python с обработкой ошибок и высокой производительностью.')">
@@ -1469,6 +1587,12 @@
       if (welcome) welcome.style.display = 'none';
       if (!messagesContainer) return;
 
+      // Clean up previous Chart.js instances before clearing container
+      activeCharts.forEach(c => {
+        try { c.destroy(); } catch(e) {}
+      });
+      activeCharts.clear();
+
       messagesContainer.innerHTML = '';
 
       chat.messages.forEach(msg => {
@@ -1494,6 +1618,7 @@
       });
 
       scrollToBottomFast();
+      initVisualWidgets(messagesContainer);
     }
 
     // -------------------------------------------------------------
@@ -1627,9 +1752,55 @@
           ? ' Отвечай максимально кратко, сжато и по существу, сразу выдавай решение без пространных предисловий и рассуждений.'
           : ' Давай развернутые, детальные технические пояснения с формулами и таблицами.';
 
-        const systemPrompt = 'Ты полезный технический ассистент AI Studio. Отвечай на русском языке четко и структурированно.' 
-          + brevityInstruction 
-          + ' СТРОГО БЕЗ ЭМОДЗИ (ни в тексте, ни в списках).';
+        const visualInstruction = `
+Когда пользователь просит построить график, диаграмму, расписание, динамику, план или сравнение данных:
+НИКОГДА не выдавай Python/matplotlib код для локального запуска! Пользователь не сможет его запустить в браузере.
+Вместо этого используй специальные блоки, которые браузер автоматически отрисовывает прямо в окне чата:
+
+1. Для графиков, гистограмм, круговых диаграмм, трендов и числовых данных — используй блок \`\`\`chart с чистым JSON в формате Chart.js:
+\`\`\`chart
+{
+  "type": "bar",
+  "data": {
+    "labels": ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
+    "datasets": [{
+      "label": "Показатель",
+      "data": [45, 62, 58, 70, 85, 95, 40]
+    }]
+  },
+  "options": {
+    "plugins": {
+      "title": { "display": true, "text": "Название графика" }
+    }
+  }
+}
+\`\`\`
+Поддерживаемые типы: "bar", "line", "pie", "doughnut", "radar". Внутри блока \`\`\`chart должен быть ТОЛЬКО валидный JSON (без комментариев, без JS функций).
+
+2. Для расписаний (например, расписание секций на неделю, рабочие смены), процессов, таймлайнов или блок-схем — используй блок \`\`\`mermaid (gantt, timeline, flowchart или sequenceDiagram).
+Для расписания на неделю используй gantt:
+\`\`\`mermaid
+gantt
+    title Расписание на неделю
+    dateFormat  HH:mm
+    axisFormat  %H:%M
+    section Понедельник
+    Утренняя группа :09:00, 10:30
+    Вечерняя группа :18:00, 19:30
+    section Среда
+    Утренняя группа :09:00, 10:30
+    Вечерняя группа :18:00, 19:30
+    section Пятница
+    Игровая тренировка :19:00, 21:00
+\`\`\`
+
+3. Для табличных данных используй стандартные Markdown таблицы или блок \`\`\`csv.
+Перед графиком напиши одно краткое пояснение, а затем сразу выводи блок визуализации.`.trim();
+
+        const systemPrompt = 'Ты полезный технический ассистент AI Studio. Отвечай на русском языке четко и структурированно. ' 
+          + brevityInstruction + '\n\n'
+          + visualInstruction + '\n\n'
+          + 'СТРОГО БЕЗ ЭМОДЗИ (ни в тексте, ни в списках, ни в подписях графиков).';
 
         const apiMessages = [
           { role: 'system', content: systemPrompt }
@@ -1801,7 +1972,7 @@
       if (!text) return '';
       const fenceCount = (text.match(/```/g) || []).length;
       const patched = fenceCount % 2 === 1 ? text + '\n```' : text;
-      return formatMarkdown(patched);
+      return formatMarkdown(patched, true);
     }
 
     function scrollToBottomFast() {
@@ -1841,8 +2012,10 @@
     }
 
     // -------------------------------------------------------------
-    // Lightweight Markdown Formatter (No Emojis, Code Blocks, Tables)
+    // Markdown Formatter with Native Visual Chart & Diagram Engine
     // -------------------------------------------------------------
+    const activeCharts = new Map();
+
     function escapeHtml(str) {
       return (str || '')
         .replace(/&/g, '&amp;')
@@ -1850,28 +2023,31 @@
         .replace(/>/g, '&gt;');
     }
 
-    function formatMarkdown(text) {
+    function formatMarkdown(text, isStreaming = false) {
       if (!text) return '';
 
       let formatted = text;
 
-      // Escape code blocks first
+      // Extract code blocks first
       const codeBlocks = [];
-      formatted = formatted.replace(/```([a-z0-9_-]*)\n([\s\S]*?)```/gi, (match, lang, code) => {
-        const id = 'code_placeholder_' + codeBlocks.length;
-        codeBlocks.push({ lang: lang || 'text', code: code });
+      formatted = formatted.replace(/```([a-z0-9_:-]*)\n([\s\S]*?)```/gi, (match, lang, code) => {
+        const id = '___CODE_BLOCK_' + codeBlocks.length + '___';
+        codeBlocks.push({ lang: (lang || 'text').trim(), code: code });
         return id;
       });
 
-      // Escape inline code
+      // Extract inline code
       const inlineCodes = [];
       formatted = formatted.replace(/`([^`]+)`/g, (match, code) => {
-        const id = 'inline_placeholder_' + inlineCodes.length;
+        const id = '___INLINE_CODE_' + inlineCodes.length + '___';
         inlineCodes.push(code);
         return id;
       });
 
-      // Tables
+      // Escape all standard text to prevent XSS before applying markdown transformations
+      formatted = escapeHtml(formatted);
+
+      // Tables (cells are already escaped via escapeHtml)
       formatted = formatted.replace(/((?:\|[^\n]+\|\n?)+)/g, (match) => {
         const rows = match.trim().split('\n');
         if (rows.length < 2) return match;
@@ -1881,7 +2057,7 @@
           if (row.includes('---')) return; // skip divider
           const cells = row.split('|').filter((c, idx, arr) => idx > 0 && idx < arr.length - 1);
           const tag = i === 0 ? 'th' : 'td';
-          tableHtml += '<tr>' + cells.map(c => `<${tag}>${escapeHtml(c.trim())}</${tag}>`).join('') + '</tr>';
+          tableHtml += '<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>';
         });
         tableHtml += '</table>';
         return tableHtml;
@@ -1908,30 +2084,358 @@
 
       // Restore inline code
       inlineCodes.forEach((code, i) => {
-        formatted = formatted.replace('inline_placeholder_' + i, `<code>${escapeHtml(code)}</code>`);
+        formatted = formatted.replace('___INLINE_CODE_' + i + '___', `<code>${escapeHtml(code)}</code>`);
       });
 
-      // Restore code blocks
+      // Restore code blocks with visual interactive chart engine
       codeBlocks.forEach((item, i) => {
-        const blockHtml = `
-          <pre>
-            <button class="btn-copy-code" onclick="copyCode(this)">Копировать</button>
-            <code>${escapeHtml(item.code)}</code>
-          </pre>
-        `;
-        formatted = formatted.replace('code_placeholder_' + i, blockHtml);
+        const token = '___CODE_BLOCK_' + i + '___';
+        const lang = (item.lang || '').toLowerCase();
+        const rawCode = item.code.trim();
+
+        // 1. Chart.js visual block (```chart or ```json:chart)
+        if (lang === 'chart' || lang === 'chartjs' || lang === 'json:chart') {
+          if (isStreaming) {
+            const placeholder = `
+              <div class="chart-card">
+                <div class="chart-header">
+                  <span class="chart-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+                    Построение интерактивного графика...
+                  </span>
+                </div>
+                <div class="chart-skeleton">Генерация данных и построение графика...</div>
+              </div>
+            `;
+            formatted = formatted.replace(token, placeholder);
+            return;
+          }
+
+          const chartId = 'ai_chart_' + Math.random().toString(36).substring(2, 9);
+          let config = null;
+          try {
+            config = JSON.parse(rawCode);
+          } catch (e) {
+            try {
+              const cleaned = rawCode.replace(/,\s*([}\]])/g, '$1');
+              config = JSON.parse(cleaned);
+            } catch (e2) {}
+          }
+
+          if (config && config.type && config.data) {
+            const encodedConfig = encodeURIComponent(JSON.stringify(config));
+            const title = config.options?.plugins?.title?.text || 'Интерактивный график';
+            const chartHtml = `
+              <div class="chart-card" id="card_${chartId}">
+                <div class="chart-header">
+                  <span class="chart-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+                    ${escapeHtml(title)}
+                  </span>
+                  <div class="chart-actions">
+                    <button class="btn-chart-action" onclick="downloadChartPng('${chartId}')" title="Сохранить как PNG">
+                      PNG
+                    </button>
+                    <button class="btn-chart-action" onclick="toggleChartCode('${chartId}')" title="Посмотреть данные">
+                      JSON
+                    </button>
+                  </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                  <canvas id="${chartId}" data-chart-config="${encodedConfig}"></canvas>
+                </div>
+                <pre id="code_${chartId}" style="display: none; margin-top: 10px;"><code>${escapeHtml(rawCode)}</code></pre>
+              </div>
+            `;
+            formatted = formatted.replace(token, chartHtml);
+            return;
+          }
+        }
+
+        // 2. Mermaid Diagram block (```mermaid)
+        if (lang === 'mermaid') {
+          if (isStreaming) {
+            const placeholder = `
+              <div class="diagram-card">
+                <div class="chart-header">
+                  <span class="chart-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    Построение диаграммы...
+                  </span>
+                </div>
+                <div class="chart-skeleton">Отрисовка расписания / схемы...</div>
+              </div>
+            `;
+            formatted = formatted.replace(token, placeholder);
+            return;
+          }
+
+          const diagId = 'mermaid_' + Math.random().toString(36).substring(2, 9);
+          const mermaidHtml = `
+            <div class="diagram-card" id="card_${diagId}">
+              <div class="chart-header">
+                <span class="chart-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  Интерактивная диаграмма / Расписание
+                </span>
+                <div class="chart-actions">
+                  <button class="btn-chart-action" onclick="toggleChartCode('${diagId}')" title="Посмотреть исходный код">Код</button>
+                </div>
+              </div>
+              <div class="diagram-svg-container">
+                <pre class="mermaid" id="${diagId}">${escapeHtml(rawCode)}</pre>
+              </div>
+              <pre id="code_${diagId}" style="display: none; margin-top: 10px;"><code>${escapeHtml(rawCode)}</code></pre>
+            </div>
+          `;
+          formatted = formatted.replace(token, mermaidHtml);
+          return;
+        }
+
+        // 3. CSV block (```csv)
+        if (lang === 'csv') {
+          const csvLines = rawCode.split('\n').filter(l => l.trim().length > 0);
+          if (csvLines.length > 1) {
+            let csvTableHtml = `
+              <div class="csv-card">
+                <div class="chart-header">
+                  <span class="chart-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Таблица данных
+                  </span>
+                  <button class="btn-chart-action" onclick="downloadCsv('${encodeURIComponent(rawCode)}')">Скачать CSV</button>
+                </div>
+                <table>
+            `;
+            csvLines.forEach((line, rowIdx) => {
+              const cells = line.split(',').map(c => c.trim().replace(/^["']|["']$/g, ''));
+              const tag = rowIdx === 0 ? 'th' : 'td';
+              csvTableHtml += '<tr>' + cells.map(c => `<${tag}>${escapeHtml(c)}</${tag}>`).join('') + '</tr>';
+            });
+            csvTableHtml += '</table></div>';
+            formatted = formatted.replace(token, csvTableHtml);
+            return;
+          }
+        }
+
+        // 4. Regular code blocks with "Построить график" button if numbers or plot keyword detected
+        const hasPlotKeywords = /plot|plt\.|chart|graph|matplotlib|\[\s*(-?\d+(\.\d+)?\s*,\s*)+-?\d+(\.\d+)?\s*\]/i.test(rawCode);
+        const vizBtn = hasPlotKeywords ? `
+          <button class="btn-visualize-code" onclick="tryVisualizeCode(this)" title="Построить интерактивный график по этим данным">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+            Построить график
+          </button>
+        ` : '';
+
+        const blockHtml = `<pre><div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 6px;">${vizBtn}<button class="btn-copy-code" onclick="copyCode(this)">Копировать</button></div><code>${escapeHtml(item.code)}</code></pre>`;
+        formatted = formatted.replace(token, blockHtml);
       });
 
       return formatted;
     }
 
     function copyCode(btn) {
-      const code = btn.nextElementSibling.innerText;
+      const code = btn.closest('pre').querySelector('code').innerText;
       navigator.clipboard.writeText(code);
       btn.innerText = 'Скопировано';
       setTimeout(() => {
         btn.innerText = 'Копировать';
       }, 2000);
+    }
+
+    // -------------------------------------------------------------
+    // Visual Chart & Diagram Initialization & Helpers
+    // -------------------------------------------------------------
+    function initVisualWidgets(container) {
+      if (!container) return;
+
+      // 1. Initialize Chart.js
+      if (window.Chart) {
+        const canvases = container.querySelectorAll('canvas[data-chart-config]');
+        canvases.forEach(canvas => {
+          if (canvas.dataset.initialized === 'true') return;
+          try {
+            const raw = decodeURIComponent(canvas.dataset.chartConfig);
+            const config = JSON.parse(raw);
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#f5f5f7' : '#1d1d1f';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)';
+
+            Chart.defaults.color = textColor;
+            Chart.defaults.borderColor = gridColor;
+
+            const defaultPalette = [
+              '#0071e3', '#34c759', '#ff9500', '#af52de', '#ff2d55', '#5856d6', '#00c7be'
+            ];
+
+            if (config.data && config.data.datasets) {
+              config.data.datasets.forEach((ds, idx) => {
+                if (!ds.backgroundColor) {
+                  if (config.type === 'pie' || config.type === 'doughnut') {
+                    ds.backgroundColor = defaultPalette;
+                  } else {
+                    ds.backgroundColor = defaultPalette[idx % defaultPalette.length] + '33';
+                    ds.borderColor = defaultPalette[idx % defaultPalette.length];
+                    ds.borderWidth = 2.5;
+                  }
+                }
+              });
+            }
+
+            if (!config.options) config.options = {};
+            config.options.responsive = true;
+            config.options.maintainAspectRatio = false;
+
+            if (activeCharts.has(canvas.id)) {
+              activeCharts.get(canvas.id).destroy();
+            }
+
+            const chartInstance = new Chart(canvas, config);
+            activeCharts.set(canvas.id, chartInstance);
+            canvas.dataset.initialized = 'true';
+          } catch (e) {
+            console.warn('Ошибка инициализации Chart.js:', e);
+          }
+        });
+      }
+
+      // 2. Initialize Mermaid
+      if (window.mermaid) {
+        try {
+          mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: 'strict',
+            theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'neutral'
+          });
+          mermaid.run({
+            nodes: container.querySelectorAll('.mermaid')
+          }).catch(e => console.warn('Mermaid render error:', e));
+        } catch (e) {
+          console.warn('Mermaid init error:', e);
+        }
+      }
+    }
+
+    function tryVisualizeCode(btn) {
+      const pre = btn.closest('pre');
+      if (!pre) return;
+      const code = pre.querySelector('code')?.innerText || '';
+
+      const strArrayMatch = code.match(/\[\s*(['"][^'"]+['"]\s*,\s*)+['"][^'"]+['"]\s*\]/);
+      const numArrayMatch = code.match(/\[\s*(-?\d+(\.\d+)?\s*,\s*)+-?\d+(\.\d+)?\s*\]/);
+
+      if (!numArrayMatch) {
+        showToast('Не удалось автоматически распознать массив чисел в коде');
+        return;
+      }
+
+      let numbers = [];
+      try { numbers = JSON.parse(numArrayMatch[0].replace(/'/g, '"')); } catch(e){}
+      let labels = [];
+      if (strArrayMatch) {
+        try { labels = JSON.parse(strArrayMatch[0].replace(/'/g, '"')); } catch(e){}
+      }
+      if (!labels || labels.length === 0) {
+        labels = numbers.map((_, i) => 'Точка ' + (i + 1));
+      }
+
+      const chartId = 'viz_' + Math.random().toString(36).substring(2, 9);
+      const card = document.createElement('div');
+      card.className = 'chart-card';
+      card.innerHTML = `
+        <div class="chart-header">
+          <span class="chart-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+            Интерактивный график по данным из кода
+          </span>
+          <div class="chart-actions">
+            <button class="btn-chart-action" onclick="downloadChartPng('${chartId}')">PNG</button>
+          </div>
+        </div>
+        <div class="chart-canvas-wrapper">
+          <canvas id="${chartId}"></canvas>
+        </div>
+      `;
+
+      pre.parentNode.insertBefore(card, pre.nextSibling);
+
+      const canvas = document.getElementById(chartId);
+      if (canvas && window.Chart) {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const chart = new Chart(canvas, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Значения',
+              data: numbers,
+              borderColor: '#0071e3',
+              backgroundColor: 'rgba(0, 113, 227, 0.15)',
+              fill: true,
+              tension: 0.35,
+              borderWidth: 2.5
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false
+          }
+        });
+        activeCharts.set(chartId, chart);
+        showToast('Интерактивный график успешно построен');
+      }
+    }
+
+    function downloadChartPng(chartId) {
+      const canvas = document.getElementById(chartId);
+      if (!canvas) return;
+      const link = document.createElement('a');
+      link.download = `chart_${chartId}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('График сохранен в формате PNG');
+    }
+
+    function toggleChartCode(id) {
+      const codeEl = document.getElementById('code_' + id);
+      if (codeEl) {
+        codeEl.style.display = codeEl.style.display === 'none' ? 'block' : 'none';
+      }
+    }
+
+    function downloadCsv(encodedText) {
+      const text = decodeURIComponent(encodedText);
+      const blob = new Blob([text], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'data.csv';
+      link.click();
+      URL.revokeObjectURL(url);
+      showToast('CSV файл успешно сохранен');
+    }
+
+    function updateChartsTheme() {
+      if (!window.Chart) return;
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const textColor = isDark ? '#f5f5f7' : '#1d1d1f';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)';
+
+      activeCharts.forEach(chart => {
+        try {
+          if (chart.options) {
+            chart.options.color = textColor;
+            if (chart.options.scales) {
+              Object.values(chart.options.scales).forEach(scale => {
+                if (scale.ticks) scale.ticks.color = textColor;
+                if (scale.grid) scale.grid.color = gridColor;
+              });
+            }
+            chart.update();
+          }
+        } catch(e) {}
+      });
     }
 
     // -------------------------------------------------------------
@@ -2112,6 +2616,7 @@
         `;
         showToast('Включена светлая тема');
       }
+      updateChartsTheme();
     }
 
     function showToast(msg) {
