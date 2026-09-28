@@ -670,8 +670,8 @@
       40% { transform: translateY(-5px); opacity: 1; }
     }
 
-    /* Glassmorphic Chart & Diagram Cards */
-    .chart-card, .diagram-card, .csv-card {
+    /* Glassmorphic Chart, Diagram & Image Cards */
+    .chart-card, .diagram-card, .csv-card, .image-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-light);
       border-radius: var(--radius-lg);
@@ -683,9 +683,95 @@
 
     [data-theme="dark"] .chart-card, 
     [data-theme="dark"] .diagram-card, 
-    [data-theme="dark"] .csv-card {
+    [data-theme="dark"] .csv-card,
+    [data-theme="dark"] .image-card {
       background: #1c1c1e;
       border: 1px solid var(--border-light);
+    }
+
+    .image-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .image-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .image-model-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background: var(--accent-blue-subtle);
+      color: var(--accent-blue);
+      border: 1px solid rgba(0, 113, 227, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .image-container {
+      width: 100%;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--bg-subtle);
+      position: relative;
+      min-height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-preview {
+      width: 100%;
+      height: auto;
+      max-height: 480px;
+      object-fit: contain;
+      display: block;
+      border-radius: var(--radius-md);
+      transition: opacity 0.3s ease;
+    }
+
+    .image-skeleton {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--text-tertiary);
+      font-size: 12.5px;
+      background: var(--bg-subtle);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .image-prompt-caption {
+      margin-top: 10px;
+      font-size: 11.5px;
+      color: var(--text-tertiary);
+      font-style: italic;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     .chart-header {
@@ -2424,7 +2510,15 @@ gantt
 \`\`\`
 
 3. Для табличных данных используй стандартные Markdown таблицы или блок \`\`\`csv.
-Перед графиком напиши одно краткое пояснение, а затем сразу выводи блок визуализации.`.trim();
+
+4. Если пользователь просит нарисовать, сгенерировать изображение, картинку, логотип, флаг (например, флаг Казахстана), портрет, пейзаж, схему, иллюстрацию или арт:
+НИКОГДА не рисуй ASCII-арт, псевдографику, квадратики или символы юникода!
+Вместо этого напиши одно краткое пояснение на русском языке и сразу выведи блок \`\`\`image с подробным англоязычным промптом для нейросети генерации изображений Nano Banana (с указанием объектов, стиля, деталей, цветов, освещения и качества):
+\`\`\`image
+detailed official flag of Kazakhstan, golden sun with 32 rays above soaring steppe eagle, national ornamental pattern on left edge, authentic sky blue background, vector style flat illustration, 4k resolution
+\`\`\`
+Или, если требуется точный векторный код символа или геометрической фигуры — используй валидный блок \`\`\`svg.
+Перед визуализацией напиши одно краткое пояснение, а затем сразу выводи блок визуализации.`.trim();
 
         const fileInstruction = filesToSend.length > 0
           ? '\n\nПользователь прикрепил файл(ы). Внимательно изучи их данные, выдели главные показатели и ответь на вопрос.'
@@ -2895,7 +2989,111 @@ gantt
           }
         }
 
-        // 4. Regular code blocks with "Построить график" button if numbers or plot keyword detected
+        // 4. Image Generation block (```image, ```img, ```art, ```draw)
+        if (lang === 'image' || lang === 'img' || lang === 'art' || lang === 'draw') {
+          if (isStreaming) {
+            const placeholder = `
+              <div class="image-card">
+                <div class="image-card-header">
+                  <span class="image-card-title">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    Генерация изображения (Nano Banana)...
+                  </span>
+                  <span class="image-model-badge">Nano Banana AI</span>
+                </div>
+                <div class="chart-skeleton">Создание изображения по описанию...</div>
+              </div>
+            `;
+            formatted = formatted.replace(token, placeholder);
+            return;
+          }
+
+          const cardId = 'ai_img_' + Math.random().toString(36).substring(2, 9);
+          const cleanPrompt = rawCode.replace(/\n+/g, ' ').trim();
+          const seed = Math.floor(Math.random() * 1000000);
+          const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanPrompt)}?nologo=true&seed=${seed}`;
+
+          const imageHtml = `
+            <div class="image-card" id="${cardId}" data-prompt="${escapeHtml(cleanPrompt)}">
+              <div class="image-card-header">
+                <span class="image-card-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  Изображение
+                  <span class="image-model-badge">Nano Banana</span>
+                </span>
+                <div class="chart-actions">
+                  <button class="btn-chart-action" onclick="downloadImageCard('${cardId}')" title="Сохранить файл">
+                    PNG
+                  </button>
+                  <button class="btn-chart-action" onclick="openImageCard('${cardId}')" title="Открыть в полном размере">
+                    Открыть
+                  </button>
+                  <button class="btn-chart-action" onclick="regenerateImageCard('${cardId}')" title="Сгенерировать другой вариант">
+                    Обновить
+                  </button>
+                </div>
+              </div>
+              <div class="image-container">
+                <div class="image-skeleton" id="skel_${cardId}">
+                  <div style="width: 24px; height: 24px; border: 2px solid var(--accent-blue-subtle); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                  <span>Отрисовка через Nano Banana...</span>
+                </div>
+                <img 
+                  class="image-preview" 
+                  src="${imageUrl}" 
+                  alt="${escapeHtml(cleanPrompt)}" 
+                  loading="lazy"
+                  onload="this.style.opacity='1'; const sk = document.getElementById('skel_${cardId}'); if(sk) sk.style.display='none';"
+                  onerror="const sk = document.getElementById('skel_${cardId}'); if(sk) sk.innerHTML='Не удалось загрузить изображение. Нажмите Обновить.';"
+                  style="opacity: 0;"
+                />
+              </div>
+              <div class="image-prompt-caption">${escapeHtml(cleanPrompt)}</div>
+            </div>
+          `;
+          formatted = formatted.replace(token, imageHtml);
+          return;
+        }
+
+        // 5. SVG Vector graphics block (```svg)
+        if (lang === 'svg') {
+          const svgId = 'ai_svg_' + Math.random().toString(36).substring(2, 9);
+          let cleanSvg = rawCode;
+          if (!cleanSvg.includes('<svg')) {
+            cleanSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">${cleanSvg}</svg>`;
+          }
+          cleanSvg = cleanSvg.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/on\w+="[^"]*"/gi, '');
+          const encodedSvg = encodeURIComponent(cleanSvg);
+          const svgDataUrl = 'data:image/svg+xml;utf8,' + encodedSvg;
+
+          const svgHtml = `
+            <div class="image-card" id="${svgId}">
+              <div class="image-card-header">
+                <span class="image-card-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                  Векторная графика (SVG)
+                  <span class="image-model-badge">Vector</span>
+                </span>
+                <div class="chart-actions">
+                  <button class="btn-chart-action" onclick="downloadSvgCard('${svgId}')" title="Скачать SVG">
+                    SVG
+                  </button>
+                  <button class="btn-chart-action" onclick="toggleChartCode('${svgId}')" title="Посмотреть исходный код">
+                    Код
+                  </button>
+                </div>
+              </div>
+              <div class="image-container" style="min-height: 200px; padding: 12px; background: transparent;">
+                <img class="image-preview" src="${svgDataUrl}" alt="Векторная графика" style="max-height: 380px; width: auto; max-width: 100%; border-radius: var(--radius-sm);" />
+              </div>
+              <pre id="code_${svgId}" style="display: none; margin-top: 10px;"><code>${escapeHtml(cleanSvg)}</code></pre>
+            </div>
+          `;
+          formatted = formatted.replace(token, svgHtml);
+          return;
+        }
+
+        // 6. Regular code blocks with "Построить график" button if numbers or plot keyword detected
         const hasPlotKeywords = /plot|plt\.|chart|graph|matplotlib|\[\s*(-?\d+(\.\d+)?\s*,\s*)+-?\d+(\.\d+)?\s*\]/i.test(rawCode);
         const vizBtn = hasPlotKeywords ? `
           <button class="btn-visualize-code" onclick="tryVisualizeCode(this)" title="Построить интерактивный график по этим данным">
@@ -2909,6 +3107,77 @@ gantt
       });
 
       return formatted;
+    }
+
+    function downloadImageFromUrl(url, filename) {
+      showToast('Загрузка изображения...');
+      fetch(url)
+        .then(res => res.blob())
+        .then(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = filename || 'generated_image.jpg';
+          link.click();
+          URL.revokeObjectURL(blobUrl);
+          showToast('Изображение успешно сохранено');
+        })
+        .catch(() => {
+          window.open(url, '_blank');
+        });
+    }
+
+    function downloadImageCard(cardId) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      const img = card.querySelector('.image-preview');
+      if (!img || !img.src) return;
+      downloadImageFromUrl(img.src, `${cardId}.jpg`);
+    }
+
+    function openImageCard(cardId) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      const img = card.querySelector('.image-preview');
+      if (img && img.src) {
+        window.open(img.src, '_blank');
+      }
+    }
+
+    function regenerateImageCard(cardId) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      const prompt = card.getAttribute('data-prompt') || '';
+      const newSeed = Math.floor(Math.random() * 1000000);
+      const newUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${newSeed}`;
+
+      const img = card.querySelector('.image-preview');
+      const skeleton = card.querySelector('.image-skeleton');
+      if (skeleton) {
+        skeleton.style.display = 'flex';
+        skeleton.innerHTML = `
+          <div style="width: 24px; height: 24px; border: 2px solid var(--accent-blue-subtle); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+          <span>Генерация нового варианта (Nano Banana)...</span>
+        `;
+      }
+      if (img) {
+        img.style.opacity = '0';
+        img.src = newUrl;
+      }
+    }
+
+    function downloadSvgCard(svgId) {
+      const codeEl = document.getElementById('code_' + svgId);
+      if (!codeEl) return;
+      const svgText = codeEl.textContent;
+      const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${svgId}.svg`;
+      link.click();
+      URL.revokeObjectURL(url);
+      showToast('Файл SVG успешно сохранен');
     }
 
     function copyCode(btn) {
