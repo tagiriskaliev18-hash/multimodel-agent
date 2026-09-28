@@ -387,6 +387,8 @@
     .card-3d-wrap {
       perspective: 1000px;
       transform-style: preserve-3d;
+      position: relative;
+      border-radius: var(--radius-xl);
     }
 
     .agent-card {
@@ -400,9 +402,11 @@
       box-shadow: var(--shadow-sm);
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.15s ease-out, box-shadow 0.25s ease;
+      transition: box-shadow 0.3s ease, border-color 0.25s ease;
       cursor: default;
       overflow: hidden;
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
     }
 
     .agent-card:hover {
@@ -1747,33 +1751,66 @@
 
 
     // -------------------------------------------------------------
-    // 2. Apple 3D Perspective Tilt on Agent Cards
+    // 2. Smooth Physics-Damped 3D Tilt on Agent Cards
     // -------------------------------------------------------------
-    const cards = document.querySelectorAll('.agent-card');
+    const cardWraps = document.querySelectorAll('.card-3d-wrap');
 
-    cards.forEach(card => {
-      const glare = card.querySelector('.card-glare');
+    cardWraps.forEach(wrap => {
+      const card = wrap.querySelector('.agent-card');
+      const glare = wrap.querySelector('.card-glare');
+      let currentRotateX = 0;
+      let currentRotateY = 0;
+      let targetRotateX = 0;
+      let targetRotateY = 0;
+      let isHovered = false;
+      let animFrameId = null;
 
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
+      function updateTilt() {
+        // Damping factor (0.1) creates fluid Apple-style easing
+        currentRotateX += (targetRotateX - currentRotateX) * 0.1;
+        currentRotateY += (targetRotateY - currentRotateY) * 0.1;
+
+        card.style.transform = `perspective(1000px) rotateX(${currentRotateX.toFixed(3)}deg) rotateY(${currentRotateY.toFixed(3)}deg) translateZ(0)`;
+
+        if (isHovered || Math.abs(currentRotateX) > 0.02 || Math.abs(currentRotateY) > 0.02) {
+          animFrameId = requestAnimationFrame(updateTilt);
+        } else {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)';
+          animFrameId = null;
+        }
+      }
+
+      wrap.addEventListener('mouseenter', () => {
+        isHovered = true;
+        if (!animFrameId) {
+          animFrameId = requestAnimationFrame(updateTilt);
+        }
+        if (glare) {
+          glare.style.opacity = '1';
+        }
+      });
+
+      wrap.addEventListener('mousemove', e => {
+        // Calling getBoundingClientRect on wrap is 100% stable because wrap NEVER transforms
+        const rect = wrap.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
 
-        const rotateX = ((y - centerY) / centerY) * -10;
-        const rotateY = ((x - centerX) / centerX) * 10;
-
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        // Subtle, elegant tilt limits (max 6 degrees)
+        targetRotateX = ((y - centerY) / centerY) * -6;
+        targetRotateY = ((x - centerX) / centerX) * 6;
 
         if (glare) {
-          glare.style.opacity = '1';
-          glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.4), transparent 60%)`;
+          glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.3), transparent 65%)`;
         }
       });
 
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      wrap.addEventListener('mouseleave', () => {
+        isHovered = false;
+        targetRotateX = 0;
+        targetRotateY = 0;
         if (glare) {
           glare.style.opacity = '0';
         }
