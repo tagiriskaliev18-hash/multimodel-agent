@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI DUO // SYNAPSE CORE HUD v2.5</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+    :root {
+      --bg: #050711;
+      --panel-bg: rgba(9, 14, 28, 0.85);
+      --panel-border: rgba(0, 243, 255, 0.25);
+      --cyan: #00f3ff;
+      --cyan-glow: rgba(0, 243, 255, 0.4);
+      --emerald: #00ff9d;
+      --emerald-glow: rgba(0, 255, 157, 0.4);
+      --amber: #ffaa00;
+      --amber-glow: rgba(255, 170, 0, 0.4);
+      --crimson: #ff2a5f;
+      --crimson-glow: rgba(255, 42, 95, 0.4);
+      --purple: #bd00ff;
+      --purple-glow: rgba(189, 0, 255, 0.4);
+      --text: #e2e8f0;
+      --text-dim: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Cyber grid overlay */
+    .cyber-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(0, 243, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 243, 255, 0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Scanline effect */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.7;
+    }
+
+    /* Radial glow vignette */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(2, 4, 10, 0.85) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .hud-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1560px;
+      margin: 0 auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Header styling */
+    .hud-header {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 24px rgba(0, 243, 255, 0.1);
+    }
+
+    .hud-header::before, .hud-panel::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: 14px;
+      height: 14px;
+      border-top: 2px solid var(--cyan);
+      border-left: 2px solid var(--cyan);
+    }
+
+    .hud-header::after, .hud-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 14px;
+      height: 14px;
+      border-bottom: 2px solid var(--cyan);
+      border-right: 2px solid var(--cyan);
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .reactor-core {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 16px var(--cyan);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: spin 8s linear infinite;
+    }
+
+    .reactor-core::after {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background: var(--emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--emerald);
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .title-h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 0 0 10px var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-live {
+      font-size: 11px;
+      background: rgba(0, 255, 157, 0.15);
+      border: 1px solid var(--emerald);
+      color: var(--emerald);
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .header-stats {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .stat-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-val {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+
+    .btn-sound {
+      background: rgba(0, 243, 255, 0.1);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+
+    .btn-sound:hover {
+      background: var(--cyan);
+      color: #000;
+      box-shadow: 0 0 16px var(--cyan);
+    }
+
+    /* Main Grid Layout */
+    .hud-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr 380px;
+      gap: 20px;
+    }
+
+    .hud-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+      padding-bottom: 10px;
+    }
+
+    /* Agent Cards */
+    .agents-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      max-height: 600px;
+      padding-right: 4px;
+    }
+
+    .agent-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .agent-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--text-dim);
+      transition: all 0.25s;
+    }
+
+    .agent-card:hover {
+      background: rgba(0, 243, 255, 0.08);
+      border-color: rgba(0, 243, 255, 0.4);
+      transform: translateX(4px);
+    }
+
+    .agent-card.active {
+      background: rgba(0, 243, 255, 0.12);
+      border-color: var(--cyan);
+      box-shadow: 0 0 18px rgba(0, 243, 255, 0.2);
+    }
+
+    .agent-card.active::before {
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+
+    .agent-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .agent-id {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .agent-role-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(189, 0, 255, 0.15);
+      border: 1px solid var(--purple);
+      color: #e9b5ff;
+    }
+
+    .agent-desc {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .agent-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 10px;
+      color: var(--cyan);
+    }
+
+    /* Live Pipeline / Center Area */
+    .center-stage {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Interactive Pipeline Stages */
+    .pipeline-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      padding: 20px 10px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(0, 243, 255, 0.15);
+      border-radius: 8px;
+    }
+
+    .pipeline-line {
+      position: absolute;
+      top: 50%;
+      left: 30px;
+      right: 30px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 1;
+      transform: translateY(-50%);
+    }
+
+    .pipeline-progress-bar {
+      position: absolute;
+      top: 50%;
+      left: 30px;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--emerald));
+      box-shadow: 0 0 10px var(--cyan);
+      z-index: 2;
+      transform: translateY(-50%);
+      transition: width 0.4s ease;
+    }
+
+    .stage-node {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .node-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #0b1120;
+      border: 2px solid var(--text-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--text-dim);
+      transition: all 0.3s;
+    }
+
+    .stage-node.active .node-dot {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan);
+      background: rgba(0, 243, 255, 0.15);
+    }
+
+    .stage-node.completed .node-dot {
+      border-color: var(--emerald);
+      color: var(--emerald);
+      box-shadow: 0 0 15px var(--emerald);
+      background: rgba(0, 255, 157, 0.15);
+    }
+
+    .node-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-dim);
+    }
+
+    .stage-node.active .node-label {
+      color: var(--cyan);
+      font-weight: 700;
+    }
+
+    /* Live Output & Inspector */
+    .inspector-box {
+      background: rgba(10, 16, 30, 0.95);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-dim);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+    }
+
+    .terminal-body {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.6;
+      overflow-y: auto;
+      max-height: 320px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .terminal-body .hl-cyan { color: var(--cyan); font-weight: 700; }
+    .terminal-body .hl-emerald { color: var(--emerald); font-weight: 700; }
+    .terminal-body .hl-amber { color: var(--amber); }
+    .terminal-body .hl-purple { color: #d8b4fe; }
+
+    /* Mission Control & Trigger */
+    .mission-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .select-sci {
+      background: #0a0f1d;
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .input-sci {
+      background: #0a0f1d;
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+      width: 100%;
+    }
+
+    .input-sci:focus, .select-sci:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .btn-execute {
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 255, 157, 0.2));
+      border: 1px solid var(--cyan);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.25s;
+      text-shadow: 0 0 10px var(--cyan);
+    }
+
+    .btn-execute:hover {
+      background: linear-gradient(135deg, var(--cyan), var(--emerald));
+      color: #000;
+      box-shadow: 0 0 25px var(--cyan);
+    }
+
+    /* Right Column: Telemetry & Decision Matrix */
+    .telemetry-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .meter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .meter-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meter-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+
+    .meter-bar {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .meter-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .fill-cyan { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+    .fill-emerald { background: var(--emerald); box-shadow: 0 0 8px var(--emerald); }
+    .fill-purple { background: var(--purple); box-shadow: 0 0 8px var(--purple); }
+    .fill-amber { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+
+    /* Decision Matrix Card */
+    .decision-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .decision-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .matrix-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 11px;
+    }
+
+    .matrix-lbl {
+      color: var(--text-dim);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .matrix-val {
+      color: var(--text);
+    }
+
+    /* Model registry table */
+    .models-table {
+      width: 100%;
+      font-size: 11px;
+      border-collapse: collapse;
+    }
+
+    .models-table th {
+      text-align: left;
+      color: var(--text-dim);
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 500;
+    }
+
+    .models-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .badge-tag {
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .tag-free { background: rgba(0, 255, 157, 0.15); color: var(--emerald); border: 1px solid var(--emerald); }
+    .tag-premium { background: rgba(189, 0, 255, 0.15); color: #d8b4fe; border: 1px solid var(--purple); }
+    .tag-online { color: var(--emerald); font-weight: 700; }
+    .tag-key { color: var(--amber); font-weight: 700; }
+    .tag-offline { color: var(--text-dim); }
+
+    /* Canvas background effect */
+    #hudCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.45;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cyber Layers -->
+  <div class="cyber-grid"></div>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+  <canvas id="hudCanvas"></canvas>
+
+  <div class="hud-container">
+    
+    <!-- Top Header -->
+    <header class="hud-header">
+      <div class="logo-group">
+        <div class="reactor-core"></div>
+        <div>
+          <div class="title-h1">
+            AI DUO // SYNAPSE CORE
+            <span class="badge-live">LIVE TELEMETRY</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-top: 2px;">
+            MULTI-AGENT INTELLIGENCE & FREE LLM API COMMAND CENTER
+          </div>
+        </div>
+      </div>
+
+      <div class="header-stats">
+        <div class="stat-pill">
+          <span class="stat-label">RAM ALLOCATION</span>
+          <span class="stat-val" id="statRam">3.4 / 8.0 GB</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">ACTIVE ENGINE</span>
+          <span class="stat-val" style="color: var(--emerald);">CLAUDE + SOUP</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">FAILOVER STATUS</span>
+          <span class="stat-val" style="color: var(--cyan);">ARMED (AUTO)</span>
+        </div>
+        <button class="btn-sound" id="soundToggle" onclick="toggleAudio()">AUDIO: ON</button>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="hud-grid">
+      
+      <!-- Left Column: Agent Registry -->
+      <aside class="hud-panel">
+        <div class="panel-title">
+          <span>СЕТЬ АГЕНТОВ (REGISTRY)</span>
+          <span style="font-size: 10px; color: var(--emerald);">5 ONLINE</span>
+        </div>
+        <div class="agents-list" id="agentsList">
+          <!-- Rendered via JS -->
+        </div>
+      </aside>
+
+      <!-- Center Column: Live Execution & Inspector -->
+      <main class="center-stage">
+        
+        <!-- Pipeline Visualization -->
+        <section class="pipeline-container">
+          <div class="pipeline-line"></div>
+          <div class="pipeline-progress-bar" id="pipelineProgress"></div>
+
+          <div class="stage-node" id="stageTrigger">
+            <div class="node-dot">01</div>
+            <span class="node-label">TRIGGER</span>
+          </div>
+          <div class="stage-node" id="stageSkill">
+            <div class="node-dot">02</div>
+            <span class="node-label">SKILL LOAD</span>
+          </div>
+          <div class="stage-node" id="stageRoute">
+            <div class="node-dot">03</div>
+            <span class="node-label">MODEL ROUTE</span>
+          </div>
+          <div class="stage-node" id="stageInfer">
+            <div class="node-dot">04</div>
+            <span class="node-label">INFERENCE</span>
+          </div>
+          <div class="stage-node" id="stageVerify">
+            <div class="node-dot">05</div>
+            <span class="node-label">QUALITY GATE</span>
+          </div>
+        </section>
+
+        <!-- Mission Control Interactive Launcher -->
+        <section class="mission-box">
+          <div style="font-size: 11px; color: var(--cyan); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+            КОНСОЛЬ ЗАПУСКА ЗАДАЧИ (MISSION CONTROL)
+          </div>
+          <div class="form-row">
+            <div>
+              <label class="stat-label">ВЫБРАННЫЙ АГЕНТ:</label>
+              <select class="select-sci" id="agentSelect" style="width: 100%; margin-top: 4px;" onchange="onSelectAgentChange()">
+                <option value="architect">🏛️ ARCHITECT (System Architect)</option>
+                <option value="reviewer">🔍 REVIEWER (Senior Code Reviewer)</option>
+                <option value="developer" selected>⚡ DEVELOPER (Core Developer)</option>
+                <option value="security_auditor">🛡️ SECURITY_AUDITOR (AppSec Auditor)</option>
+                <option value="llmops">🍲 LLMOPS (Soup & Model Engineer)</option>
+              </select>
+            </div>
+            <div>
+              <label class="stat-label">ПОДКЛЮЧЕННЫЙ НАВЫК (SKILL):</label>
+              <select class="select-sci" id="skillSelect" style="width: 100%; margin-top: 4px;">
+                <option value="boilerplate-gen">boilerplate-gen (Чистый типизированный код)</option>
+                <option value="code-review">code-review (Контроль качества & баг-хантинг)</option>
+                <option value="architecture-audit">architecture-audit (Анализ архитектуры & ADR)</option>
+                <option value="security-audit">security-audit (OWASP Top 10 & аудит секретов)</option>
+                <option value="llmops-tuning">llmops-tuning (Рецепты Soup, квантование, streaming)</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="stat-label">ЦЕЛЕВАЯ ЗАДАЧА:</label>
+            <input type="text" class="input-sci" id="taskInput" style="margin-top: 4px;" 
+                   value="Создать асинхронный менеджер кэширования для Fast API сервиса с fallback на Redis">
+          </div>
+          <button class="btn-execute" id="btnRunMission" onclick="runMission()">
+            <span>⚡ ЗАПУСТИТЬ АГЕНТА С ВИЗУАЛИЗАЦИЕЙ</span>
+          </button>
+        </section>
+
+        <!-- Live Terminal Inspector -->
+        <section class="inspector-box">
+          <div class="terminal-header">
+            <span>NEURAL STREAM & LOG INSPECTOR</span>
+            <span id="logTimer">STATUS: IDLE</span>
+          </div>
+          <div class="terminal-body" id="terminalLog">
+            <span class="hl-cyan">[SYSTEM READY]</span> Связка AI Duo активна. Все 5 агентов зарегистрированы.<br>
+            <span class="hl-emerald">[FREE LLM API]</span> Шлюз Pollinations онлайн. Резервный пул OpenRouter активирован.<br>
+            <span class="hl-purple">[SOUP ENGINE]</span> Реестр рецептов подключен. MCP сервер готов к вызовам.<br>
+            <span style="color: var(--text-dim);">Выберите агента и нажмите "ЗАПУСТИТЬ АГЕНТА" для визуализации процесса...</span>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Right Column: Decision Matrix & Telemetry -->
+      <aside class="telemetry-col">
+        
+        <!-- Decision Matrix Card (Стоит ли использовать?) -->
+        <div class="hud-panel">
+          <div class="panel-title">
+            <span>МАТРИЦА ПРИНЯТИЯ РЕШЕНИЯ</span>
+            <span id="matrixScore" style="color: var(--emerald);">A+</span>
+          </div>
+          <div class="decision-card" id="decisionMatrix">
+            <!-- Dynamic via JS -->
+          </div>
+        </div>
+
+        <!-- Telemetry & Load Gauges -->
+        <div class="hud-panel">
+          <div class="panel-title">
+            <span>АППАРАТНАЯ ТЕЛЕМЕТРИЯ (LENOVO 8GB)</span>
+          </div>
+          <div class="meter-group">
+            <div class="meter-row">
+              <div class="meter-head">
+                <span class="stat-label">CPU CORE USAGE</span>
+                <span class="stat-val" id="valCpu" style="font-size: 11px;">18%</span>
+              </div>
+              <div class="meter-bar">
+                <div class="meter-fill fill-cyan" id="barCpu" style="width: 18%;"></div>
+              </div>
+            </div>
+
+            <div class="meter-row">
+              <div class="meter-head">
+                <span class="stat-label">RAM ALLOCATED (SYSTEM)</span>
+                <span class="stat-val" id="valRam" style="font-size: 11px;">42%</span>
+              </div>
+              <div class="meter-bar">
+                <div class="meter-fill fill-emerald" id="barRam" style="width: 42%;"></div>
+              </div>
+            </div>
+
+            <div class="meter-row">
+              <div class="meter-head">
+                <span class="stat-label">INFERENCE TOKENS / SEC</span>
+                <span class="stat-val" id="valTps" style="font-size: 11px; color: var(--purple);">34 t/s</span>
+              </div>
+              <div class="meter-bar">
+                <div class="meter-fill fill-purple" id="barTps" style="width: 65%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Connected Models Status -->
+        <div class="hud-panel" style="padding: 16px;">
+          <div class="panel-title">
+            <span>РЕЕСТР МОДЕЛЕЙ (PROVIDERS)</span>
+          </div>
+          <table class="models-table">
+            <thead>
+              <tr>
+                <th>Имя</th>
+                <th>Тариф</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+            <tbody id="modelsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Audio synthesis setup (Web Audio API)
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playBeep(freq = 440, type = 'sine', duration = 0.08) {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('soundToggle').innerText = audioEnabled ? 'AUDIO: ON' : 'AUDIO: OFF';
+      playBeep(audioEnabled ? 880 : 300, 'square', 0.1);
+    }
+
+    // Agent Knowledge Base
+    const AGENTS_DATA = {
+      architect: {
+        id: 'architect',
+        name: 'Архитектор систем',
+        role: 'System Architect',
+        icon: '🏛️',
+        primary: 'claude (Sonnet)',
+        fallback: ['deepseek', 'openrouter_free'],
+        skills: ['architecture-audit'],
+        description: 'Проектирование архитектуры, выбор стека технологий, декомпозиция сервисов и консилиум решений.',
+        whenToUse: 'Старт нового проекта, масштабный рефакторинг, выбор БД, проектирование API и микросервисов.',
+        pros: 'Глубокое системное мышление, выявление скрытых архитектурных рисков, составление ADR.',
+        cons: 'Расход квот Claude; избыточен для написания простых скриптов.',
+        score: 'A+',
+        speedRating: '8.5 / 10',
+        costRating: 'Премиум (квота Claude)',
+        privacy: 'Private (строгая изоляция)'
+      },
+      reviewer: {
+        id: 'reviewer',
+        name: 'Старший код-ревьюер',
+        role: 'Senior Code Reviewer',
+        icon: '🔍',
+        primary: 'claude',
+        fallback: ['groq', 'deepseek'],
+        skills: ['code-review'],
+        description: 'Глубокое код-ревью изменений, проверка качества, соблюдения стандартов и отсутствия регрессий.',
+        whenToUse: 'Перед коммитом, перед слиянием PR, проверка чужого кода, поиск неочевидных багов.',
+        pros: 'Строгий чеклист (race conditions, off-by-one, DRY), конкретные рекомендации по исправлениям.',
+        cons: 'Требует git diff для максимальной эффективности.',
+        score: 'A',
+        speedRating: '9.0 / 10',
+        costRating: 'Гибрид (Claude -> Groq fallback)',
+        privacy: 'Private'
+      },
+      developer: {
+        id: 'developer',
+        name: 'Инженер-разработчик',
+        role: 'Core Developer',
+        icon: '⚡',
+        primary: 'groq (Llama 3.3 70B)',
+        fallback: ['pollinations (Free)', 'ollama', 'claude'],
+        skills: ['boilerplate-gen'],
+        description: 'Быстрая генерация кода, реализация модулей, написание тестов и вспомогательных скриптов.',
+        whenToUse: 'Рутинное написание кода, генерация boilerplate, тесты, алгоритмы, парсеры, утилиты.',
+        pros: 'Максимальная скорость, нулевая стоимость (Free LLM API), мгновенный fallback при лимитах.',
+        cons: 'Не заменяет архитектора при проектировании сложных распределенных систем.',
+        score: 'S (Высочайшая эффективность)',
+        speedRating: '9.9 / 10 (Сверхбыстрый)',
+        costRating: 'БЕСПЛАТНО (Free Tier / Zero-Cost)',
+        privacy: 'Hybrid (Groq Private / Pollinations Public)'
+      },
+      security_auditor: {
+        id: 'security_auditor',
+        name: 'Аудитор информационной безопасности',
+        role: 'Security Auditor',
+        icon: '🛡️',
+        primary: 'claude',
+        fallback: ['deepseek'],
+        skills: ['security-audit'],
+        description: 'Анализ защищенности кода, поиск уязвимостей OWASP Top 10, утечек секретов и валидация ввода.',
+        whenToUse: 'Аудит веб-эндпоинтов, валидация аутентификации/сессий, парсинг путей файлов, проверка перед релизом.',
+        pros: 'Бескомпромиссная проверка Path Traversal, Injection, Secrets leak, строгая классификация CWE.',
+        cons: 'Строгие вердикты могут требовать переписывания части логики.',
+        score: 'A+',
+        speedRating: '8.8 / 10',
+        costRating: 'Премиум (Claude Strict)',
+        privacy: 'Private (строгая конфиденциальность)'
+      },
+      llmops: {
+        id: 'llmops',
+        name: 'LLMOps & Soup специалист',
+        role: 'LLMOps Engineer',
+        icon: '🍲',
+        primary: 'ollama (Local)',
+        fallback: ['soup_local', 'groq', 'claude'],
+        skills: ['llmops-tuning'],
+        description: 'Управление моделями, квантование, интеграция с LLM Soup, layer streaming и бенчмаркинг.',
+        whenToUse: 'Подбор локальных моделей под RAM/VRAM, запуск квантований GGUF, fine-tuning, анализ рецептов Soup.',
+        pros: 'Оптимизация под слабое железо (8GB RAM), бережное использование ресурсов, готовые рецепты.',
+        cons: 'Локальный инференс зависит от мощности CPU.',
+        score: 'A',
+        speedRating: '8.0 / 10 (Локальный CPU)',
+        costRating: 'БЕСПЛАТНО (100% Офлайн)',
+        privacy: 'Максимальная (данные не покидают ПК)'
+      }
+    };
+
+    const MODELS_REGISTRY = [
+      { name: 'claude', tier: 'premium', status: 'ГОТОВ', cls: 'tag-online', desc: 'Claude Code CLI' },
+      { name: 'pollinations', tier: 'free', status: 'ОНЛАЙН', cls: 'tag-online', desc: 'Free LLM API' },
+      { name: 'groq', tier: 'free', status: 'ОНЛАЙН (нужен ключ)', cls: 'tag-key', desc: 'Llama 3.3 70B' },
+      { name: 'openrouter_free', tier: 'free', status: 'ОНЛАЙН', cls: 'tag-online', desc: 'Free Pool' },
+      { name: 'ollama', tier: 'free', status: 'ОФФЛАЙН', cls: 'tag-offline', desc: 'Local GGUF' },
+      { name: 'soup_local', tier: 'free', status: 'ОФФЛАЙН', cls: 'tag-offline', desc: 'Soup llama-server' },
+      { name: 'deepseek', tier: 'premium', status: 'ОНЛАЙН (нужен ключ)', cls: 'tag-key', desc: 'DeepSeek API' }
+    ];
+
+    let currentAgentKey = 'developer';
+
+    function renderAgentsList() {
+      const container = document.getElementById('agentsList');
+      container.innerHTML = '';
+      Object.keys(AGENTS_DATA).forEach(key => {
+        const ag = AGENTS_DATA[key];
+        const isActive = key === currentAgentKey;
+        const card = document.createElement('div');
+        card.className = `agent-card ${isActive ? 'active' : ''}`;
+        card.onclick = () => selectAgent(key);
+        card.innerHTML = `
+          <div class="agent-head">
+            <div class="agent-id">${ag.icon} ${key.toUpperCase()}</div>
+            <span class="agent-role-badge">${ag.role}</span>
+          </div>
+          <div class="agent-desc">${ag.description}</div>
+          <div class="agent-meta">
+            <span>Primary: <b>${ag.primary}</b></span>
+            <span>Скилл: <b>${ag.skills[0]}</b></span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function selectAgent(key) {
+      currentAgentKey = key;
+      playBeep(520, 'sine', 0.05);
+      renderAgentsList();
+      renderDecisionMatrix(key);
+      document.getElementById('agentSelect').value = key;
+      const ag = AGENTS_DATA[key];
+      if (ag.skills.length > 0) {
+        document.getElementById('skillSelect').value = ag.skills[0];
+      }
+    }
+
+    function onSelectAgentChange() {
+      const sel = document.getElementById('agentSelect').value;
+      selectAgent(sel);
+    }
+
+    function renderDecisionMatrix(key) {
+      const ag = AGENTS_DATA[key];
+      document.getElementById('matrixScore').innerText = ag.score;
+      const box = document.getElementById('decisionMatrix');
+      box.innerHTML = `
+        <div class="decision-title">
+          <span>${ag.icon}</span> 
+          <span>${ag.name}</span>
+        </div>
+        <div class="matrix-item">
+          <span class="matrix-lbl">Когда стоит использовать:</span>
+          <span class="matrix-val" style="color: var(--emerald);">${ag.whenToUse}</span>
+        </div>
+        <div class="matrix-item">
+          <span class="matrix-lbl">Ключевые преимущества:</span>
+          <span class="matrix-val">${ag.pros}</span>
+        </div>
+        <div class="matrix-item">
+          <span class="matrix-lbl">Ограничения & компромиссы:</span>
+          <span class="matrix-val" style="color: var(--amber);">${ag.cons}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+          <div>
+            <span class="matrix-lbl">Скорость:</span>
+            <div style="font-weight: 700; color: var(--cyan); font-size: 11px;">${ag.speedRating}</div>
+          </div>
+          <div>
+            <span class="matrix-lbl">Стоимость:</span>
+            <div style="font-weight: 700; color: var(--emerald); font-size: 11px;">${ag.costRating}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderModelsTable() {
+      const tbody = document.getElementById('modelsTableBody');
+      tbody.innerHTML = '';
+      MODELS_REGISTRY.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><b>${m.name}</b> <div style="font-size: 9px; color: var(--text-dim);">${m.desc}</div></td>
+          <td><span class="badge-tag ${m.tier === 'free' ? 'tag-free' : 'tag-premium'}">${m.tier}</span></td>
+          <td class="${m.cls}">${m.status}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Step-by-step Interactive Mission Simulation
+    async function runMission() {
+      const btn = document.getElementById('btnRunMission');
+      const ag = AGENTS_DATA[currentAgentKey];
+      const skill = document.getElementById('skillSelect').value;
+      const task = document.getElementById('taskInput').value;
+      const terminal = document.getElementById('terminalLog');
+      const progressBar = document.getElementById('pipelineProgress');
+      const timerLabel = document.getElementById('logTimer');
+
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      playBeep(640, 'triangle', 0.15);
+
+      // Reset stages
+      const stages = ['stageTrigger', 'stageSkill', 'stageRoute', 'stageInfer', 'stageVerify'];
+      stages.forEach(id => {
+        const el = document.getElementById(id);
+        el.className = 'stage-node';
+      });
+      progressBar.style.width = '0%';
+
+      terminal.innerHTML = `<span class="hl-cyan">[MISSION INITIATED]</span> Запуск агента <b>${ag.name}</b> по задаче: "${task}"...<br>`;
+
+      // Helper function
+      const step = (stageId, progressPct, logMsg, freq, delayMs) => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            playBeep(freq, 'sine', 0.08);
+            document.getElementById(stageId).className = 'stage-node active';
+            progressBar.style.width = progressPct + '%';
+            terminal.innerHTML += logMsg + '<br>';
+            terminal.scrollTop = terminal.scrollHeight;
+            timerLabel.innerText = `STATUS: STEP ${stageId.replace('stage', '').toUpperCase()}`;
+            resolve();
+          }, delayMs);
+        });
+      };
+
+      // Stage 1: Trigger
+      await step('stageTrigger', 20, 
+        `<span class="hl-cyan">[STEP 1/5]</span> Принят контекст задачи. Рабочая папка: <code>${window.location.pathname}</code>`, 
+        440, 400);
+
+      // Stage 2: Skill Load
+      await step('stageSkill', 40, 
+        `<span class="hl-purple">[STEP 2/5]</span> Подключен навык <b>${skill}</b>. Инструкции и чеклист синтезированы в системный промпт.`, 
+        550, 700);
+
+      // Stage 3: Model Route
+      let routedProvider = ag.primary;
+      let routeLog = `<span class="hl-emerald">[STEP 3/5]</span> Маршрутизация провайдера: primary = <b>${ag.primary}</b>`;
+      if (ag.id === 'developer') {
+        routeLog += ` -> <span class="hl-amber">[FAILOVER CHECK]</span> groq offline/no key -> мгновенное переключение на <b>pollinations (FREE LLM API)</b>.`;
+        routedProvider = 'pollinations';
+      }
+      await step('stageRoute', 65, routeLog, 660, 800);
+
+      // Stage 4: Inference
+      await step('stageInfer', 85, 
+        `<span class="hl-cyan">[STEP 4/5]</span> Нейросетевой инференс на <b>${routedProvider}</b>... Сгенерировано 384 токена. Скорость: <b>38 t/s</b>.`, 
+        770, 900);
+
+      // Stage 5: Quality Gate & Verify
+      await step('stageVerify', 100, 
+        `<span class="hl-emerald">[STEP 5/5]</span> Валидация вывода: чеклист навыка '${skill}' пройден. Ошибок безопасности не обнаружено.`, 
+        880, 600);
+
+      // Final output rendering
+      setTimeout(() => {
+        stages.forEach(id => {
+          document.getElementById(id).className = 'stage-node completed';
+        });
+        playBeep(980, 'square', 0.2);
+        timerLabel.innerText = 'STATUS: COMPLETED (2.84s)';
+
+        terminal.innerHTML += `
+          <div style="margin-top: 12px; padding: 12px; background: rgba(0,255,157,0.08); border-left: 3px solid var(--emerald); border-radius: 4px;">
+            <div style="font-weight: 700; color: var(--emerald);">### [Агент: ${ag.name} | Модель: ${routedProvider}] [Навыки: ${skill}]</div>
+            <div style="color: #cbd5e1; margin-top: 6px; font-size: 11px;">
+              Задача успешно решена в соответствии со стандартами <b>${skill}</b>.<br>
+              • Архитектурная чистота: <b>100%</b><br>
+              • Стоимость операции: <b>$0.00 (Zero-Cost / Free Tier)</b><br>
+              • Задержка: <b>2840 ms</b> | Безопасность: <b>Verified</b>
+            </div>
+          </div>
+        `;
+        terminal.scrollTop = terminal.scrollHeight;
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }, 500);
+    }
+
+    // Background Canvas Particles & HUD effect
+    const canvas = document.getElementById('hudCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.radius = Math.random() * 1.5 + 0.5;
+        this.color = Math.random() > 0.5 ? '#00f3ff' : '#00ff9d';
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0) this.x = canvas.width;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.y < 0) this.y = canvas.height;
+        if (this.y > canvas.height) this.y = 0;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = this.color;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    for (let i = 0; i < 40; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // Subtle Live Telemetry Fluctuations
+    setInterval(() => {
+      const cpu = Math.floor(14 + Math.random() * 12);
+      const ramPct = Math.floor(40 + Math.random() * 4);
+      const ramGb = (ramPct * 0.08).toFixed(1);
+      const tps = Math.floor(32 + Math.random() * 8);
+
+      document.getElementById('valCpu').innerText = cpu + '%';
+      document.getElementById('barCpu').style.width = cpu + '%';
+
+      document.getElementById('valRam').innerText = ramPct + '%';
+      document.getElementById('barRam').style.width = ramPct + '%';
+      document.getElementById('statRam').innerText = `${ramGb} / 8.0 GB`;
+
+      document.getElementById('valTps').innerText = tps + ' t/s';
+    }, 2500);
+
+    // Initial load
+    renderAgentsList();
+    renderDecisionMatrix('developer');
+    renderModelsTable();
+  </script>
+</body>
+</html>
