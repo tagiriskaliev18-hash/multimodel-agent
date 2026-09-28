@@ -1,0 +1,1 @@
+{"name": "train_execute", "description": "Execute a confirmed training plan.", "parameters": {"type": "object", "properties": {"confirmation_token": {"type": "string"}}, "required": ["confirmation_token"], "additionalProperties": false}}

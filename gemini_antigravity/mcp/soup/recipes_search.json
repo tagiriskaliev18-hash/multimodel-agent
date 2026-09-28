@@ -1,0 +1,1 @@
+{"name": "recipes_search", "description": "Search the ready-made recipe catalog by keyword / task / model size.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "task": {"type": "string"}, "size": {"type": "string"}}, "additionalProperties": false}}

@@ -1,0 +1,1 @@
+{"name": "data_inspect", "description": "Dataset stats: row count, columns, length distribution, duplicates.", "parameters": {"type": "object", "properties": {"data": {"type": "string", "description": "Path to a JSONL/JSON dataset under the working directory."}}, "required": ["data"], "additionalProperties": false}}

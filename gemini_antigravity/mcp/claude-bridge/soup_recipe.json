@@ -1,0 +1,1 @@
+{"name": "soup_recipe", "description": "Поиск и просмотр рецептов/шаблонов моделей из LLM Soup для локального запуска или файн-тюнинга.", "parameters": {"type": "object", "properties": {"query": {"type": "string", "description": "Поисковый запрос (например: 'coder', 'qwen', 'llama', 'math')"}}}}

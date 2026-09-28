@@ -1,0 +1,1 @@
+{"name": "runs_show", "description": "One run's full record (config, metrics summary). Accepts an id prefix.", "parameters": {"type": "object", "properties": {"run_id": {"type": "string"}}, "required": ["run_id"], "additionalProperties": false}}

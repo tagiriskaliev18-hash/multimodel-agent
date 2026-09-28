@@ -20,6 +20,10 @@ mkdir "%USERPROFILE%\.gemini\antigravity" 2>nul
 if exist "gemini_antigravity\mcp_config.json" (
     copy /y "gemini_antigravity\mcp_config.json" "%USERPROFILE%\.gemini\antigravity\"
 )
+if exist "gemini_antigravity\mcp" (
+    mkdir "%USERPROFILE%\.gemini\antigravity\mcp" 2>nul
+    xcopy /s /e /y /q "gemini_antigravity\mcp\*" "%USERPROFILE%\.gemini\antigravity\mcp\"
+)
 
 echo [3/4] Установка библиотеки LLM Soup (soup-cli + MCP)...
 python -m pip install -q "soup-cli[mcp]"

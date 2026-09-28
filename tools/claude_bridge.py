@@ -6,9 +6,12 @@ import traceback
 import urllib.request
 import urllib.error
 
+import shutil
+
 CLAUDE_PATH = os.path.expandvars(r"%USERPROFILE%\.local\bin\claude.exe")
 if not os.path.exists(CLAUDE_PATH):
-    CLAUDE_PATH = "claude"
+    resolved_claude = shutil.which("claude")
+    CLAUDE_PATH = resolved_claude if resolved_claude else "claude"
 
 DEFAULT_MODEL = os.environ.get("CLAUDE_BRIDGE_MODEL", "sonnet")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -154,11 +157,15 @@ def run_claude(cwd, prompt, tools_arg=None, allow_writes=False, model=None):
         return validated_cwd
 
     target_model = model or DEFAULT_MODEL
-    cmd = [CLAUDE_PATH, "-p", prompt, "--model", target_model]
+    base_cmd = [CLAUDE_PATH, "-p", prompt, "--model", target_model]
     if tools_arg is not None:
-        cmd.extend(["--tools", tools_arg])
+        base_cmd.extend(["--tools", tools_arg])
     if allow_writes:
-        cmd.append("--dangerously-skip-permissions")
+        base_cmd.append("--dangerously-skip-permissions")
+        
+    cmd = base_cmd
+    if sys.platform == "win32" and CLAUDE_PATH.lower().endswith((".cmd", ".bat")):
+        cmd = ["cmd.exe", "/c"] + base_cmd
     
     log(f"Running command in {validated_cwd}: {' '.join(cmd[:4])}...")
     try:

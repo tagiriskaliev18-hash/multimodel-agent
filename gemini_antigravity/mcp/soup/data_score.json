@@ -1,0 +1,1 @@
+{"name": "data_score", "description": "Data-quality scorecard: PII, toxicity, language mix, educational value.", "parameters": {"type": "object", "properties": {"data": {"type": "string", "description": "Path to a JSONL/JSON dataset under the working directory."}}, "required": ["data"], "additionalProperties": false}}

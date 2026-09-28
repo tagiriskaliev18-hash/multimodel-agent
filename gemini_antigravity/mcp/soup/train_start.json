@@ -1,0 +1,1 @@
+{"name": "train_start", "description": "Validate a soup.yaml and render the 'soup train' command (does not execute).", "parameters": {"type": "object", "properties": {"config": {"type": "string", "description": "Path to a soup.yaml under cwd."}}, "required": ["config"], "additionalProperties": false}}

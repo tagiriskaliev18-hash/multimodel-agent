@@ -1,0 +1,1 @@
+{"name": "registry_show", "description": "One registry entry by id / prefix / name:tag / registry:// ref.", "parameters": {"type": "object", "properties": {"ref": {"type": "string"}}, "required": ["ref"], "additionalProperties": false}}

@@ -1,0 +1,1 @@
+{"name": "models_list", "description": "Вывести список всех подключенных моделей, включая Free LLM API, с тарифами (free/premium), приватностью и онлайн-статусом.", "parameters": {"type": "object", "properties": {}}}

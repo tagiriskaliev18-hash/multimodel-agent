@@ -1,0 +1,1 @@
+{"name": "registry_list", "description": "Model-registry entries, filterable by name/tag/base/task.", "parameters": {"type": "object", "properties": {"name": {"type": "string"}, "tag": {"type": "string"}, "base": {"type": "string"}, "task": {"type": "string"}, "limit": {"type": "integer", "minimum": 1, "maximum": 500}}, "additionalProperties": false}}

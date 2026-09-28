@@ -1,0 +1,1 @@
+{"name": "agents_list", "description": "Вывести список всех агентов из нашей базы, их роли, модели и подключенные навыки.", "parameters": {"type": "object", "properties": {}}}

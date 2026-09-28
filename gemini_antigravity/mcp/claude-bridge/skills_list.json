@@ -1,0 +1,1 @@
+{"name": "skills_list", "description": "Вывести список всех доступных навыков (skills) для агентов AI Duo.", "parameters": {"type": "object", "properties": {}}}
