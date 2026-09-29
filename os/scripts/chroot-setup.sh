@@ -121,6 +121,7 @@ find /usr/share/doc -type d -empty -delete
 
 # --- Файлы AIsktagOS --------------------------------------------------------------
 cp -a "$B/overlay/." /
+chmod 600 /etc/netplan/*.yaml
 chmod +x /usr/bin/aisktag-* /usr/lib/aisktagos/*.sh /usr/lib/aisktagos/*.py 2>/dev/null || true
 
 # Тёмная тема по умолчанию: цвета Breeze Dark + настройки AIsktagOS

@@ -1,0 +1,5 @@
+# Сетью управляет NetworkManager (значок сети в строке меню).
+# Без этого файла Ubuntu оставляет проводные адаптеры выключенными.
+network:
+  version: 2
+  renderer: NetworkManager
