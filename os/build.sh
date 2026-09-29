@@ -129,7 +129,7 @@ stage_iso() {
     log "Сжатие файловой системы ($SQUASHFS_COMP) — это самый долгий шаг"
     local comp_opts=(-comp "$SQUASHFS_COMP")
     [ "$SQUASHFS_COMP" = "xz" ] && comp_opts+=(-Xbcj x86 -b 1M -Xdict-size 100%)
-    [ "$SQUASHFS_COMP" = "zstd" ] && comp_opts+=(-Xcompression-level 19 -b 1M)
+    [ "$SQUASHFS_COMP" = "zstd" ] && comp_opts+=(-Xcompression-level "${ZSTD_LEVEL:-19}" -b 1M)
     mksquashfs "$CHROOT" "$ISO_TREE/casper/filesystem.squashfs" \
         -noappend -wildcards "${comp_opts[@]}" \
         -e 'proc/*' 'sys/*' 'dev/*' 'run/*' 'tmp/*' '.debootstrap-done' '.system-done' \
@@ -163,8 +163,11 @@ build_grub() {
     cat "$CHROOT/usr/lib/grub/i386-pc/cdboot.img" "$WORK_DIR/core.img" > "$g/i386-pc/eltorito.img"
 
     # UEFI: shim (подписан Microsoft) -> grub (подписан Canonical)
-    local shim grub_signed mm
-    shim="$(ls "$CHROOT"/usr/lib/shim/shimx64.efi.signed.latest "$CHROOT"/usr/lib/shim/shimx64.efi.signed 2>/dev/null | head -1)"
+    # shimx64.efi.signed — ссылка на /etc/alternatives, с хоста она не разрешается
+    local shim="" grub_signed mm f
+    for f in shimx64.efi.signed.latest shimx64.efi.signed.previous; do
+        [ -f "$CHROOT/usr/lib/shim/$f" ] && { shim="$CHROOT/usr/lib/shim/$f"; break; }
+    done
     grub_signed="$CHROOT/usr/lib/grub/x86_64-efi-signed/gcdx64.efi.signed"
     mm="$CHROOT/usr/lib/shim/mmx64.efi"
     [ -f "$shim" ] && [ -f "$grub_signed" ] || die "нет подписанных shim/grub в chroot"
@@ -204,6 +207,8 @@ case "${1:-all}" in
     all)   check_host; stage_bootstrap; stage_system; stage_iso ;;
     system) check_host; stage_bootstrap; stage_system ;;
     iso)   check_host; stage_iso ;;
+    # для отладки загрузчика: использовать уже сжатую squashfs
+    boot)  check_host; build_grub; build_iso_image ;;
     clean) umount_chroot; rm -rf "$WORK_DIR"; log "Рабочий каталог удалён" ;;
-    *)     die "неизвестная команда: $1 (all | system | iso | clean)" ;;
+    *)     die "неизвестная команда: $1 (all | system | iso | boot | clean)" ;;
 esac

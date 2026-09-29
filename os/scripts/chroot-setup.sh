@@ -14,6 +14,12 @@ if [ -s "$B/resolv.conf" ]; then
     cp "$B/resolv.conf" /etc/resolv.conf
 fi
 
+# Без документации в /usr/share/doc (кроме лицензий) — минус ~200 МБ; man-страницы остаются
+cat > /etc/dpkg/dpkg.cfg.d/duoos-nodoc <<'EOF'
+path-exclude=/usr/share/doc/*
+path-include=/usr/share/doc/*/copyright
+EOF
+
 # Не запускать службы во время сборки
 printf '#!/bin/sh\nexit 101\n' > /usr/sbin/policy-rc.d
 chmod +x /usr/sbin/policy-rc.d
@@ -101,9 +107,17 @@ mapfile -t PKGS < <(cat "$B"/packages/*.list | sed -e 's/#.*//' -e 's/[[:space:]
 # shellcheck disable=SC2086
 "${APT[@]}" install "${PKGS[@]}" $BROWSER_PKGS $CODE_PKGS
 
-# Kubuntu-настройки не нужны: у DuoOS свои
-"${APT[@]}" purge kubuntu-settings-desktop kubuntu-notification-helper plasma-discover-backend-snap snapd 2>/dev/null || true
+# Kubuntu-настройки не нужны: у DuoOS свои. Плюс крупные пакеты, пришедшие
+# только «рекомендациями» (ставятся по желанию через Центр DuoOS или apt)
+for p in kubuntu-settings-desktop kubuntu-notification-helper plasma-discover-backend-snap snapd \
+         fonts-noto-cjk-extra ibus ibus-data $(dpkg-query -W -f='${Package}\n' 'llvm-*-dev' 'ibus-gtk*' 2>/dev/null); do
+    if dpkg -s "$p" >/dev/null 2>&1; then
+        "${APT[@]}" purge "$p"
+    fi
+done
 "${APT[@]}" autoremove --purge
+find /usr/share/doc -type f ! -name copyright -delete
+find /usr/share/doc -type d -empty -delete
 
 # --- Файлы DuoOS --------------------------------------------------------------
 cp -a "$B/overlay/." /
@@ -133,14 +147,34 @@ LOGO=${OS_ID}-logo
 UBUNTU_CODENAME=${UBUNTU_SUITE}
 EOF
 ln -sf ../usr/lib/os-release /etc/os-release
+# Файлы base-files переименовываем через dpkg-divert, чтобы обновления не спрашивали о конфликте
+for f in /etc/issue /etc/issue.net /etc/lsb-release; do
+    dpkg-divert --local --rename --add "$f"
+done
 echo "${OS_NAME} ${OS_VERSION} \\n \\l" > /etc/issue
 echo "${OS_NAME} ${OS_VERSION}" > /etc/issue.net
+# Кодовое имя остаётся от Ubuntu — для совместимости с PPA и сторонними репозиториями
+cat > /etc/lsb-release <<EOF
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=26.04
+DISTRIB_CODENAME=${UBUNTU_SUITE}
+DISTRIB_DESCRIPTION="${OS_NAME} ${OS_VERSION} (${OS_CODENAME})"
+EOF
+# Приветствие терминала без рекламы Ubuntu Pro/Landscape
+chmod -x /etc/update-motd.d/10-help-text /etc/update-motd.d/50-motd-news \
+         /etc/update-motd.d/91-contract-ua-esm-status 2>/dev/null || true
 
 # Заставка загрузки: логотип DuoOS вместо логотипа Ubuntu
+# (на ПК с UEFI в центре показывается логотип производителя, как у Windows)
 for f in /usr/share/plymouth/themes/spinner/watermark.png /usr/share/plymouth/ubuntu-logo.png; do
     [ -e "$f" ] || continue
     dpkg-divert --local --rename --add "$f"
     cp /usr/share/duoos/plymouth-watermark.png "$f"
+done
+for f in /usr/share/plymouth/themes/spinner/bgrt-fallback.png; do
+    [ -e "$f" ] || continue
+    dpkg-divert --local --rename --add "$f"
+    cp /usr/share/duoos/plymouth-logo.png "$f"
 done
 
 # --- Пользователи по умолчанию: zsh, группы разработчика ----------------------
@@ -181,3 +215,9 @@ rm -f /var/lib/dbus/machine-id
 find /var/log -type f -exec truncate -s 0 {} +
 rm -f /etc/resolv.conf
 ln -s ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
+# Кэши актуальны: иначе systemd при каждой загрузке с USB пересобирает ldconfig/hwdb/каталоги
+ldconfig
+systemd-hwdb update || true
+journalctl --update-catalog 2>/dev/null || true
+touch /etc/.updated /var/.updated

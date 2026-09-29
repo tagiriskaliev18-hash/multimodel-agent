@@ -134,15 +134,14 @@ def main() -> None:
             font-size="64" fill="#ffffff">DuoOS</text></svg>""", title)
     t = Image.open(title)
     grub.paste(t, (660, 420), t)
-    (OS / "iso").mkdir(exist_ok=True)
-    grub.save(OS / "iso/background.png", optimize=True)
+    (OS / "iso/theme").mkdir(parents=True, exist_ok=True)
+    grub.save(OS / "iso/theme/background.png", optimize=True)
 
-    # Водяной знак загрузочной заставки (Plymouth)
-    text_png(f"""<svg xmlns="http://www.w3.org/2000/svg" width="260" height="64">
-      <image href="data:image/svg+xml;base64,{__import__('base64').b64encode(LOGO_SVG.encode()).decode()}"
-             x="0" y="0" width="64" height="64"/>
-      <text x="80" y="46" font-family="Inter" font-weight="600" font-size="38" fill="#ffffff">DuoOS</text>
-      </svg>""", share / "plymouth-watermark.png")
+    # Загрузочная заставка (Plymouth): логотип по центру + подпись внизу
+    svg_to_png(LOGO_SVG, share / "plymouth-logo.png", 160)
+    text_png("""<svg xmlns="http://www.w3.org/2000/svg" width="200" height="56">
+      <text x="100" y="42" text-anchor="middle" font-family="Inter" font-weight="600"
+            font-size="36" fill="#ffffff">DuoOS</text></svg>""", share / "plymouth-watermark.png")
 
     # Установщик Calamares
     cal = OVERLAY / "etc/calamares/branding/duoos"
