@@ -45,6 +45,15 @@
       "allowed_tools": "Read,Grep,Glob",
       "write_access": false,
       "description": "Управление моделями, квантование, интеграция с LLM Soup, layer streaming и бенчмаркинг"
+    },
+    "hermes_agent": {
+      "name": "Агент Nous Hermes (Autonomous Reasoning & Tool Agent)",
+      "primary_provider": "hermes",
+      "fallback_providers": ["hermes_local", "openai", "groq", "pollinations"],
+      "skills": ["boilerplate-gen", "architecture-audit"],
+      "allowed_tools": "Read,Grep,Glob",
+      "write_access": false,
+      "description": "Автономный агент на базе Nous Hermes 3 с нативной поддержкой рассуждений (<scratchpad>) и вызовов инструментов (<tool_call>)"
     }
   }
 }

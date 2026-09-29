@@ -302,38 +302,24 @@
       display: none;
     }
 
-    .model-selector {
+    .model-status-badge {
       background: var(--bg-subtle);
       border: 1px solid var(--border-light);
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: var(--radius-full);
       font-size: 12.5px;
       font-weight: 500;
       color: var(--text-primary);
       display: flex;
       align-items: center;
-      gap: 6px;
-      transition: border-color 0.2s ease;
+      gap: 7px;
+      user-select: none;
+      transition: all 0.2s ease;
     }
 
-    .model-selector:hover {
-      border-color: var(--accent-blue);
-    }
-
-    .model-select-input {
-      background: transparent;
-      border: none;
-      color: var(--text-primary);
-      font-size: 12.5px;
-      font-weight: 500;
-      outline: none;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    .model-select-input option {
-      background: var(--bg-surface);
-      color: var(--text-primary);
+    .model-status-badge:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-surface-secondary);
     }
 
     .model-status-dot {
@@ -341,6 +327,7 @@
       height: 7px;
       border-radius: 50%;
       background: #34c759;
+      box-shadow: 0 0 6px rgba(52, 199, 89, 0.5);
     }
 
     .nav-right {
@@ -670,8 +657,8 @@
       40% { transform: translateY(-5px); opacity: 1; }
     }
 
-    /* Glassmorphic Chart, Diagram & Image Cards */
-    .chart-card, .diagram-card, .csv-card, .image-card {
+    /* Glassmorphic Chart, Diagram, Image & Video Cards */
+    .chart-card, .diagram-card, .csv-card, .image-card, .video-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-light);
       border-radius: var(--radius-lg);
@@ -684,7 +671,8 @@
     [data-theme="dark"] .chart-card, 
     [data-theme="dark"] .diagram-card, 
     [data-theme="dark"] .csv-card,
-    [data-theme="dark"] .image-card {
+    [data-theme="dark"] .image-card,
+    [data-theme="dark"] .video-card {
       background: #1c1c1e;
       border: 1px solid var(--border-light);
     }
@@ -721,6 +709,40 @@
       letter-spacing: 0.5px;
     }
 
+    .image-model-selector {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .btn-model-pill {
+      background: transparent;
+      border: none;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .btn-model-pill:hover {
+      color: var(--text-primary);
+    }
+
+    .btn-model-pill.active {
+      background: var(--bg-surface);
+      color: var(--accent-blue);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
     .image-container {
       width: 100%;
       border-radius: var(--radius-md);
@@ -736,7 +758,7 @@
     .image-preview {
       width: 100%;
       height: auto;
-      max-height: 480px;
+      max-height: 520px;
       object-fit: contain;
       display: block;
       border-radius: var(--radius-md);
@@ -768,6 +790,103 @@
       font-style: italic;
       line-height: 1.4;
       word-break: break-word;
+    }
+
+    /* Video Player Canvas Card */
+    .video-canvas-container {
+      width: 100%;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: #000000;
+      position: relative;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .video-controls-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px 14px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      font-size: 11.5px;
+      z-index: 10;
+    }
+
+    .video-play-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .video-play-btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .video-progress-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .video-progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: var(--accent-blue);
+      width: 0%;
+      border-radius: 2px;
+    }
+
+    .video-time-label {
+      font-variant-numeric: tabular-nums;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.9);
+      flex-shrink: 0;
+    }
+
+    /* Live Web Search Status Bar */
+    .search-status-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--accent-blue-subtle);
+      border: 1px solid rgba(0, 113, 227, 0.2);
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      color: var(--accent-blue);
+      margin-bottom: 10px;
+      font-weight: 500;
+      user-select: none;
     }
 
     @keyframes spin {
@@ -964,6 +1083,49 @@
     .btn-attach:hover {
       background: var(--bg-subtle);
       color: var(--accent-blue);
+    }
+
+    .btn-search-toggle {
+      height: 36px;
+      padding: 0 10px;
+      border-radius: var(--radius-full);
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .btn-search-toggle:hover {
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+    }
+
+    .btn-search-toggle.active {
+      background: var(--accent-blue-subtle);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    .btn-search-toggle .search-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-tertiary);
+      transition: background 0.2s ease;
+    }
+
+    .btn-search-toggle.active .search-dot {
+      background: #34c759;
+      box-shadow: 0 0 6px rgba(52, 199, 89, 0.6);
     }
 
     .attachments-tray {
@@ -1456,13 +1618,9 @@
         border-radius: 50%;
       }
 
-      .model-selector {
-        max-width: 135px;
-      }
-
-      .model-selector select {
-        font-size: 12px;
-        padding-right: 20px;
+      .model-status-badge {
+        padding: 4px 8px;
+        font-size: 11px;
       }
     }
   </style>
@@ -1518,13 +1676,9 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
 
-          <div class="model-selector" title="Выбор модели и режима скорости">
+          <div class="model-status-badge" title="AI Studio Core: единая оптимизированная нейросеть для всех задач (текст, код, интернет-поиск, FLUX фото, видео и визуализация)">
             <div class="model-status-dot"></div>
-            <select id="modelSelect" class="model-select-input" onchange="changeModel(this.value)">
-              <option value="openai-fast" selected>Турбо-режим (Стриминг • 1 сек)</option>
-              <option value="groq-llama">Groq LPU (450 токенов/сек)</option>
-              <option value="deepseek">Инженерный расчет (Анализ)</option>
-            </select>
+            <span>AI Core • Оптимизировано</span>
           </div>
         </div>
 
@@ -1569,28 +1723,36 @@
             </p>
 
             <div class="chips-grid">
-              <div class="prompt-chip" onclick="applyPresetPrompt('Редактирование чертежа: помоги составить техническое описание, проверить допуски и требования к оформлению чертежа узла.')">
+              <div class="prompt-chip" onclick="applyPresetPrompt('Фотогенерация FLUX: создай фотореалистичный кадр заката в горах Тянь-Шань с кристальным озером в стиле National Geographic.')">
                 <div class="prompt-chip-head">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                  <span>Помощь с чертежом</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <span>Фотогенерация (FLUX)</span>
                 </div>
-                <div class="prompt-chip-sub">Спецификация, требования ЕСКД, допуски и посадки</div>
+                <div class="prompt-chip-sub">Ультра-реализм, портреты, архитектура, природа 4K</div>
               </div>
 
-              <div class="prompt-chip" onclick="applyPresetPrompt('Построение графика: составь наглядный график и расписание посещений спортивной секции на неделю с разбивкой по часам в виде интерактивной диаграммы.')">
+              <div class="prompt-chip" onclick="applyPresetPrompt('Генерация видео: сделай кинематографичный видеоролик полета дрона над ночным мегаполисом с неоновыми огнями и отражениями.')">
+                <div class="prompt-chip-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                  <span>AI Видеогенерация</span>
+                </div>
+                <div class="prompt-chip-sub">Динамика движения камеры, клипы, экспорт в WebM</div>
+              </div>
+
+              <div class="prompt-chip" onclick="applyPresetPrompt('Поиск в сети: найди актуальный прогноз погоды и свежие события в Астане на сегодня со ссылками на источники.')">
+                <div class="prompt-chip-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  <span>Поиск в интернете</span>
+                </div>
+                <div class="prompt-chip-sub">Свежие факты, новости, курсы валют и погода</div>
+              </div>
+
+              <div class="prompt-chip" onclick="applyPresetPrompt('Построение графика: составь наглядный график и расписание посещений секции на неделю в виде интерактивной диаграммы.')">
                 <div class="prompt-chip-head">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                  <span>Помощь с графиком</span>
+                  <span>Интерактивные графики</span>
                 </div>
-                <div class="prompt-chip-sub">Интерактивные графики, расписания, учет часов и тренды</div>
-              </div>
-
-              <div class="prompt-chip" onclick="applyPresetPrompt('Оптимизация кода: напиши чистую функцию на JavaScript/Python с обработкой ошибок и высокой производительностью.')">
-                <div class="prompt-chip-head">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                  <span>Код и алгоритмы</span>
-                </div>
-                <div class="prompt-chip-sub">Функции, парсеры данных, скрипты автоматизации</div>
+                <div class="prompt-chip-sub">Диаграммы Chart.js, таймлайны Mermaid и таблицы</div>
               </div>
 
               <div class="prompt-chip" onclick="applyPresetPrompt('Анализ данных: подскажи, как лучше структурировать таблицу Excel и рассчитать ключевые показатели.')">
@@ -1598,7 +1760,15 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
                   <span>Анализ таблиц и формул</span>
                 </div>
-                <div class="prompt-chip-sub">Формулы, сводные показатели, агрегация данных</div>
+                <div class="prompt-chip-sub">Формулы, сводные показатели, расчеты Excel</div>
+              </div>
+
+              <div class="prompt-chip" onclick="applyPresetPrompt('Оптимизация кода: напиши чистую функцию на JavaScript/Python с обработкой ошибок и высокой производительностью.')">
+                <div class="prompt-chip-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                  <span>Код и алгоритмы</span>
+                </div>
+                <div class="prompt-chip-sub">Функции, парсеры данных, автоматизация</div>
               </div>
             </div>
           </div>
@@ -1620,6 +1790,15 @@
               </svg>
             </button>
             <input type="file" id="fileInput" multiple hidden accept=".txt,.md,.json,.py,.js,.ts,.html,.css,.csv,.xlsx,.xls,.pdf,image/png,image/jpeg,image/webp" onchange="handleFileSelect(this.files)">
+            <button class="btn-search-toggle" id="btnSearchToggle" type="button" onclick="toggleWebSearch()" title="Поиск в интернете (актуальные новости, факты, погода, курсы)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+              <span>Поиск</span>
+              <span class="search-dot"></span>
+            </button>
             <textarea 
               id="messageInput" 
               class="input-textarea" 
@@ -1653,7 +1832,7 @@
   <div class="modal-overlay" id="settingsModal" onclick="closeModalOnBackdrop(event)">
     <div class="modal-sheet">
       <div class="modal-header">
-        <h3>Параметры скорости и шлюзов</h3>
+        <h3>Настройки AI Studio</h3>
         <button class="modal-close-btn" onclick="closeSettingsModal()" title="Закрыть">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -1662,7 +1841,7 @@
       <div class="modal-body">
         <div class="auth-form" style="gap: 16px;">
           <div class="form-group">
-            <label>Стиль генерации</label>
+            <label>Стиль генерации ответов</label>
             <select id="settingStyle" class="form-input" onchange="saveSettingsFromModal()">
               <option value="concise">Лаконичный (максимальная скорость, ответ без лишней воды)</option>
               <option value="detailed">Развернутый (детальные технические объяснения и расчеты)</option>
@@ -1670,22 +1849,27 @@
           </div>
 
           <div class="form-group">
-            <label>Основной шлюз вычислений</label>
-            <select id="settingProvider" class="form-input" onchange="toggleProviderSettings(); saveSettingsFromModal();">
-              <option value="pollinations">Pollinations Turbo (Бесплатно, без API-ключей, SSE поток)</option>
-              <option value="groq">Groq LPU (~450 токенов/сек через личный бесплатный ключ)</option>
+            <label>Поиск в интернете</label>
+            <select id="settingWebSearch" class="form-input" onchange="saveSettingsFromModal()">
+              <option value="auto">Автоматически (при вопросах о новостях, погоде, курсах и фактах)</option>
+              <option value="always">Всегда активен для каждого запроса</option>
+              <option value="manual">Только при нажатии кнопки поиска в чате</option>
             </select>
           </div>
 
-          <div class="form-group" id="groqKeyGroup" style="display: none;">
-            <label>Groq API-ключ (бесплатно на console.groq.com)</label>
-            <input type="password" id="settingGroqKey" class="form-input" placeholder="gsk_..." onchange="saveSettingsFromModal()">
-            <span style="font-size: 11px; color: var(--text-tertiary); line-height: 1.4;">Ключ хранится локально в вашем браузере. Архитектура Groq LPU генерирует ответы практически мгновенно (~0.3 сек).</span>
+          <div class="form-group">
+            <label>Основная модель фотогенерации</label>
+            <select id="settingImageModel" class="form-input" onchange="saveSettingsFromModal()">
+              <option value="flux-realism">FLUX Realism (Ультра-реализм, фотографии людей, природа)</option>
+              <option value="flux">FLUX.1 Art (Цифровой арт, концепты, графика, символика)</option>
+              <option value="flux-anime">FLUX Anime (Аниме, манга, стилизованные арты)</option>
+              <option value="turbo">Turbo (Сверхбыстрая генерация)</option>
+            </select>
           </div>
 
           <div style="background: var(--bg-subtle); padding: 12px 14px; border-radius: var(--radius-md); font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 10px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
-            <div>Отклик первого токена (TTFT): <strong>~0.3–0.8 сек</strong> в реальном времени.</div>
+            <div>AI Core: единый оптимизированный движок (Текст • Код • Поиск • FLUX • Видео). Без ключей и квот.</div>
           </div>
 
           <button type="button" class="btn-submit-auth" onclick="closeSettingsModal()">
@@ -2582,16 +2766,28 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
           });
         }
 
-        const endpoint = isGroq 
-          ? 'https://api.groq.com/openai/v1/chat/completions' 
-          : 'https://text.pollinations.ai/openai/chat/completions';
+        const isGatewayCapable = window.location.protocol.startsWith('http') && (
+          ['8000', '8080'].includes(window.location.port) ||
+          window.location.hostname === 'localhost' ||
+          window.location.hostname === '127.0.0.1' ||
+          window.location.pathname.startsWith('/chat')
+        );
 
+        let endpoint = 'https://text.pollinations.ai/openai/chat/completions';
         const headers = { 'Content-Type': 'application/json; charset=utf-8' };
-        if (isGroq) headers['Authorization'] = 'Bearer ' + groqApiKey;
+        let targetModel = currentModel;
 
-        const targetModel = isGroq 
-          ? (hasImages ? 'llama-3.2-11b-vision-preview' : 'llama-3.3-70b-versatile')
-          : (hasImages ? 'openai' : (currentModel === 'deepseek' ? 'deepseek' : 'openai-fast'));
+        if (['gpt-4o', 'gpt-4o-mini', 'hermes-3', 'openhermes'].includes(currentModel) || isGatewayCapable) {
+          endpoint = '/v1/chat/completions';
+          targetModel = currentModel;
+        } else if (isGroq) {
+          endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+          headers['Authorization'] = 'Bearer ' + groqApiKey;
+          targetModel = hasImages ? 'llama-3.2-11b-vision-preview' : 'llama-3.3-70b-versatile';
+        } else {
+          endpoint = 'https://text.pollinations.ai/openai/chat/completions';
+          targetModel = hasImages ? 'openai' : (currentModel === 'deepseek' ? 'deepseek' : 'openai-fast');
+        }
 
         const response = await fetch(endpoint, {
           method: 'POST',

@@ -1,0 +1,14 @@
+.git
+.github
+.gitignore
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv
+env/
+venv/
+*.bat
+gemini_config/
+gemini_antigravity/

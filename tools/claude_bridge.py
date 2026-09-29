@@ -88,6 +88,33 @@ DEFAULT_PROVIDERS = {
             "tier": "premium",
             "privacy": "private",
             "description": "DeepSeek API (высокоточный код и рассуждения)"
+        },
+        "openai": {
+            "type": "openai_compatible",
+            "base_url": "https://api.openai.com/v1",
+            "model": "gpt-4o",
+            "api_key_env": "OPENAI_API_KEY",
+            "tier": "premium",
+            "privacy": "private",
+            "description": "OpenAI API (GPT-4o, GPT-4o-mini, o1)"
+        },
+        "hermes": {
+            "type": "openai_compatible",
+            "base_url": "https://openrouter.ai/api/v1",
+            "model": "nousresearch/hermes-3-llama-3.1-70b",
+            "api_key_env": "OPENROUTER_API_KEY",
+            "tier": "free/flexible",
+            "privacy": "private",
+            "description": "Nous Hermes 3 (70B) — агентная модель с ChatML, reasoning (<scratchpad>) и tool calling"
+        },
+        "hermes_local": {
+            "type": "openai_compatible",
+            "base_url": "http://127.0.0.1:11434/v1",
+            "model": "hermes3",
+            "api_key": "ollama",
+            "tier": "free",
+            "privacy": "private",
+            "description": "Локальный Nous Hermes 3 в Ollama"
         }
     }
 }

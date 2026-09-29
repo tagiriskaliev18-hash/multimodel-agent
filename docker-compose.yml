@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  aiduo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aiduo-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - OLLAMA_BASE_URL=http://ollama:11434/v1
+      - AIDUO_DEFAULT_PROVIDER=${AIDUO_DEFAULT_PROVIDER:-hermes}
+      - AIDUO_DEFAULT_MODEL=${AIDUO_DEFAULT_MODEL:-hermes-3}
+    depends_on:
+      - ollama
+    networks:
+      - aiduo-net
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: aiduo-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      - aiduo-net
+    # To run on GPU if available:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+networks:
+  aiduo-net:
+    driver: bridge
+
+volumes:
+  ollama_models:
+    name: aiduo_ollama_models
