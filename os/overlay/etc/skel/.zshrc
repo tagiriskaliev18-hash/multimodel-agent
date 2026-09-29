@@ -1,4 +1,4 @@
-# ~/.zshrc — DuoOS
+# ~/.zshrc — AIsktagOS
 
 # История
 HISTFILE=~/.zsh_history

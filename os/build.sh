@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DuoOS — сборка загрузочного ISO (BIOS + UEFI + Secure Boot).
+# AIsktagOS — сборка загрузочного ISO (BIOS + UEFI + Secure Boot).
 #
 #   sudo ./build.sh            полная сборка
 #   sudo ./build.sh iso        пересобрать только ISO из готового chroot
@@ -80,27 +80,27 @@ stage_system() {
     mount_chroot
 
     # Пакетный список и скрипты для chroot
-    rm -rf "$CHROOT/tmp/duoos-build"
-    mkdir -p "$CHROOT/tmp/duoos-build"
-    cp -a "$ROOT_DIR/packages" "$ROOT_DIR/scripts" "$ROOT_DIR/config.env" "$CHROOT/tmp/duoos-build/"
-    cp -a "$ROOT_DIR/overlay" "$CHROOT/tmp/duoos-build/overlay"
+    rm -rf "$CHROOT/tmp/aisktagos-build"
+    mkdir -p "$CHROOT/tmp/aisktagos-build"
+    cp -a "$ROOT_DIR/packages" "$ROOT_DIR/scripts" "$ROOT_DIR/config.env" "$CHROOT/tmp/aisktagos-build/"
+    cp -a "$ROOT_DIR/overlay" "$CHROOT/tmp/aisktagos-build/overlay"
 
     if [ -n "${BUILD_CA_CERT:-}" ]; then
-        cp "$BUILD_CA_CERT" "$CHROOT/usr/local/share/ca-certificates/duoos-build-ca.crt"
+        cp "$BUILD_CA_CERT" "$CHROOT/usr/local/share/ca-certificates/aisktagos-build-ca.crt"
         chroot "$CHROOT" update-ca-certificates >/dev/null
     fi
-    cp /etc/resolv.conf "$CHROOT/tmp/duoos-build/resolv.conf" 2>/dev/null || true
+    cp /etc/resolv.conf "$CHROOT/tmp/aisktagos-build/resolv.conf" 2>/dev/null || true
 
     chroot "$CHROOT" /usr/bin/env -i \
         HOME=/root PATH=/usr/sbin:/usr/bin:/sbin:/bin LANG=C.UTF-8 \
         http_proxy="${http_proxy:-}" https_proxy="${https_proxy:-}" no_proxy="${no_proxy:-}" \
-        bash /tmp/duoos-build/scripts/chroot-setup.sh
+        bash /tmp/aisktagos-build/scripts/chroot-setup.sh
 
     if [ -n "${BUILD_CA_CERT:-}" ]; then
-        rm -f "$CHROOT/usr/local/share/ca-certificates/duoos-build-ca.crt"
+        rm -f "$CHROOT/usr/local/share/ca-certificates/aisktagos-build-ca.crt"
         chroot "$CHROOT" update-ca-certificates --fresh >/dev/null
     fi
-    rm -rf "$CHROOT/tmp/duoos-build"
+    rm -rf "$CHROOT/tmp/aisktagos-build"
     umount_chroot
     touch "$CHROOT/.system-done"
 }
@@ -150,8 +150,8 @@ build_grub() {
     printf 'search --no-floppy --set=root --file /%s\nset prefix=($root)/boot/grub\nconfigfile $prefix/grub.cfg\n' \
         "$OS_ID" > "$ISO_TREE/EFI/ubuntu/grub.cfg"
 
-    mkdir -p "$g/themes/duoos"
-    cp "$ROOT_DIR"/iso/theme/* "$g/themes/duoos/"
+    mkdir -p "$g/themes/aisktagos"
+    cp "$ROOT_DIR"/iso/theme/* "$g/themes/aisktagos/"
     mkdir -p "$g/fonts"
     cp "$CHROOT/usr/share/grub/unicode.pf2" "$g/fonts/unicode.pf2"
 

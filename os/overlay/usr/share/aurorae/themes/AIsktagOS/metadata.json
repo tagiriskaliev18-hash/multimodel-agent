@@ -1,0 +1,10 @@
+{
+    "KPlugin": {
+        "Authors": [ { "Name": "AIsktagOS" } ],
+        "Description": "Тёмная тема окон с кнопками-«светофором»",
+        "Id": "AIsktagOS",
+        "License": "GPL-2.0-or-later",
+        "Name": "AIsktagOS",
+        "Version": "1.0"
+    }
+}

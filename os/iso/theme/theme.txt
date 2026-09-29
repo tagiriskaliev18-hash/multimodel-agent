@@ -1,4 +1,4 @@
-# Тема меню загрузки DuoOS
+# Тема меню загрузки AIsktagOS
 title-text: ""
 desktop-image: "background.png"
 desktop-color: "#090c1c"

@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Установить AIsktagOS
+Name[en]=Install AIsktagOS
+GenericName=Установка системы
+GenericName[en]=System Installer
+Comment=Установить AIsktagOS на этот компьютер
+Comment[en]=Install AIsktagOS on this computer
+Exec=/usr/bin/aisktag-install
+Icon=aisktagos-install
+Terminal=false
+StartupNotify=true
+Categories=Qt;System;
+Keywords=installer;calamares;install;установка;

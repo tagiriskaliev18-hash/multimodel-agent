@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Центр AIsktagOS
+Exec=aisktag-welcome --autostart
+Icon=aisktagos-logo
+NoDisplay=true
+X-KDE-autostart-phase=2
+OnlyShowIn=KDE;

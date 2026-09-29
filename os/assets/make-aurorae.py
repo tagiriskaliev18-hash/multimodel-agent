@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Тема оформления окон DuoOS для KWin (Aurorae): тёмный заголовок, скруглённые углы,
+"""Тема оформления окон AIsktagOS для KWin (Aurorae): тёмный заголовок, скруглённые углы,
 мягкая тень и кнопки-«светофор» слева, как в macOS.
 
 Рамка рисуется растром (Pillow) и нарезается на 9 частей FrameSvg, кнопки — вектором.
@@ -10,7 +10,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter
 
-OUT = Path(__file__).resolve().parent.parent / "overlay/usr/share/aurorae/themes/DuoOS"
+OUT = Path(__file__).resolve().parent.parent / "overlay/usr/share/aurorae/themes/AIsktagOS"
 
 PAD_SIDE, PAD_TOP, PAD_BOTTOM = 16, 10, 20  # поля под тень
 RADIUS = 10
@@ -150,10 +150,10 @@ PaddingRight={PAD_SIDE}
 """
 
 METADATA_DESKTOP = """[Desktop Entry]
-Name=DuoOS
+Name=AIsktagOS
 Comment=Тёмная тема окон с кнопками-«светофором»
-X-KDE-PluginInfo-Author=DuoOS
-X-KDE-PluginInfo-Name=DuoOS
+X-KDE-PluginInfo-Author=AIsktagOS
+X-KDE-PluginInfo-Name=AIsktagOS
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-License=GPL-2.0-or-later
 X-KDE-PluginInfo-EnabledByDefault=true
@@ -161,11 +161,11 @@ X-KDE-PluginInfo-EnabledByDefault=true
 
 METADATA_JSON = """{
     "KPlugin": {
-        "Authors": [ { "Name": "DuoOS" } ],
+        "Authors": [ { "Name": "AIsktagOS" } ],
         "Description": "Тёмная тема окон с кнопками-«светофором»",
-        "Id": "DuoOS",
+        "Id": "AIsktagOS",
         "License": "GPL-2.0-or-later",
-        "Name": "DuoOS",
+        "Name": "AIsktagOS",
         "Version": "1.0"
     }
 }
@@ -177,10 +177,10 @@ def main() -> None:
     (OUT / "decoration.svg").write_text(decoration_svg())
     for name, (color, glyph) in BUTTONS.items():
         (OUT / f"{name}.svg").write_text(button_svg(color, glyph))
-    (OUT / "DuoOSrc").write_text(RC)
+    (OUT / "AIsktagOSrc").write_text(RC)
     (OUT / "metadata.desktop").write_text(METADATA_DESKTOP)
     (OUT / "metadata.json").write_text(METADATA_JSON)
-    print("Тема окон DuoOS сгенерирована:", OUT)
+    print("Тема окон AIsktagOS сгенерирована:", OUT)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-# Приглашение командной строки DuoOS: каталог, git, язык проекта, время выполнения
+# Приглашение командной строки AIsktagOS: каталог, git, язык проекта, время выполнения
 add_newline = true
 format = "$directory$git_branch$git_status$python$nodejs$rust$golang$docker_context$cmd_duration$line_break$character"
 

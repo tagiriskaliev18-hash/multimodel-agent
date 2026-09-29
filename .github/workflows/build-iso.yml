@@ -1,4 +1,4 @@
-name: Сборка DuoOS ISO
+name: Сборка AIsktagOS ISO
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: duoos-iso-${{ github.ref }}
+  group: aisktagos-iso-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -40,7 +40,7 @@ jobs:
                grub-efi-amd64-bin mtools dosfstools
 
       - name: Сборка ISO
-        run: sudo WORK_DIR=/mnt/duoos-work OUT_DIR="$GITHUB_WORKSPACE/out" ./os/build.sh
+        run: sudo WORK_DIR=/mnt/aisktagos-work OUT_DIR="$GITHUB_WORKSPACE/out" ./os/build.sh
 
       - name: Подготовка файлов к публикации
         id: files
@@ -65,7 +65,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: duoos-iso
+          name: aisktagos-iso
           path: out/*
           retention-days: 3
           compression-level: 0
@@ -74,8 +74,8 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: duoos-1.0-build${{ github.run_number }}
-          name: DuoOS 1.0 «Genesis» — сборка ${{ github.run_number }}
+          tag_name: aisktagos-1.0-build${{ github.run_number }}
+          name: AIsktagOS 1.0 «Genesis» — сборка ${{ github.run_number }}
           body_path: os/RELEASE_NOTES.md
           target_commitish: ${{ github.sha }}
           files: out/*

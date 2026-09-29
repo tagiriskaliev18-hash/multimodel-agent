@@ -1,6 +1,6 @@
 [org.kde.kdecoration2]
 library=org.kde.kwin.aurorae
-theme=__aurorae__svg__DuoOS
+theme=__aurorae__svg__AIsktagOS
 ButtonsOnLeft=XIA
 ButtonsOnRight=
 BorderSize=None

@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# Запуск установщика DuoOS (Calamares) с правами администратора.
-# В live-сессии sudo работает без пароля; -E сохраняет доступ к экрану (Wayland/X11).
-if pgrep -x calamares >/dev/null; then
-    exit 0
-fi
-exec sudo -E env HOME=/root XDG_CONFIG_HOME=/root/.config XDG_CACHE_HOME=/root/.cache \
-    QT_QPA_PLATFORMTHEME=kde calamares "$@"

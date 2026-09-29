@@ -1,0 +1,14 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [ { "Name": "AIsktagOS" } ],
+        "Category": "",
+        "Description": "Строка меню сверху и док снизу — привычно для macOS, удобно для разработчика",
+        "Description[en]": "Menu bar on top and a dock at the bottom",
+        "Id": "org.aisktagos.desktop",
+        "License": "GPLv2+",
+        "Name": "AIsktagOS",
+        "Version": "1.0"
+    },
+    "X-Plasma-APIVersion": "2"
+}

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Выполняется внутри chroot: ставит пакеты и превращает Ubuntu в DuoOS.
+# Выполняется внутри chroot: ставит пакеты и превращает Ubuntu в AIsktagOS.
 set -euxo pipefail
 
-B=/tmp/duoos-build
+B=/tmp/aisktagos-build
 # shellcheck source=../config.env
 source "$B/config.env"
 export DEBIAN_FRONTEND=noninteractive
@@ -15,7 +15,7 @@ if [ -s "$B/resolv.conf" ]; then
 fi
 
 # Без документации в /usr/share/doc (кроме лицензий) — минус ~200 МБ; man-страницы остаются
-cat > /etc/dpkg/dpkg.cfg.d/duoos-nodoc <<'EOF'
+cat > /etc/dpkg/dpkg.cfg.d/aisktagos-nodoc <<'EOF'
 path-exclude=/usr/share/doc/*
 path-include=/usr/share/doc/*/copyright
 EOF
@@ -41,8 +41,8 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 EOF
 
 # Без snap (как в Linux Mint): приложения — из deb и Flatpak
-cat > /etc/apt/preferences.d/duoos-nosnap.pref <<'EOF'
-# DuoOS не использует snap. Приложения ставятся из deb-пакетов и Flatpak (Flathub).
+cat > /etc/apt/preferences.d/aisktagos-nosnap.pref <<'EOF'
+# AIsktagOS не использует snap. Приложения ставятся из deb-пакетов и Flatpak (Flathub).
 Package: snapd
 Pin: release a=*
 Pin-Priority: -10
@@ -68,7 +68,7 @@ Suites: mozilla
 Components: main
 Signed-By: /etc/apt/keyrings/packages.mozilla.org.asc
 EOF
-    cat > /etc/apt/preferences.d/duoos-mozilla.pref <<'EOF'
+    cat > /etc/apt/preferences.d/aisktagos-mozilla.pref <<'EOF'
 # Firefox из официального репозитория Mozilla, а не snap-заглушка Ubuntu
 Package: *
 Pin: origin packages.mozilla.org
@@ -107,8 +107,8 @@ mapfile -t PKGS < <(cat "$B"/packages/*.list | sed -e 's/#.*//' -e 's/[[:space:]
 # shellcheck disable=SC2086
 "${APT[@]}" install "${PKGS[@]}" $BROWSER_PKGS $CODE_PKGS
 
-# Kubuntu-настройки не нужны: у DuoOS свои. Плюс крупные пакеты, пришедшие
-# только «рекомендациями» (ставятся по желанию через Центр DuoOS или apt)
+# Kubuntu-настройки не нужны: у AIsktagOS свои. Плюс крупные пакеты, пришедшие
+# только «рекомендациями» (ставятся по желанию через Центр AIsktagOS или apt)
 for p in kubuntu-settings-desktop kubuntu-notification-helper plasma-discover-backend-snap snapd \
          fonts-noto-cjk-extra ibus ibus-data $(dpkg-query -W -f='${Package}\n' 'llvm-*-dev' 'ibus-gtk*' 2>/dev/null); do
     if dpkg -s "$p" >/dev/null 2>&1; then
@@ -119,16 +119,16 @@ done
 find /usr/share/doc -type f ! -name copyright -delete
 find /usr/share/doc -type d -empty -delete
 
-# --- Файлы DuoOS --------------------------------------------------------------
+# --- Файлы AIsktagOS --------------------------------------------------------------
 cp -a "$B/overlay/." /
-chmod +x /usr/bin/duo-* /usr/lib/duoos/*.sh /usr/lib/duoos/*.py 2>/dev/null || true
+chmod +x /usr/bin/aisktag-* /usr/lib/aisktagos/*.sh /usr/lib/aisktagos/*.py 2>/dev/null || true
 
-# Тёмная тема по умолчанию: цвета Breeze Dark + настройки DuoOS
-{ cat /usr/share/color-schemes/BreezeDark.colors; echo; cat /usr/share/duoos/kdeglobals.duoos; } > /etc/xdg/kdeglobals
+# Тёмная тема по умолчанию: цвета Breeze Dark + настройки AIsktagOS
+{ cat /usr/share/color-schemes/BreezeDark.colors; echo; cat /usr/share/aisktagos/kdeglobals.aisktagos; } > /etc/xdg/kdeglobals
 
 # Пакет grub-efi-amd64 для установщика: на UEFI-машинах он заменит grub-pc
-mkdir -p /usr/share/duoos/debs
-(cd /usr/share/duoos/debs && apt-get download grub-efi-amd64)
+mkdir -p /usr/share/aisktagos/debs
+(cd /usr/share/aisktagos/debs && apt-get download grub-efi-amd64)
 
 # Идентификация системы (как в Linux Mint: ID_LIKE=ubuntu, совместимость с PPA и драйверами)
 dpkg-divert --local --rename --add /usr/lib/os-release
@@ -164,32 +164,32 @@ EOF
 chmod -x /etc/update-motd.d/10-help-text /etc/update-motd.d/50-motd-news \
          /etc/update-motd.d/91-contract-ua-esm-status 2>/dev/null || true
 
-# Заставка загрузки: логотип DuoOS вместо логотипа Ubuntu
+# Заставка загрузки: логотип AIsktagOS вместо логотипа Ubuntu
 # (на ПК с UEFI в центре показывается логотип производителя, как у Windows)
 for f in /usr/share/plymouth/themes/spinner/watermark.png /usr/share/plymouth/ubuntu-logo.png; do
     [ -e "$f" ] || continue
     dpkg-divert --local --rename --add "$f"
-    cp /usr/share/duoos/plymouth-watermark.png "$f"
+    cp /usr/share/aisktagos/plymouth-watermark.png "$f"
 done
-for f in /usr/share/plymouth/themes/spinner/bgrt-fallback.png; do
-    [ -e "$f" ] || continue
+f=/usr/share/plymouth/themes/spinner/bgrt-fallback.png
+if [ -e "$f" ]; then
     dpkg-divert --local --rename --add "$f"
-    cp /usr/share/duoos/plymouth-logo.png "$f"
-done
+    cp /usr/share/aisktagos/plymouth-logo.png "$f"
+fi
 
 # --- Пользователи по умолчанию: zsh, группы разработчика ----------------------
 sed -i 's|^#\?DSHELL=.*|DSHELL=/usr/bin/zsh|' /etc/adduser.conf
 sed -i 's|^#\?SHELL=.*|SHELL=/usr/bin/zsh|' /etc/default/useradd
 
 # --- Службы -------------------------------------------------------------------
-systemctl enable NetworkManager sddm duoos-flathub.service
+systemctl enable NetworkManager sddm aisktagos-flathub.service
 systemctl set-default graphical.target
 # Docker запускается по первому обращению — не тормозит загрузку
 systemctl disable docker.service || true
 systemctl enable docker.socket || true
 sed -i 's/^ENABLED=.*/ENABLED=yes/' /etc/ufw/ufw.conf
 
-# Flathub (при сборке без сети — добавится при первом запуске службой duoos-flathub)
+# Flathub (при сборке без сети — добавится при первом запуске службой aisktagos-flathub)
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
 
 # --- Live-сессия (casper) -----------------------------------------------------

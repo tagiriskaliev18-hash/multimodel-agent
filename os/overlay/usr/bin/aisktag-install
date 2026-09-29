@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Запуск установщика AIsktagOS (Calamares) с правами администратора.
+# В live-сессии sudo работает без пароля. sudo-rs в Ubuntu 26.04 не поддерживает «sudo -E»,
+# поэтому переменные, нужные для доступа к экрану (Wayland или X11), передаются явно.
+if pgrep -x calamares >/dev/null; then
+    exit 0
+fi
+exec sudo env \
+    WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-}" \
+    DISPLAY="${DISPLAY:-}" \
+    XAUTHORITY="${XAUTHORITY:-}" \
+    XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-}" \
+    XDG_SESSION_TYPE="${XDG_SESSION_TYPE:-}" \
+    XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-KDE}" \
+    KDE_FULL_SESSION=true \
+    ${QT_QUICK_BACKEND:+QT_QUICK_BACKEND="$QT_QUICK_BACKEND"} \
+    QT_QPA_PLATFORMTHEME=kde \
+    LANG="${LANG:-C.UTF-8}" \
+    LANGUAGE="${LANGUAGE:-}" \
+    HOME=/root XDG_CONFIG_HOME=/root/.config XDG_CACHE_HOME=/root/.cache \
+    calamares "$@"

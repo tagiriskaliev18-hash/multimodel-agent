@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Генерирует графику DuoOS: логотипы, обои, фон GRUB, заставку загрузки, картинки установщика.
+"""Генерирует графику AIsktagOS: логотипы, обои, фон GRUB, заставку загрузки, картинки установщика.
 
 Запуск (нужны python3-numpy, python3-pil, rsvg-convert, шрифт Inter):
     python3 os/assets/make-assets.py
@@ -15,7 +15,7 @@ OS = Path(__file__).resolve().parent.parent
 ASSETS = OS / "assets"
 OVERLAY = OS / "overlay"
 
-# Палитра DuoOS: глубокий индиго -> фиолетовый -> бирюзовый
+# Палитра AIsktagOS: глубокий индиго -> фиолетовый -> бирюзовый
 BG = (9, 12, 28)
 BLOBS = [  # (x, y, радиус, цвет) в долях экрана
     (0.18, 0.78, 0.55, (91, 76, 255)),
@@ -54,7 +54,7 @@ LOGO_SYMBOLIC_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 1
 </svg>
 """
 
-# Значок «Установить DuoOS» для рабочего стола live-сессии
+# Значок «Установить AIsktagOS» для рабочего стола live-сессии
 INSTALL_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
@@ -105,18 +105,18 @@ def text_png(svg: str, out: Path) -> None:
 def main() -> None:
     icons = OVERLAY / "usr/share/icons/hicolor"
     (icons / "scalable/apps").mkdir(parents=True, exist_ok=True)
-    (icons / "scalable/apps/duoos-logo.svg").write_text(LOGO_SVG)
-    (icons / "scalable/apps/duoos-logo-symbolic.svg").write_text(LOGO_SYMBOLIC_SVG)
-    (icons / "scalable/apps/duoos-install.svg").write_text(INSTALL_SVG)
+    (icons / "scalable/apps/aisktagos-logo.svg").write_text(LOGO_SVG)
+    (icons / "scalable/apps/aisktagos-logo-symbolic.svg").write_text(LOGO_SYMBOLIC_SVG)
+    (icons / "scalable/apps/aisktagos-install.svg").write_text(INSTALL_SVG)
     for s in (16, 22, 24, 32, 48, 64, 128, 256):
-        svg_to_png(LOGO_SVG, icons / f"{s}x{s}/apps/duoos-logo.png", s)
-        svg_to_png(INSTALL_SVG, icons / f"{s}x{s}/apps/duoos-install.png", s)
+        svg_to_png(LOGO_SVG, icons / f"{s}x{s}/apps/aisktagos-logo.png", s)
+        svg_to_png(INSTALL_SVG, icons / f"{s}x{s}/apps/aisktagos-install.png", s)
 
-    share = OVERLAY / "usr/share/duoos"
+    share = OVERLAY / "usr/share/aisktagos"
     svg_to_png(LOGO_SVG, share / "logo.png", 256)
 
     # Обои (пакет Plasma) + превью
-    wp = OVERLAY / "usr/share/wallpapers/DuoOS/contents/images"
+    wp = OVERLAY / "usr/share/wallpapers/AIsktagOS/contents/images"
     wp.mkdir(parents=True, exist_ok=True)
     big = wallpaper(3840, 2160)
     big.save(wp / "3840x2160.jpg", quality=92)
@@ -125,13 +125,13 @@ def main() -> None:
 
     # Фон GRUB: затемнённые обои + логотип и название
     grub = wallpaper(1920, 1080, darken=0.55)
-    logo = Path("/tmp/duoos-logo-160.png")
+    logo = Path("/tmp/aisktagos-logo-160.png")
     svg_to_png(LOGO_SVG, logo, 160)
     grub.paste(Image.open(logo), (880, 250), Image.open(logo))
-    title = Path("/tmp/duoos-title.png")
+    title = Path("/tmp/aisktagos-title.png")
     text_png("""<svg xmlns="http://www.w3.org/2000/svg" width="600" height="90">
       <text x="300" y="66" text-anchor="middle" font-family="Inter" font-weight="600"
-            font-size="64" fill="#ffffff">DuoOS</text></svg>""", title)
+            font-size="64" fill="#ffffff">AIsktagOS</text></svg>""", title)
     t = Image.open(title)
     grub.paste(t, (660, 420), t)
     (OS / "iso/theme").mkdir(parents=True, exist_ok=True)
@@ -139,31 +139,31 @@ def main() -> None:
 
     # Загрузочная заставка (Plymouth): логотип по центру + подпись внизу
     svg_to_png(LOGO_SVG, share / "plymouth-logo.png", 160)
-    text_png("""<svg xmlns="http://www.w3.org/2000/svg" width="200" height="56">
-      <text x="100" y="42" text-anchor="middle" font-family="Inter" font-weight="600"
-            font-size="36" fill="#ffffff">DuoOS</text></svg>""", share / "plymouth-watermark.png")
+    text_png("""<svg xmlns="http://www.w3.org/2000/svg" width="300" height="56">
+      <text x="150" y="42" text-anchor="middle" font-family="Inter" font-weight="600"
+            font-size="36" fill="#ffffff">AIsktagOS</text></svg>""", share / "plymouth-watermark.png")
 
     # Установщик Calamares
-    cal = OVERLAY / "etc/calamares/branding/duoos"
+    cal = OVERLAY / "etc/calamares/branding/aisktagos"
     cal.mkdir(parents=True, exist_ok=True)
     svg_to_png(LOGO_SVG, cal / "logo.png", 128)
     svg_to_png(LOGO_SVG, cal / "icon.png", 64)
     welcome = wallpaper(960, 360, darken=0.8)
-    l2 = Path("/tmp/duoos-logo-120.png")
+    l2 = Path("/tmp/aisktagos-logo-120.png")
     svg_to_png(LOGO_SVG, l2, 120)
     welcome.paste(Image.open(l2), (140, 120), Image.open(l2))
     text_png("""<svg xmlns="http://www.w3.org/2000/svg" width="620" height="200">
-      <text x="0" y="80" font-family="Inter" font-weight="700" font-size="72" fill="#fff">DuoOS</text>
+      <text x="0" y="80" font-family="Inter" font-weight="700" font-size="72" fill="#fff">AIsktagOS</text>
       <text x="4" y="130" font-family="Inter" font-size="28" fill="#e0e7ff">Операционная система для разработчиков</text>
-      </svg>""", Path("/tmp/duoos-welcome-text.png"))
-    wt = Image.open("/tmp/duoos-welcome-text.png")
+      </svg>""", Path("/tmp/aisktagos-welcome-text.png"))
+    wt = Image.open("/tmp/aisktagos-welcome-text.png")
     welcome.paste(wt, (300, 105), wt)
     welcome.save(cal / "welcome.png", optimize=True)
     wallpaper(1280, 720, darken=0.7).save(cal / "slide-bg.jpg", quality=88)
 
     # Фото пользователя по умолчанию
     svg_to_png(LOGO_SVG, OVERLAY / "etc/skel/.face", 192)
-    print("Графика DuoOS сгенерирована")
+    print("Графика AIsktagOS сгенерирована")
 
 
 if __name__ == "__main__":

@@ -57,7 +57,7 @@ gstreamer1.0-libav
 gstreamer1.0-plugins-good
 gstreamer1.0-plugins-bad
 gstreamer1.0-plugins-ugly
-# Для собственных утилит DuoOS
+# Для собственных утилит AIsktagOS
 python3-pyqt6
 python3-dbus
 kdialog
