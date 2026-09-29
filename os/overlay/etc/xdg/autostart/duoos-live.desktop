@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=DuoOS Live
+Comment=Установщик в live-режиме
+Exec=/usr/lib/duoos/live-session.sh
+NoDisplay=true
+X-KDE-autostart-phase=2
+OnlyShowIn=KDE;

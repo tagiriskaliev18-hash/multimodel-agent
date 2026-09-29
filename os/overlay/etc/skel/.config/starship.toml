@@ -1,0 +1,19 @@
+# Приглашение командной строки DuoOS: каталог, git, язык проекта, время выполнения
+add_newline = true
+format = "$directory$git_branch$git_status$python$nodejs$rust$golang$docker_context$cmd_duration$line_break$character"
+
+[character]
+success_symbol = "[❯](bold #8b7dff)"
+error_symbol = "[❯](bold #ff5f57)"
+
+[directory]
+style = "bold #22d3ee"
+truncation_length = 4
+
+[git_branch]
+symbol = "⎇ "
+style = "bold #c4b5fd"
+
+[cmd_duration]
+min_time = 2000
+format = "[⏱ $duration]($style) "

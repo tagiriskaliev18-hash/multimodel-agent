@@ -1,0 +1,7 @@
+[Mouse]
+cursorTheme=breeze_cursors
+cursorSize=24
+
+[Libinput][Defaults]
+NaturalScroll=false
+TapToClick=true

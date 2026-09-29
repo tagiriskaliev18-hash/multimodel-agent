@@ -1,0 +1,7 @@
+# Только для live-USB и установщика; удаляются из установленной системы
+casper
+calamares
+cryptsetup
+lvm2
+mdadm
+gparted

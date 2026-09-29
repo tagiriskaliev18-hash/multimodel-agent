@@ -1,0 +1,14 @@
+# Графика: AMD, Intel, NVIDIA (nouveau/NVK) через Mesa; проприетарный NVIDIA ставит «Менеджер драйверов»
+mesa-vulkan-drivers
+mesa-va-drivers
+libgl1-mesa-dri
+libegl-mesa0
+vulkan-tools
+mesa-utils
+intel-media-va-driver
+ubuntu-drivers-common
+# Гостевые дополнения для виртуальных машин (VMware, VirtualBox, QEMU/KVM, Hyper-V)
+open-vm-tools-desktop
+spice-vdagent
+qemu-guest-agent
+virtualbox-guest-utils

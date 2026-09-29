@@ -1,0 +1,13 @@
+{
+    "editor.fontFamily": "'JetBrains Mono', monospace",
+    "editor.fontLigatures": true,
+    "editor.fontSize": 14,
+    "editor.minimap.enabled": false,
+    "editor.renderWhitespace": "boundary",
+    "editor.formatOnSave": true,
+    "terminal.integrated.fontFamily": "'JetBrains Mono'",
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "window.titleBarStyle": "custom",
+    "workbench.colorTheme": "Default Dark Modern",
+    "telemetry.telemetryLevel": "off"
+}

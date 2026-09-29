@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Центр DuoOS
+Exec=duo-welcome --autostart
+Icon=duoos-logo
+NoDisplay=true
+X-KDE-autostart-phase=2
+OnlyShowIn=KDE;

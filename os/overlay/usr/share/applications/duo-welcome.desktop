@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Центр DuoOS
+Name[en]=DuoOS Center
+GenericName=Приветствие и настройка
+GenericName[en]=Welcome & Setup
+Comment=Первые шаги, драйверы, инструменты разработчика
+Comment[en]=First steps, drivers, developer tools
+Exec=duo-welcome
+Icon=duoos-logo
+Terminal=false
+Categories=Qt;KDE;System;Settings;
+Keywords=welcome;drivers;nvidia;developer;приветствие;драйверы;

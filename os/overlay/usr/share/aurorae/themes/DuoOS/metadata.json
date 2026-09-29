@@ -1,0 +1,10 @@
+{
+    "KPlugin": {
+        "Authors": [ { "Name": "DuoOS" } ],
+        "Description": "Тёмная тема окон с кнопками-«светофором»",
+        "Id": "DuoOS",
+        "License": "GPL-2.0-or-later",
+        "Name": "DuoOS",
+        "Version": "1.0"
+    }
+}

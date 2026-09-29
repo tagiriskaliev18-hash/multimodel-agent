@@ -1,0 +1,2 @@
+// Снимок системы Timeshift перед каждой установкой/обновлением пакетов (откат одной кнопкой)
+DPkg::Pre-Invoke { "if [ -x /usr/lib/duoos/pre-apt-snapshot.sh ]; then /usr/lib/duoos/pre-apt-snapshot.sh || true; fi"; };

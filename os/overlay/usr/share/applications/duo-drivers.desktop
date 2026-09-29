@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Менеджер драйверов
+Name[en]=Driver Manager
+Comment=Драйверы NVIDIA и других устройств, обновление прошивок
+Comment[en]=NVIDIA and other drivers, firmware updates
+Exec=duo-drivers
+Icon=jockey
+Terminal=false
+Categories=Qt;KDE;System;Settings;HardwareSettings;
+Keywords=nvidia;driver;gpu;видеокарта;драйвер;

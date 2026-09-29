@@ -1,0 +1,7 @@
+[Layout]
+Use=true
+LayoutList=us,ru
+VariantList=,
+Options=grp:alt_shift_toggle
+ResetOldOptions=true
+SwitchMode=Global

@@ -1,0 +1,8 @@
+{
+    "KPlugin": {
+        "Authors": [ { "Name": "DuoOS" } ],
+        "Id": "DuoOS",
+        "License": "CC-BY-SA-4.0",
+        "Name": "DuoOS"
+    }
+}

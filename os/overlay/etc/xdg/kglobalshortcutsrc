@@ -1,0 +1,5 @@
+[services][org.kde.krunner.desktop]
+_launch=Meta+Space\tAlt+Space\tAlt+F2\tSearch,Alt+Space\tAlt+F2\tSearch,KRunner
+
+[kwin]
+Overview=Meta+W\tMeta+Tab,Meta+W,Overview

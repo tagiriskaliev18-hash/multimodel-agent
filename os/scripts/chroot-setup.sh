@@ -1,0 +1,183 @@
+#!/usr/bin/env bash
+# Выполняется внутри chroot: ставит пакеты и превращает Ubuntu в DuoOS.
+set -euxo pipefail
+
+B=/tmp/duoos-build
+# shellcheck source=../config.env
+source "$B/config.env"
+export DEBIAN_FRONTEND=noninteractive
+APT=(apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold)
+
+# --- Сеть внутри chroot -------------------------------------------------------
+if [ -s "$B/resolv.conf" ]; then
+    rm -f /etc/resolv.conf
+    cp "$B/resolv.conf" /etc/resolv.conf
+fi
+
+# Не запускать службы во время сборки
+printf '#!/bin/sh\nexit 101\n' > /usr/sbin/policy-rc.d
+chmod +x /usr/sbin/policy-rc.d
+
+# --- Репозитории Ubuntu -------------------------------------------------------
+rm -f /etc/apt/sources.list
+cat > /etc/apt/sources.list.d/ubuntu.sources <<EOF
+Types: deb
+URIs: ${UBUNTU_MIRROR}
+Suites: ${UBUNTU_SUITE} ${UBUNTU_SUITE}-updates ${UBUNTU_SUITE}-backports
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+Types: deb
+URIs: http://security.ubuntu.com/ubuntu
+Suites: ${UBUNTU_SUITE}-security
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+EOF
+
+# Без snap (как в Linux Mint): приложения — из deb и Flatpak
+cat > /etc/apt/preferences.d/duoos-nosnap.pref <<'EOF'
+# DuoOS не использует snap. Приложения ставятся из deb-пакетов и Flatpak (Flathub).
+Package: snapd
+Pin: release a=*
+Pin-Priority: -10
+EOF
+
+apt-get update
+"${APT[@]}" dist-upgrade
+
+# --- Локали -------------------------------------------------------------------
+"${APT[@]}" install locales
+sed -i -e 's/^# *\(ru_RU.UTF-8\)/\1/' -e 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen
+locale-gen ru_RU.UTF-8 en_US.UTF-8
+update-locale LANG="$DEFAULT_LOCALE"
+
+# --- Сторонние репозитории: Firefox (Mozilla) и VS Code (Microsoft) -----------
+install -d -m 0755 /etc/apt/keyrings
+BROWSER_PKGS="firefox firefox-l10n-ru"
+if curl -fsSL --retry 3 https://packages.mozilla.org/apt/repo-signing-key.gpg -o /etc/apt/keyrings/packages.mozilla.org.asc; then
+    cat > /etc/apt/sources.list.d/mozilla.sources <<'EOF'
+Types: deb
+URIs: https://packages.mozilla.org/apt
+Suites: mozilla
+Components: main
+Signed-By: /etc/apt/keyrings/packages.mozilla.org.asc
+EOF
+    cat > /etc/apt/preferences.d/duoos-mozilla.pref <<'EOF'
+# Firefox из официального репозитория Mozilla, а не snap-заглушка Ubuntu
+Package: *
+Pin: origin packages.mozilla.org
+Pin-Priority: 1000
+
+Package: firefox*
+Pin: release o=Ubuntu
+Pin-Priority: -1
+EOF
+else
+    echo "ВНИМАНИЕ: репозиторий Mozilla недоступен, вместо Firefox будет Falkon"
+    BROWSER_PKGS="falkon"
+fi
+
+CODE_PKGS=""
+if curl -fsSL --retry 3 https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg; then
+    cat > /etc/apt/sources.list.d/vscode.sources <<'EOF'
+Types: deb
+URIs: https://packages.microsoft.com/repos/code
+Suites: stable
+Components: main
+Architectures: amd64
+Signed-By: /etc/apt/keyrings/microsoft.gpg
+EOF
+    CODE_PKGS="code"
+    # Не даём пакету code добавлять свой дубликат списка репозитория
+    echo "code code/add-microsoft-repo boolean false" | debconf-set-selections
+else
+    echo "ВНИМАНИЕ: репозиторий Microsoft недоступен, VS Code не будет предустановлен"
+fi
+
+apt-get update
+
+# --- Пакеты -------------------------------------------------------------------
+mapfile -t PKGS < <(cat "$B"/packages/*.list | sed -e 's/#.*//' -e 's/[[:space:]]//g' | sed '/^$/d')
+# shellcheck disable=SC2086
+"${APT[@]}" install "${PKGS[@]}" $BROWSER_PKGS $CODE_PKGS
+
+# Kubuntu-настройки не нужны: у DuoOS свои
+"${APT[@]}" purge kubuntu-settings-desktop kubuntu-notification-helper plasma-discover-backend-snap snapd 2>/dev/null || true
+"${APT[@]}" autoremove --purge
+
+# --- Файлы DuoOS --------------------------------------------------------------
+cp -a "$B/overlay/." /
+chmod +x /usr/bin/duo-* /usr/lib/duoos/*.sh /usr/lib/duoos/*.py 2>/dev/null || true
+
+# Тёмная тема по умолчанию: цвета Breeze Dark + настройки DuoOS
+{ cat /usr/share/color-schemes/BreezeDark.colors; echo; cat /usr/share/duoos/kdeglobals.duoos; } > /etc/xdg/kdeglobals
+
+# Пакет grub-efi-amd64 для установщика: на UEFI-машинах он заменит grub-pc
+mkdir -p /usr/share/duoos/debs
+(cd /usr/share/duoos/debs && apt-get download grub-efi-amd64)
+
+# Идентификация системы (как в Linux Mint: ID_LIKE=ubuntu, совместимость с PPA и драйверами)
+dpkg-divert --local --rename --add /usr/lib/os-release
+cat > /usr/lib/os-release <<EOF
+PRETTY_NAME="${OS_NAME} ${OS_VERSION} (${OS_CODENAME})"
+NAME="${OS_NAME}"
+VERSION_ID="${OS_VERSION}"
+VERSION="${OS_VERSION} (${OS_CODENAME})"
+VERSION_CODENAME=${UBUNTU_SUITE}
+ID=${OS_ID}
+ID_LIKE="ubuntu debian"
+HOME_URL="${OS_URL}"
+SUPPORT_URL="${OS_URL}/issues"
+BUG_REPORT_URL="${OS_URL}/issues"
+LOGO=${OS_ID}-logo
+UBUNTU_CODENAME=${UBUNTU_SUITE}
+EOF
+ln -sf ../usr/lib/os-release /etc/os-release
+echo "${OS_NAME} ${OS_VERSION} \\n \\l" > /etc/issue
+echo "${OS_NAME} ${OS_VERSION}" > /etc/issue.net
+
+# Заставка загрузки: логотип DuoOS вместо логотипа Ubuntu
+for f in /usr/share/plymouth/themes/spinner/watermark.png /usr/share/plymouth/ubuntu-logo.png; do
+    [ -e "$f" ] || continue
+    dpkg-divert --local --rename --add "$f"
+    cp /usr/share/duoos/plymouth-watermark.png "$f"
+done
+
+# --- Пользователи по умолчанию: zsh, группы разработчика ----------------------
+sed -i 's|^#\?DSHELL=.*|DSHELL=/usr/bin/zsh|' /etc/adduser.conf
+sed -i 's|^#\?SHELL=.*|SHELL=/usr/bin/zsh|' /etc/default/useradd
+
+# --- Службы -------------------------------------------------------------------
+systemctl enable NetworkManager sddm duoos-flathub.service
+systemctl set-default graphical.target
+# Docker запускается по первому обращению — не тормозит загрузку
+systemctl disable docker.service || true
+systemctl enable docker.socket || true
+sed -i 's/^ENABLED=.*/ENABLED=yes/' /etc/ufw/ufw.conf
+
+# Flathub (при сборке без сети — добавится при первом запуске службой duoos-flathub)
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
+
+# --- Live-сессия (casper) -----------------------------------------------------
+cat > /etc/casper.conf <<EOF
+export USERNAME="${LIVE_USER}"
+export USERFULLNAME="${OS_NAME} Live"
+export HOST="${LIVE_HOSTNAME}"
+export BUILD_SYSTEM="Ubuntu"
+export FLAVOUR="${OS_NAME}"
+EOF
+
+# Шрифты, иконки, initramfs с поддержкой casper и plymouth
+fc-cache -f
+gtk-update-icon-cache -f /usr/share/icons/hicolor || true
+update-initramfs -u -k all
+
+# --- Очистка ------------------------------------------------------------------
+apt-get clean
+rm -rf /var/lib/apt/lists/* /var/cache/apt/*.bin /tmp/* /var/tmp/* /root/.cache
+rm -f /usr/sbin/policy-rc.d /etc/hostname
+: > /etc/machine-id
+rm -f /var/lib/dbus/machine-id
+find /var/log -type f -exec truncate -s 0 {} +
+rm -f /etc/resolv.conf
+ln -s ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf

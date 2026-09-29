@@ -1,0 +1,34 @@
+# Тема меню загрузки DuoOS
+title-text: ""
+desktop-image: "background.png"
+desktop-color: "#090c1c"
+terminal-font: "Unifont Regular 16"
+
++ boot_menu {
+    left = 30%
+    top = 56%
+    width = 40%
+    height = 32%
+    item_font = "Unifont Regular 16"
+    item_color = "#c9cce6"
+    selected_item_color = "#ffffff"
+    item_height = 36
+    item_padding = 16
+    item_spacing = 6
+    icon_width = 0
+    icon_height = 0
+    item_icon_space = 0
+    selected_item_pixmap_style = "select_*.png"
+    scrollbar = false
+}
+
++ label {
+    left = 0
+    top = 94%
+    width = 100%
+    align = "center"
+    id = "__timeout__"
+    text = "Автоматический выбор через %d с   ·   ↑↓ — выбор, Enter — запуск"
+    color = "#8b90b0"
+    font = "Unifont Regular 16"
+}
