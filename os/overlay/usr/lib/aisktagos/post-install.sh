@@ -6,7 +6,7 @@ export DEBIAN_FRONTEND=noninteractive
 log() { echo "[aisktagos-post] $*"; }
 
 # 1. Убрать остатки live-системы
-apt-get -y autoremove --purge || true
+apt-get -o Dpkg::Use-Pty=0 -y autoremove --purge || true
 rm -f /etc/casper.conf /etc/xdg/autostart/aisktagos-live.desktop /usr/share/applications/aisktagos-install.desktop
 
 # 2. Корневая ФС из fstab (внутри установщика findmnt видит не ту систему)
