@@ -5,6 +5,13 @@ import calamares.slideshow 1.0
 Presentation {
     id: presentation
 
+    // Тёмная подложка вместо белых полей вокруг слайдов
+    Rectangle {
+        anchors.fill: parent
+        color: "#12142a"
+        z: -1
+    }
+
     Timer {
         interval: 9000
         running: true
