@@ -84,7 +84,7 @@ else
 fi
 
 CODE_PKGS=""
-if curl -fsSL --retry 3 https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg; then
+if curl -fsSL --retry 3 https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor --yes -o /etc/apt/keyrings/microsoft.gpg; then
     cat > /etc/apt/sources.list.d/vscode.sources <<'EOF'
 Types: deb
 URIs: https://packages.microsoft.com/repos/code

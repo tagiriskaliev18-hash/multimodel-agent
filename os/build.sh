@@ -178,7 +178,7 @@ build_grub() {
     # FAT-раздел ESP для флешек и VMware/UEFI
     local efi_img="$WORK_DIR/efi.img"
     rm -f "$efi_img"
-    mkfs.vfat -C -n "${OS_ID^^}_EFI" "$efi_img" 10240 >/dev/null
+    mkfs.vfat -C -n "ESP" "$efi_img" 10240 >/dev/null
     mmd -i "$efi_img" ::/EFI ::/EFI/boot ::/EFI/ubuntu
     mcopy -i "$efi_img" "$ISO_TREE"/EFI/boot/* ::/EFI/boot/
     mcopy -i "$efi_img" "$ISO_TREE/EFI/ubuntu/grub.cfg" ::/EFI/ubuntu/grub.cfg
