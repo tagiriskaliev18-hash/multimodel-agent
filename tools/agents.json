@@ -1,6 +1,15 @@
 {
   "default_agent": "developer",
   "agents": {
+    "planner": {
+      "name": "Планировщик (Spec & Plan Engineer)",
+      "primary_provider": "claude",
+      "fallback_providers": ["deepseek", "openai", "groq"],
+      "skills": ["spec-driven-development", "writing-plans"],
+      "allowed_tools": "Read,Grep,Glob",
+      "write_access": false,
+      "description": "Превращает идею в спецификацию и план из маленьких задач с зависимостями и пометкой параллельных [P] (spec-kit / superpowers)"
+    },
     "architect": {
       "name": "Архитектор систем (System Architect)",
       "primary_provider": "claude",
@@ -14,7 +23,7 @@
       "name": "Старший код-ревьюер (Senior Code Reviewer)",
       "primary_provider": "claude",
       "fallback_providers": ["groq", "deepseek"],
-      "skills": ["code-review"],
+      "skills": ["code-review", "verification-before-completion"],
       "allowed_tools": "Read,Grep,Glob",
       "write_access": false,
       "description": "Глубокое код-ревью изменений, проверка качества, соблюдения стандартов и отсутствия регрессий"
@@ -23,10 +32,28 @@
       "name": "Инженер-разработчик (Core Developer)",
       "primary_provider": "groq",
       "fallback_providers": ["pollinations", "ollama", "claude"],
-      "skills": ["boilerplate-gen"],
+      "skills": ["boilerplate-gen", "test-driven-development"],
       "allowed_tools": "Read,Grep,Glob",
       "write_access": false,
       "description": "Быстрая генерация кода, реализация модулей, написание тестов и вспомогательных скриптов"
+    },
+    "tester": {
+      "name": "Инженер по тестированию (TDD Engineer)",
+      "primary_provider": "groq",
+      "fallback_providers": ["deepseek", "openai", "claude"],
+      "skills": ["test-driven-development"],
+      "allowed_tools": "Read,Grep,Glob",
+      "write_access": false,
+      "description": "Пишет тесты первыми по циклу RED-GREEN-REFACTOR и покрывает граничные случаи"
+    },
+    "debugger": {
+      "name": "Отладчик (Root Cause Debugger)",
+      "primary_provider": "claude",
+      "fallback_providers": ["deepseek", "openai", "groq"],
+      "skills": ["systematic-debugging", "verification-before-completion"],
+      "allowed_tools": "Read,Grep,Glob",
+      "write_access": false,
+      "description": "Четырёхфазная системная отладка: воспроизведение, сравнение с рабочим кодом, гипотеза, исправление первопричины с регрессионным тестом"
     },
     "security_auditor": {
       "name": "Аудитор информационной безопасности (Security Auditor)",
