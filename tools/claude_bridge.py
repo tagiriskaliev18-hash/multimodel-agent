@@ -7,6 +7,10 @@ import urllib.request
 import urllib.error
 
 import shutil
+from concurrent.futures import ThreadPoolExecutor
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import repo_context  # noqa: E402
 
 CLAUDE_PATH = os.path.expandvars(r"%USERPROFILE%\.local\bin\claude.exe")
 if not os.path.exists(CLAUDE_PATH):
@@ -14,6 +18,10 @@ if not os.path.exists(CLAUDE_PATH):
     CLAUDE_PATH = resolved_claude if resolved_claude else "claude"
 
 DEFAULT_MODEL = os.environ.get("CLAUDE_BRIDGE_MODEL", "sonnet")
+REPO_MAP_BUDGET = int(os.environ.get("AIDUO_REPO_MAP_CHARS", "8000"))
+PARALLEL_WORKERS = int(os.environ.get("AIDUO_PARALLEL_WORKERS", "4"))
+ERROR_PREFIXES = ("CLAUDE_ERROR", "CLAUDE_LIMIT_REACHED", "PROVIDER_ERROR", "PROVIDER_OFFLINE",
+                  "PROVIDER_LIMIT_REACHED", "AGENT_ERROR", "SOUP_ERROR", "BRIDGE_ERROR", "REPO_ERROR")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEFAULT_PROVIDERS = {
@@ -352,10 +360,12 @@ def handle_ask(work_folder, question):
     return run_claude(work_folder, prompt, tools_arg="Read,Grep,Glob")
 
 def handle_implement(work_folder, instruction):
+    verification = load_skill("verification-before-completion")
     prompt = (
         f"Задача для реализации в проекте {work_folder}:\n"
         f"{instruction}\n\n"
         "Выполни необходимые изменения в коде аккуратно и точно."
+        + (f"\n\n{verification}" if verification else "")
     )
     return run_claude(work_folder, prompt, allow_writes=True)
 
@@ -402,11 +412,7 @@ def handle_models_list():
         status = "[НЕИЗВЕСТНО]"
         
         if ptype == "cli":
-            try:
-                res = subprocess.run(["where.exe", p.get("command", "claude")], capture_output=True, text=True)
-                status = "[ГОТОВ]" if res.returncode == 0 else "[НЕ УСТАНОВЛЕН]"
-            except Exception:
-                status = "[ОШИБКА]"
+            status = "[ГОТОВ]" if shutil.which(p.get("command", "claude")) else "[НЕ УСТАНОВЛЕН]"
         elif ptype == "openai_compatible":
             base_url = p.get("base_url", "").rstrip("/")
             test_url = f"{base_url}/models"
@@ -443,7 +449,7 @@ def handle_models_list():
         
     return "\n".join(lines)
 
-def handle_agent_run(agent_name, task, skill_name=None, work_folder=None):
+def handle_agent_run(agent_name, task, skill_name=None, work_folder=None, with_context=True, extra_context=""):
     if not work_folder:
         work_folder = os.getcwd()
         
@@ -482,6 +488,14 @@ def handle_agent_run(agent_name, task, skill_name=None, work_folder=None):
         f"{skill_content}\n\n"
         "Выполняй задачу строго в соответствии с принципами и стандартами твоих подключенных навыков."
     )
+    if extra_context:
+        system_prompt += f"\n\n--- РЕЗУЛЬТАТЫ ПРЕДЫДУЩИХ ЭТАПОВ ---\n{extra_context}"
+
+    # Модели через HTTP API не видят файлы: даём им карту репозитория (в стиле aider repo map),
+    # чтобы код попадал в существующую структуру проекта, а не писался "в вакууме".
+    repo_map = ""
+    if with_context and os.path.isdir(work_folder):
+        repo_map = repo_context.build_repo_map(work_folder, focus=task, max_chars=REPO_MAP_BUDGET)
     
     providers_chain = [agent.get("primary_provider", "claude")]
     providers_chain.extend(agent.get("fallback_providers", []))
@@ -502,7 +516,8 @@ def handle_agent_run(agent_name, task, skill_name=None, work_folder=None):
                 full_prompt = f"{system_prompt}\n\nПоставленная задача:\n{task}"
                 res = run_claude(work_folder, full_prompt, tools_arg=agent.get("allowed_tools", "Read,Grep,Glob"), model=prov.get("model"))
             elif ptype == "openai_compatible":
-                res = run_openai_compatible(prov, task, system_prompt=system_prompt)
+                api_system = f"{system_prompt}\n\n--- КАРТА РЕПОЗИТОРИЯ ---\n{repo_map}" if repo_map else system_prompt
+                res = run_openai_compatible(prov, task, system_prompt=api_system)
             else:
                 res = f"PROVIDER_ERROR: Неизвестный тип {ptype}"
                 
@@ -521,6 +536,62 @@ def handle_agent_run(agent_name, task, skill_name=None, work_folder=None):
             last_error = f"{prov_name} error: {str(e)}"
             
     return f"AGENT_ERROR: Все провайдеры для агента '{agent_name}' недоступны. Последняя ошибка: {last_error}"
+
+def handle_repo_map(work_folder, focus="", max_chars=None):
+    return repo_context.build_repo_map(work_folder, focus=focus, max_chars=int(max_chars or 12000))
+
+def handle_repo_pack(work_folder, focus="", paths=None, max_chars=None):
+    if isinstance(paths, str):
+        paths = [p for p in paths.split(",") if p.strip()]
+    return repo_context.pack_repo(work_folder, focus=focus, paths=paths, max_chars=int(max_chars or 60000))
+
+def handle_agents_parallel(agent_names, task, work_folder=None, judge=None):
+    """Mixture-of-agents: несколько агентов решают задачу параллельно, судья сводит лучший ответ."""
+    work_folder = work_folder or os.getcwd()
+    if isinstance(agent_names, str):
+        agent_names = [a.strip() for a in agent_names.split(",") if a.strip()]
+    if not agent_names:
+        return "AGENT_ERROR: Не указан ни один агент для параллельного запуска."
+
+    workers = max(1, min(PARALLEL_WORKERS, len(agent_names)))
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        results = list(pool.map(lambda name: (name, handle_agent_run(name, task, work_folder=work_folder)), agent_names))
+
+    successes = [(n, r) for n, r in results if not r.startswith(ERROR_PREFIXES)]
+    report = "\n\n---\n\n".join(r for _, r in results)
+    if not successes:
+        return f"AGENT_ERROR: Ни один агент не справился.\n\n{report}"
+    if not judge or len(successes) < 2:
+        return report
+
+    candidates = "\n\n".join(f"=== Вариант агента '{n}' ===\n{r}" for n, r in successes)
+    judge_task = (
+        f"Исходная задача:\n{task}\n\n"
+        f"Ниже независимые решения нескольких агентов:\n{candidates}\n\n"
+        "Сравни варианты: найди ошибки и противоречия, выбери сильные стороны каждого "
+        "и выдай одно итоговое, проверенное решение. В конце кратко перечисли, что взято из какого варианта."
+    )
+    verdict = handle_agent_run(judge, judge_task, work_folder=work_folder, with_context=False)
+    return f"{verdict}\n\n<details><summary>Исходные варианты</summary>\n\n{report}\n\n</details>"
+
+DEFAULT_PIPELINE = ["planner", "developer", "reviewer"]
+
+def handle_agent_pipeline(task, stages=None, work_folder=None):
+    """Конвейер агентов (spec -> plan -> implement -> review): каждый этап видит результаты предыдущих."""
+    work_folder = work_folder or os.getcwd()
+    if isinstance(stages, str):
+        stages = [s.strip() for s in stages.split(",") if s.strip()]
+    stages = stages or DEFAULT_PIPELINE
+
+    outputs = []
+    for stage in stages:
+        context = "\n\n".join(f"=== Этап '{name}' ===\n{out}" for name, out in outputs)
+        res = handle_agent_run(stage, task, work_folder=work_folder, extra_context=context)
+        if res.startswith(ERROR_PREFIXES):
+            done = ", ".join(n for n, _ in outputs) or "нет"
+            return f"AGENT_ERROR: Конвейер остановлен на этапе '{stage}' (завершены: {done}).\n{res}\n\n{context}"
+        outputs.append((stage, res))
+    return "\n\n---\n\n".join(out for _, out in outputs)
 
 def handle_agents_list():
     agents_data = load_agents()
@@ -647,13 +718,13 @@ TOOLS = [
     },
     {
         "name": "agent_run",
-        "description": "Запустить задачу через специализированного агента из нашей базы (architect, reviewer, developer, security_auditor, llmops) с подключенным скиллом.",
+        "description": "Запустить задачу через специализированного агента из нашей базы (planner, architect, developer, tester, debugger, reviewer, security_auditor, llmops, hermes_agent) с подключенным скиллом. API-моделям автоматически передаётся карта репозитория.",
         "inputSchema": {
             "type": "object",
             "properties": {
                 "agent": {
                     "type": "string",
-                    "description": "Имя агента: 'architect', 'reviewer', 'developer', 'security_auditor', 'llmops'"
+                    "description": "Имя агента: 'planner', 'architect', 'developer', 'tester', 'debugger', 'reviewer', 'security_auditor', 'llmops', 'hermes_agent'"
                 },
                 "task": {
                     "type": "string",
@@ -661,11 +732,15 @@ TOOLS = [
                 },
                 "skill": {
                     "type": "string",
-                    "description": "Опциональный ID скилла (например: 'code-review', 'security-audit', 'architecture-audit', 'boilerplate-gen', 'llmops-tuning')"
+                    "description": "Опциональный ID скилла (например: 'spec-driven-development', 'writing-plans', 'test-driven-development', 'systematic-debugging', 'code-review', 'security-audit', 'architecture-audit', 'boilerplate-gen')"
                 },
                 "work_folder": {
                     "type": "string",
                     "description": "Рабочая папка проекта"
+                },
+                "with_context": {
+                    "type": "boolean",
+                    "description": "Передавать API-моделям карту репозитория (по умолчанию true)"
                 }
             },
             "required": ["agent", "task"]
@@ -718,6 +793,60 @@ TOOLS = [
         }
     },
     {
+        "name": "repo_map",
+        "description": "Компактная карта репозитория (в стиле aider): файлы, классы, функции и сигнатуры, отсортированные по релевантности задаче. Даёт структуру проекта за ~5-10% токенов.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "work_folder": {"type": "string", "description": "Абсолютный путь к рабочей папке проекта"},
+                "focus": {"type": "string", "description": "Задача или ключевые слова: релевантные файлы попадут в начало карты"},
+                "max_chars": {"type": "integer", "description": "Бюджет символов (по умолчанию 12000)"}
+            },
+            "required": ["work_folder"]
+        }
+    },
+    {
+        "name": "repo_pack",
+        "description": "Упаковать содержимое файлов проекта в один AI-friendly блок (в стиле repomix) с учётом .gitignore и бюджета символов.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "work_folder": {"type": "string", "description": "Абсолютный путь к рабочей папке проекта"},
+                "focus": {"type": "string", "description": "Задача или ключевые слова для выбора самых релевантных файлов"},
+                "paths": {"type": "array", "items": {"type": "string"}, "description": "Явный список файлов или папок (относительно work_folder)"},
+                "max_chars": {"type": "integer", "description": "Бюджет символов (по умолчанию 60000)"}
+            },
+            "required": ["work_folder"]
+        }
+    },
+    {
+        "name": "agents_parallel",
+        "description": "Mixture-of-agents: несколько агентов/моделей решают одну задачу параллельно, опциональный агент-судья сравнивает варианты и выдаёт лучший итог.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "agents": {"type": "array", "items": {"type": "string"}, "description": "Список агентов, например ['developer', 'hermes_agent', 'architect']"},
+                "task": {"type": "string", "description": "Задача для всех агентов"},
+                "judge": {"type": "string", "description": "Агент-судья для синтеза итогового ответа (например 'reviewer'); без него возвращаются все варианты"},
+                "work_folder": {"type": "string", "description": "Рабочая папка проекта"}
+            },
+            "required": ["agents", "task"]
+        }
+    },
+    {
+        "name": "agent_pipeline",
+        "description": "Конвейер агентов (spec -> plan -> implement -> review): каждый этап получает результаты предыдущих. По умолчанию planner -> developer -> reviewer.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "task": {"type": "string", "description": "Описание фичи или задачи"},
+                "stages": {"type": "array", "items": {"type": "string"}, "description": "Порядок агентов, например ['planner', 'developer', 'tester', 'reviewer']"},
+                "work_folder": {"type": "string", "description": "Рабочая папка проекта"}
+            },
+            "required": ["task"]
+        }
+    },
+    {
         "name": "soup_recipe",
         "description": "Поиск и просмотр рецептов/шаблонов моделей из LLM Soup для локального запуска или файн-тюнинга.",
         "inputSchema": {
@@ -763,7 +892,7 @@ def main():
                     },
                     "serverInfo": {
                         "name": "ai-bridge",
-                        "version": "2.1.0"
+                        "version": "2.2.0"
                     }
                 }
             }
@@ -807,7 +936,8 @@ def main():
                 elif tool_name == "claude_implement":
                     text = handle_implement(work_folder, args.get("instruction", ""))
                 elif tool_name == "agent_run":
-                    text = handle_agent_run(args.get("agent", ""), args.get("task", ""), args.get("skill"), work_folder)
+                    text = handle_agent_run(args.get("agent", ""), args.get("task", ""), args.get("skill"), work_folder,
+                                            args.get("with_context", True))
                 elif tool_name == "agents_list":
                     text = handle_agents_list()
                 elif tool_name == "skills_list":
@@ -816,6 +946,14 @@ def main():
                     text = handle_model_ask(args.get("provider", "claude"), args.get("question", ""), work_folder)
                 elif tool_name == "models_list":
                     text = handle_models_list()
+                elif tool_name == "repo_map":
+                    text = handle_repo_map(work_folder, args.get("focus", ""), args.get("max_chars"))
+                elif tool_name == "repo_pack":
+                    text = handle_repo_pack(work_folder, args.get("focus", ""), args.get("paths"), args.get("max_chars"))
+                elif tool_name == "agents_parallel":
+                    text = handle_agents_parallel(args.get("agents", []), args.get("task", ""), work_folder, args.get("judge"))
+                elif tool_name == "agent_pipeline":
+                    text = handle_agent_pipeline(args.get("task", ""), args.get("stages"), work_folder)
                 elif tool_name == "soup_recipe":
                     text = handle_soup_recipe(args.get("query", ""))
                 else:
@@ -831,7 +969,7 @@ def main():
                                 "text": text
                             }
                         ],
-                        "isError": any(text.startswith(p) for p in ("CLAUDE_ERROR", "CLAUDE_LIMIT_REACHED", "PROVIDER_ERROR", "PROVIDER_OFFLINE", "PROVIDER_LIMIT_REACHED", "AGENT_ERROR", "SOUP_ERROR", "BRIDGE_ERROR"))
+                        "isError": text.startswith(ERROR_PREFIXES)
                     }
                 }
             except Exception as e:

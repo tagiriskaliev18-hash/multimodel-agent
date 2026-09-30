@@ -21,7 +21,26 @@
   - Встроенный FastAPI шлюз, раздающий Web UI (AI Studio Chat, 3D Neural HUD, Service Portal) и предоставляющий OpenAI-совместимый API `/v1/chat/completions`.
 - **Интеграция с MCP и базой агентов**:
   - Совместимость с Claude Code, Gemini Antigravity, LLM Soup.
-  - Роли: `architect`, `reviewer`, `developer`, `security_auditor`, `llmops`, `hermes_agent`.
+  - Роли: `planner`, `architect`, `developer`, `tester`, `debugger`, `reviewer`, `security_auditor`, `llmops`, `hermes_agent`.
+
+---
+
+## 🏎 Ускорение разработки без потери качества
+
+Мост `tools/claude_bridge.py` (MCP) включает инструменты по мотивам лучших проектов GitHub (aider, repomix, spec-kit, superpowers, BMAD). Подробный обзор: [`docs/RESEARCH_ACCELERATORS.md`](docs/RESEARCH_ACCELERATORS.md).
+
+| Инструмент | Что делает |
+|---|---|
+| `repo_map` | Карта репозитория: файлы, классы, функции и сигнатуры, отсортированные по релевантности задаче. Автоматически передаётся API-моделям в `agent_run` |
+| `repo_pack` | Упаковка файлов проекта в один контекст (учитывает `.gitignore` и бюджет символов) |
+| `agents_parallel` | Несколько агентов решают задачу параллельно; агент-судья (`judge`) сводит лучший ответ |
+| `agent_pipeline` | Конвейер агентов: `planner → developer → reviewer` (этапы настраиваются), каждый видит результаты предыдущих |
+
+Новые агенты: `planner` (спецификация и план), `tester` (TDD), `debugger` (поиск первопричины). Новые навыки: `spec-driven-development`, `writing-plans`, `test-driven-development`, `systematic-debugging`, `verification-before-completion`.
+
+Настройки: `AIDUO_REPO_MAP_CHARS` (бюджет карты для агентов, по умолчанию `8000`), `AIDUO_PARALLEL_WORKERS` (по умолчанию `4`).
+
+Тесты: `python -m unittest discover -s tests`
 
 ---
 
@@ -124,9 +143,12 @@ multimodel-agent/
 ├── tools/
 │   ├── hud/                   # 3D Sci-Fi Neural HUD управления моделями
 │   ├── claude_bridge.py       # MCP сервер связки с Claude Code / Gemini
+│   ├── repo_context.py        # Карта репозитория и упаковка контекста для моделей
 │   ├── providers.json         # Глобальный реестр провайдеров
 │   ├── agents.json            # База агентов (architect, developer, hermes_agent...)
-│   └── skills/                # Каталог навыков (code-review, audit, tuning...)
+│   └── skills/                # Каталог навыков (spec, plans, TDD, debugging, review, audit...)
+├── tests/                     # Тесты моста (unittest)
+├── docs/                      # Обзор ускорителей разработки
 ├── Dockerfile                 # Docker образ приложения
 ├── docker-compose.yml         # Стек с контейнером Ollama
 ├── .env.example               # Шаблон настроек
