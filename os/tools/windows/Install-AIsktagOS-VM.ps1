@@ -30,7 +30,7 @@ param(
 $ErrorActionPreference = 'Continue'
 $ProgressPreference = 'SilentlyContinue'
 $VmName = 'AIsktagOS'
-$Repo = 'tagiriskaliev18-hash/aisktagos'
+$Repos = @('tagiriskaliev18-hash/aisktagos', 'tagiriskaliev18-hash/multimodel-agent')
 $BaseDir = Join-Path $env:USERPROFILE 'AIsktagOS'
 
 function Say([string]$Text) { Write-Host "==> $Text" -ForegroundColor Cyan }
@@ -84,11 +84,16 @@ function Save-Url([string]$Url, [string]$Dest) {
 }
 
 function Get-IsoFromGitHub {
-    Say "Ищу готовый образ в GitHub Releases ($Repo)…"
-    try {
-        $rel = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" -UseBasicParsing -ErrorAction Stop
-    } catch {
-        Warn 'Релиз на GitHub не найден (репозиторий закрыт или ещё не опубликован).'
+    $rel = $null
+    foreach ($Repo in $Repos) {
+        Say "Ищу готовый образ в GitHub Releases ($Repo)…"
+        try {
+            $r = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" -UseBasicParsing -ErrorAction Stop
+            if ($r.assets | Where-Object { $_.name -like '*.iso*' }) { $rel = $r; break }
+        } catch { }
+    }
+    if (-not $rel) {
+        Warn 'Релиз с ISO на GitHub не найден (репозиторий закрыт или ещё не опубликован).'
         return $null
     }
     New-Item -ItemType Directory -Force -Path $BaseDir | Out-Null
