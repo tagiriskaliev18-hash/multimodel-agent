@@ -1,0 +1,6 @@
+# Скрипты и конфиги Linux — только с LF, иначе bash в WSL/Linux ломается на CRLF
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.png binary
+*.jpg binary

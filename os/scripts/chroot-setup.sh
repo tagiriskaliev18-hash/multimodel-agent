@@ -120,7 +120,8 @@ find /usr/share/doc -type f ! -name copyright -delete
 find /usr/share/doc -type d -empty -delete
 
 # --- Файлы AIsktagOS --------------------------------------------------------------
-cp -a "$B/overlay/." /
+# Без сохранения прав: при сборке из WSL файлы с диска Windows видны как 777
+cp -r --no-preserve=mode,ownership "$B/overlay/." /
 chmod 600 /etc/netplan/*.yaml
 chmod +x /usr/bin/aisktag-* /usr/lib/aisktagos/*.sh /usr/lib/aisktagos/*.py 2>/dev/null || true
 
