@@ -23,7 +23,7 @@
   - Совместимость с Claude Code, Gemini Antigravity, LLM Soup.
   - Роли: `architect`, `reviewer`, `developer`, `security_auditor`, `llmops`, `hermes_agent`, `ui_designer`.
 - **Дизайн-навыки (UI Design Kit)**:
-  - Агент `ui_designer` и 4 навыка в `tools/skills/`: `ui-design-system` (тёмная тёплая тема, токены, зерно, свечение, стекло), `ui-motion` (появление при скролле, split text, бегущая строка, магнитные кнопки, подсветка под курсором, 3D-наклон, скрэмбл, счётчики, scroll-driven анимации), `ui-components` (кнопки, switch, вкладки, тосты, модалки, FAQ, скелетоны с стресс-тестом) и `landing-page-template` (одностраничная витрина).
+  - Агент `ui_designer` и 4 навыка в `tools/skills/`, снятые с живого codeandchill.store: `ui-design-system` (бумага и чернила, две темы, Archivo + моно, 2px линии, жёсткие тени), `ui-motion` (одна кривая и такт, полка с инерцией, scroll = camera, View Transitions, пружины, свёртывание пилюли), `ui-components` (Furl, Seal, Decant, Twin, Gulp, Glyph, Lumen, Nudge, корзина с тостами, палитра ⌘K, стресс-тест) и `landing-page-template` (раскладка витрины и страницы продукта).
   - Чистые HTML/CSS/JS без зависимостей, поддержка `prefers-reduced-motion` и клавиатуры.
   - Живая демонстрация всех эффектов: `tools/design-kit/index.html` (в Docker по адресу `/design`).
 

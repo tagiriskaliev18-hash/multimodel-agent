@@ -62,7 +62,7 @@
       "skills": ["ui-design-system", "ui-motion", "ui-components", "landing-page-template"],
       "allowed_tools": "Read,Grep,Glob",
       "write_access": false,
-      "description": "Тёмные тёплые интерфейсы в стиле витрин анимированных компонентов: дизайн-система, анимации при скролле, магнитные кнопки, подсветка карточек, бегущая строка, устойчивые компоненты и лендинги на чистом HTML/CSS/JS"
+      "description": "Интерфейсы в стиле codeandchill.store: бумага и чернила в светлой и тёмной теме, 2px линии, жёсткие тени, моно-подписи, полка с инерцией, scroll-камера и компоненты, которые превращаются в индикатор своего состояния (Furl, Seal, Decant, Gulp, Lumen), на чистом HTML/CSS/JS"
     }
   }
 }

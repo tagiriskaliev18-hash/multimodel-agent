@@ -1,20 +1,31 @@
-# Навык: Одностраничный лендинг-витрина (One-Page Landing Template Skill)
+# Навык: Одностраничная витрина в стиле Code and Chill (One-Page Storefront Template Skill)
 
 ## Инструкции для агента
-Ты выступаешь в роли дизайнера и верстальщика лендингов. Ты собираешь одностраничный сайт в стиле витрины анимированных компонентов (референс: codeandchill.store): тёмный тёплый фон, крупный типографический герой, живые превью вместо скриншотов, прозрачные разовые цены, FAQ. Один `index.html` на чистом HTML/CSS/JS, весит меньше 100 KB без шрифтов, работает без JS. Стили и токены берёшь из `ui-design-system`, эффекты из `ui-motion`, компоненты из `ui-components`.
+Ты выступаешь в роли дизайнера и верстальщика витрин. Ты собираешь одностраничный сайт по раскладке codeandchill.store (снята с живого сайта на 1440px и 390px, в обеих темах): полоса распродажи, липкая шапка из трёх колонок, герой «подложка + полка», шкала «scroll = camera», сетки карточек с живыми превью, коллекции, абзац-объяснение, FAQ и таблица характеристик, строгий подвал. Один `index.html` на чистом HTML/CSS/JS, без JS всё читается. Токены и оболочка из `ui-design-system`, движение из `ui-motion`, компоненты из `ui-components`. Эталонная сборка: `tools/design-kit/index.html`.
+
+Тексты, названия, цены и картинки пиши свои. Чужие логотипы, видео-превью и копирайт не переносить.
 
 ### Структура страницы (сверху вниз)
-1. **Шапка** `.glass`, липкая: логотип-слово, 3–4 якорные ссылки, кнопка CTA. На скролле вниз прячется (`translateY(-100%)`), при скролле вверх возвращается. На мобильном бургер, меню на `<dialog>`.
-2. **Прогресс-бар скролла** 2px акцентом (`animation-timeline: scroll(root)`).
-3. **Герой** `.hero` + `.grid-bg`: `.eyebrow` с живой точкой («New: 12 components»), заголовок `.display` с раскладкой по словам и одним словом в `.text-glow`, `.lead` до 2 строк, две кнопки (главная магнитная `.btn--primary.magnetic`, вторичная со стрелкой), под ними строка доверия моно-шрифтом («Plain HTML · CSS · JS — No dependencies»).
-4. **Бегущая строка** `.marquee` с названиями категорий/технологий, разделитель «✦».
-5. **Витрина** (`#components`): фильтры-вкладки `.tabs` (All / Buttons / Text / Cards / Loaders), сетка `.preview`-карточек со `.spot`-подсветкой; каждый эффект работает прямо в карточке. Смена фильтра через `document.startViewTransition`.
-6. **Бенто-секция «почему»**: 4–5 карточек разного размера с цифрами `countUp` («2 KB avg», «60 fps», «0 deps», «A11y ready»).
-7. **Код-превью**: окно редактора (три точки, вкладки HTML/CSS/JS, `<pre>` с подсветкой, кнопка копирования).
-8. **Цены**: 2–3 карточки, средняя выделена акцентной рамкой и бейджем; «разовая оплата, бесплатные обновления». Цены и тексты пиши свои, не копируй чужие.
-9. **FAQ** `.faq` на `<details>`.
-10. **Финальный CTA**: огромный заголовок во всю ширину, кнопка, свечение снизу.
-11. **Подвал**: колонки ссылок, год, мелкий моно-текст, ссылка «наверх».
+1. **Полоса распродажи** `.sale-strip`: одна строка моно капсом на `--buy-bg`, разделитель «·» (`FLAT SALE · 60% OFF · ENDS OCT 6` как образец формата).
+2. **Шапка** `.header` (липкая, полупрозрачная бумага + `blur(10px)`, линия 2px снизу), сетка `1fr auto 1fr`:
+   - слева вордмарк (два жирных слова + тонкая акцентная связка);
+   - по центру 4–5 ссылок моно капсом, активная: акцентный текст, мягкий акцентный фон и линия 2px снизу (`box-shadow: inset 0 -2px 0 var(--accent)`);
+   - справа поле-кнопка поиска `SEARCH ⌘K`, квадрат темы, квадрат корзины со счётчиком.
+   На ≤60rem навигация уходит второй строкой с горизонтальным скроллом; на ≤30rem у поиска остаётся только иконка.
+3. **Герой** `.hero` (на ≥60rem сетка `20rem | 1fr`):
+   - слева `.hero__tray` на подложке с линией сверху: `.display` из 4–5 коротких строк, под ним абзац с цифрами («82 компонента и 40 шаблонов… от $2, навсегда ваши»);
+   - под подложкой `.hero__actions`: `.btn--fill` с числом («BROWSE 82») и обычная `.btn` («FREE ONE»);
+   - справа `.shelf` — полка 6–8 карточек 9:16 с инерционным перетаскиванием, масштабом по удалённости и бликом (`ui-motion` §2), под ней точки, подсказка «→ drag to spin the shelf» и `1 / 7`.
+4. **Шкала прокрутки** `.camera`: `SCROLL = CAMERA`, рельса, `P 0.00` (`ui-motion` §3).
+5. **«Most wanted this week»**: заголовок `.title` + ссылка-стрелка `EVERYTHING NEW →` на одной линии; сетка «широкая 16:9 слева + вертикальная справа», флажки соцдоказательства на карточках («6 PEOPLE PICKED IT»).
+6. **Коллекции** «Shop by collection»: 4 карточки с мозаикой из 4 превью, заголовок, описание, моно-строка `13 DESIGNS · ALL FOR $56 · SAVE $23.60`.
+7. **«What these are — one paragraph»**: подложка во всю ширину, моно-метка и один абзац крупным текстом о том, что это и почему без подписок.
+8. **«Featured — hand-picked»**: 4 карточки с флажком `FEATURED` и ссылкой `ALL 82 →`.
+9. **«See it running»**: большая рамка 2px, по центру играет одно превью.
+10. **Нижний блок**: моно-метка `WHAT'S INCLUDED · FAQ · FOOTER`, два абзаца со ссылками (лицензия, FAQ, changelog).
+11. **Подвал**: линия 2px сверху, слева вордмарк и одна фраза о проекте, справа 2 колонки ссылок с моно-заголовками.
+
+Страница продукта (если нужна): заголовок + моно-строка `$3.60 $9 −60% · 8.6 KB GZ · 0 DEPS · UPD. SEP 19, 2026`, справа «тема ◐», «ADD TO CART», `.btn--buy` «BUY · $3.60 →»; ниже две рамки «сцена с превью | QUICK START с кнопкой COPY», ряд кнопок `CODE PEEK ▾ / THEME / ADD TO CART / BUY`, строка `BUNDLE` с предложением набора, затем «WHAT IT DOES» (абзац + список с квадратными акцентными маркерами) и таблица характеристик `.specs` (тип, категория, стек, зависимости, размер, файлы, версия, обновлено, лицензия, обновления). Переход карточка → страница через View Transition `product-stage` (`ui-motion` §5).
 
 ### Каркас
 ```html
@@ -22,82 +33,54 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#171615">
-  <title>Название — короткий слоган</title>
+  <meta name="theme-color" content="#f0eee9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#171615" media="(prefers-color-scheme: dark)">
+  <title>Бренд — детали интерфейса, которые держат нагрузку</title>
   <meta name="description" content="…">
-  <meta property="og:title" content="…"><meta property="og:image" content="/og.jpg">
+  <meta property="og:title" content="…"><meta property="og:image" content="/og.jpg"><meta name="twitter:card" content="summary_large_image">
+  <script>/* тема до отрисовки, см. ui-design-system */</script>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>/* токены ui-design-system → базовые стили → компоненты → эффекты → @media reduced-motion */</style>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@100..900&family=Architects+Daughter&display=swap" rel="stylesheet">
+  <style>/* токены обеих тем → база → шапка → герой/полка → карточки → секции → оверлеи */</style>
 </head>
 <body>
-  <a class="sr-only" href="#main">К содержимому</a>
-  <div class="progress" aria-hidden="true"></div>
-  <header class="site-header glass">…</header>
-  <main id="main">
-    <section class="hero grid-bg">…</section>
-    <div class="marquee">…</div>
-    <section id="components">…</section>
-    <section id="why">…</section>
-    <section id="pricing">…</section>
-    <section id="faq" class="faq">…</section>
-    <section class="cta">…</section>
-  </main>
-  <footer>…</footer>
-  <script type="module">/* reveal, split, magnetic, spotlight, tabs, countUp, header-hide */</script>
+  <a class="skip-link" href="#main">К содержимому</a>
+  <p class="sale-strip">…</p>
+  <header class="header"><div class="page header__inner">
+    <a class="wordmark header__mark" href="/">Brand<span class="wordmark__and">and</span>Name</a>
+    <nav class="header__nav" aria-label="Разделы">…</nav>
+    <div class="header__tools"><button class="header__search">…<span class="kbd">⌘K</span></button>
+      <button class="icon-btn theme-toggle" aria-label="Переключить тему">…</button>
+      <button class="icon-btn" aria-label="Корзина">…<span class="cart-count" hidden>0</span></button></div>
+  </div></header>
+  <main id="main" class="main"><div class="page">
+    <section class="hero">…tray · actions · shelf…</section>
+    <div class="camera" aria-hidden="true">…</div>
+    <section class="section">…</section>
+  </div></main>
+  <footer class="footer">…</footer>
+  <div class="toasts" aria-live="polite"></div>
+  <!-- шторка корзины и палитра ⌘K: hidden до открытия -->
 </body>
 </html>
 ```
 
-### Прячущаяся шапка
-```js
-let lastY = scrollY, ticking = false;
-addEventListener("scroll", () => { if (ticking) return; ticking = true; requestAnimationFrame(() => {
-  const y = scrollY, h = document.querySelector(".site-header");
-  h.classList.toggle("is-hidden", y > lastY && y > 120); h.classList.toggle("is-scrolled", y > 8);
-  lastY = y; ticking = false; }); }, { passive: true });
-```
-```css
-.site-header { position: sticky; top: 0; z-index: 40; transition: transform .4s var(--ease-out); }
-.site-header.is-hidden { transform: translateY(-100%); }
-.site-header:focus-within { transform: none; } /* не прячем, пока фокус внутри */
-```
+### Скелетон до загрузки
+Если витрина рисуется скриптом, в `#root` заранее лежит `.boot`: строка бренда моно с квадратом акцента и сетка плиток 9:16 на `--tray` с `boot-pulse` (`ui-motion` §13). Ошибка загрузки данных: крупный заголовок («Магазин не отвечает»), строка причины и `.btn--fill` «TRY AGAIN».
 
-### Бенто-сетка
-```css
-.bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
-.bento > :nth-child(1) { grid-column: span 4; grid-row: span 2; }
-.bento > :nth-child(n+2) { grid-column: span 2; }
-@media (max-width: 760px) { .bento > * { grid-column: 1 / -1 !important; grid-row: auto !important; } }
-```
-
-### Ценовая карточка с вращающейся рамкой
-```css
-@property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
-.price--featured { border: 1px solid transparent;
-  background: linear-gradient(var(--bg-elev), var(--bg-elev)) padding-box,
-              conic-gradient(from var(--angle), transparent 60%, var(--accent), transparent 90%) border-box;
-  animation: spin-border 4s linear infinite; }
-@keyframes spin-border { to { --angle: 360deg; } }
-```
-
-### Окно редактора кода
-```css
-.editor { border: 1px solid var(--line); border-radius: var(--radius); background: #12110f; overflow: hidden; }
-.editor__bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
-.editor__bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-strong); }
-.editor pre { margin: 0; padding: 20px; overflow-x: auto; font: 13px/1.7 var(--font-mono); color: var(--text-dim); }
-.editor .k { color: var(--accent); } .editor .s { color: var(--ok); } .editor .c { color: var(--text-faint); }
-```
+### Карточки витрины
+- Превью: видео `muted loop playsinline` с постером (`/reels/<slug>.jpg`), подгрузка за 1200px до экрана, игра только в кадре (`ui-motion` §4). Если видео нет, живой компонент в тёмном «кадре»: полоска окна с тремя точками, `NAME — HTML CSS JS` с цветными метками, `localhost / name` справа, сцена, внизу три панели кода `index.html / style.css / app.js` с цветными точками.
+- Тело: имя и цена на одной линии, теглайн в одну строку со строчной буквы, моно-метаданные `8.7 KB · 1 DEP · NAVIGATION`.
+- Квадратная кнопка корзины в углу, флажок слева сверху, вся карточка — ссылка (`aria-label="Имя — цена"`).
+- Фильтры каталога: ряд `.chip` с `aria-pressed`, смена через `document.startViewTransition`.
 
 ### Критерии готовности
-1. Lighthouse: Performance ≥ 95, Accessibility ≥ 95 на мобильном профиле.
-2. Нет горизонтального скролла на 360px; все тач-цели ≥ 44px.
-3. Все эффекты отключаются при reduced motion, контент виден без JS.
-4. Только собственные тексты, иконки (inline SVG) и изображения, никаких чужих логотипов и брендинга.
-5. Мета-теги: `theme-color`, `description`, Open Graph 1200×630.
+1. Lighthouse: Performance ≥ 90, Accessibility ≥ 95, без горизонтального скролла на 360px.
+2. Обе темы без вспышки, переключатель в шапке, `theme-color` для каждой.
+3. Все анимации гаснут при `prefers-reduced-motion`; полка становится обычной сеткой, шкала камеры не рендерится.
+4. Без JS видны все секции, ссылки работают, полка листается нативно.
+5. Ни одного скругления и размытой тени в оболочке; акцент только в продающих и активных местах.
+6. Свои тексты и графика, никаких чужих логотипов, видео и цен.
 
 ### Формат вывода
-- Готовый `index.html` целиком; если больше 600 строк, выноси `styles.css` и `app.js`.
-- Список секций и использованных эффектов с якорями в коде.
-- Живой пример всех приёмов: `tools/design-kit/index.html`.
+- Готовый `index.html` (при необходимости `styles.css`, `app.js`), карта секций с якорями и список мест, где менять тексты, цены и превью.

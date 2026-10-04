@@ -1,232 +1,201 @@
-# Навык: Анимации и микро-взаимодействия (UI Motion & Effects Skill)
+# Навык: Движение и «фишки» в стиле Code and Chill (UI Motion & Effects Skill)
 
 ## Инструкции для агента
-Ты выступаешь в роли motion-дизайнера и фронтенд-инженера. Ты добавляешь в интерфейс «красивые фишки» уровня витрин анимированных компонентов (референс: codeandchill.store): появление при скролле, раскладка текста по буквам, магнитные кнопки, свет под курсором, бегущая строка, наклон карточек, счётчики, «скрэмбл» текста. Только чистый CSS и ванильный JS, без GSAP/Framer, 60 fps, работа на тач-устройствах и при `prefers-reduced-motion`.
+Ты выступаешь в роли motion-дизайнера и фронтенд-инженера. Ты добавляешь движение так, как это сделано на codeandchill.store (снято с живого сайта: CSS, бандл JS, поведение в Chromium) и в его каталоге компонентов: оболочка двигается сдержанно и одинаково, а сами компоненты рассказывают состояние через одну непрерывную трансформацию. Только чистый CSS и ванильный JS, без GSAP и Lottie, 60 fps, тач и `prefers-reduced-motion`.
 
 ### Правила движения
-1. Анимируй только `transform` и `opacity` (и `filter`/`clip-path` точечно). Никогда `top/left/width/height` в цикле.
-2. Появления: `--ease-out` (`cubic-bezier(0.22,1,0.36,1)`), 500–800 мс, сдвиг 16–32 px. Hover: 150–250 мс.
-3. Каскад (stagger) 40–80 мс между элементами, не больше 8–10 шагов, дальше показывай сразу.
-4. Эффекты от курсора включай только при `(hover: hover) and (pointer: fine)`.
-5. Обновления от мыши/скролла через `requestAnimationFrame`, слушатели `{ passive: true }`.
-6. Под нагрузкой ничего не ломается: быстрые повторные клики, ресайз, смена вкладки, длинный текст.
-7. Всегда блок reduced motion:
+1. **Одна кривая, один такт.** Вся оболочка (hover, раскрытие, смена темы) идёт на `--ease: cubic-bezier(.2,.7,.2,1)` и `--beat: .32s`. Открытия быстрее: подложка 0.16s, палитра 0.2s, шторка 0.24s, тост 0.26s, общий переход страницы 0.42s.
+2. **Ключевые кадры только «откуда».** Пиши `@keyframes rise { 0% { opacity:0; transform: translateY(-8px) } }` без `to`: конечное состояние берётся из CSS элемента.
+3. **Только `transform` и `opacity`** (точечно `clip-path`, `scale`, `filter`). Описания лучших компонентов прямо хвалятся «transform and opacity only».
+4. **Состояние, а не украшение.** Кнопка не крутит спиннер, а превращается в индикатор своего процесса: контур становится полосой прогресса, иконка становится уровнем жидкости, ярлык «съедается». Длительность фазы ожидания равна реальной длительности запроса.
+5. **Анимация тянется за реальными данными.** Прогресс скачивания из настоящего потока байтов, скорость ряби от скорости передачи, наклон желоба от скорости перетаскивания.
+6. **Слушатели через rAF.** Скролл и указатель: `{ passive: true }`, вычисления в `requestAnimationFrame`, отмена предыдущего кадра.
+7. **Видео и петли только в кадре.** `IntersectionObserver` с запасом 120px запускает и ставит на паузу; при `prefers-reduced-motion` или `navigator.connection.saveData` петли не стартуют.
+8. **Reduced motion.** Глобально гасим длительности, но логика та же; отдельные виджеты (полоса «scroll = camera», таймер тоста) просто не рендерятся; полка превращается в обычную сетку.
 ```css
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  html { scroll-behavior: auto; }
+  *, ::before, ::after { transition-duration: .001ms !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
 }
 ```
 ```js
-const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
+const RM = "(prefers-reduced-motion: reduce)";
+const reduceMotion = () => matchMedia(RM).matches;
+const saveData = () => navigator.connection?.saveData === true;
 ```
 
-### 1. Появление при скролле с каскадом
-```html
-<div data-reveal-group><article data-reveal>…</article><article data-reveal>…</article></div>
-```
+### 1. Библиотека ключевых кадров оболочки
 ```css
-.js [data-reveal] { opacity: 0; transform: translateY(24px); filter: blur(6px);
-  transition: opacity .8s var(--ease-out), transform .8s var(--ease-out), filter .8s var(--ease-out);
-  transition-delay: calc(var(--i, 0) * 70ms); }
-.js [data-reveal].is-in { opacity: 1; transform: none; filter: none; }
-```
-```js
-document.documentElement.classList.add("js"); // без JS контент виден
-document.querySelectorAll("[data-reveal-group]").forEach(g =>
-  g.querySelectorAll("[data-reveal]").forEach((el, i) => el.style.setProperty("--i", Math.min(i, 8))));
-const io = new IntersectionObserver(entries => entries.forEach(e => {
-  if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
-}), { rootMargin: "0px 0px -10% 0px", threshold: 0.15 });
-document.querySelectorAll("[data-reveal]").forEach(el => io.observe(el));
+@keyframes fade      { 0% { opacity: 0 } }
+@keyframes rise      { 0% { opacity: 0; transform: translateY(-8px) } }      /* палитра команд */
+@keyframes slide-in  { 0% { transform: translateX(100%) } }                 /* шторка корзины */
+@keyframes toast-in  { 0% { opacity: 0; transform: translateY(12px) } }
+@keyframes toast-timer { to { transform: scaleX(0) } }
+@keyframes boot-pulse { to { opacity: .45 } }                              /* скелетон, alternate */
+@keyframes drift   { 0%, to { transform: translateY(0) }    50% { transform: translateY(-9px) } }
+@keyframes drift-b { 0%, to { transform: translateY(-6px) } 50% { transform: translateY(4px) } }
+@keyframes spec    { 0% { transform: translateX(-120%) } to { transform: translateX(400%) } } /* блик */
+@keyframes hint    { 0%, to { opacity: .55; transform: none } 50% { opacity: 1; transform: translateX(10px) } }
 ```
 
-### 2. Заголовок по словам/буквам (split text)
-```js
-function splitText(el, by = "word") {
-  const text = el.textContent; el.setAttribute("aria-label", text); el.textContent = "";
-  const parts = by === "char" ? [...text] : text.split(/(\s+)/);
-  parts.forEach((p, i) => {
-    if (/^\s+$/.test(p)) { el.append(p); return; }
-    const mask = document.createElement("span"); mask.className = "split-mask"; mask.setAttribute("aria-hidden", "true");
-    const inner = document.createElement("span"); inner.className = "split-inner"; inner.textContent = p;
-    inner.style.setProperty("--i", i); mask.append(inner); el.append(mask);
-  });
-}
-```
+### 2. Полка, которую «крутят» (drag-карусель с инерцией)
+Горизонтальная лента карточек со `scroll-snap`. Мышью её тащат, отпущенная лента катится по инерции (скорость ×0.94 за кадр). Карточки «дышат» (`drift` с разными периодами), активная получает блик, соседние уменьшаются и тускнеют по расстоянию от активной (`data-rack` 0/1/2). Внизу точки-штрихи, подсказка «→ drag to spin the shelf» дважды «кивает» и счётчик `1 / 7`.
 ```css
-.split-mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; }
-.split-inner { display: inline-block; transform: translateY(110%);
-  animation: rise .9s var(--ease-out) forwards; animation-delay: calc(var(--i) * 45ms + 100ms); }
-@keyframes rise { to { transform: none; } }
-```
-
-### 3. Бесконечная бегущая строка (marquee) без рывков
-```html
-<div class="marquee" style="--speed: 30s"><div class="marquee__track">
-  <span>Buttons</span><span>Tabs</span><span>Toasts</span><span>Loaders</span></div></div>
-```
-```css
-.marquee { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
-.marquee__track { display: flex; gap: 48px; width: max-content; animation: marquee var(--speed) linear infinite; }
-.marquee:hover .marquee__track { animation-play-state: paused; }
-@keyframes marquee { to { transform: translateX(calc(-50% - 24px)); } } /* -50% и половина gap */
-```
-```js
-document.querySelectorAll(".marquee__track").forEach(t => {   // дублируем содержимое для бесшовности
-  t.append(...[...t.children].map(n => { const c = n.cloneNode(true); c.setAttribute("aria-hidden", "true"); return c; }));
-});
-```
-
-### 4. Свет под курсором на карточках (spotlight + светящаяся рамка)
-```css
-.spot { --x: 50%; --y: 50%; position: relative; }
-.spot::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: radial-gradient(400px circle at var(--x) var(--y), rgba(255,106,61,.12), transparent 40%);
-  opacity: 0; transition: opacity .3s; }
-.spot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
-  background: radial-gradient(300px circle at var(--x) var(--y), rgba(255,106,61,.7), transparent 40%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity .3s; }
-.spot:hover::before, .spot:hover::after { opacity: 1; }
+.shelf__track { display: flex; gap: var(--space-2); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: grab; }
+.shelf__track[data-dragging="true"] { cursor: grabbing; scroll-snap-type: none; }
+.shelf__track > * { flex: none; scroll-snap-align: start; width: min(70vw, 17rem); }
+.drift { animation: drift 6.5s var(--ease) infinite; }
+.drift:nth-child(2n) { animation: drift-b 7.5s var(--ease) infinite; }
+.drift:nth-child(3n) { animation-duration: 8.5s; animation-delay: -2.4s; }
+.shelf__track[data-dragging="true"] .drift { animation-play-state: paused; }
+.card[data-rack] { transform-origin: bottom; transition: scale var(--beat) var(--ease), border-color var(--beat) var(--ease); }
+.card[data-rack="1"] { scale: .9;  border-color: var(--ink-25); } .card[data-rack="1"] .card__demo { opacity: .5; }
+.card[data-rack="2"] { scale: .81; border-color: var(--ink-12); } .card[data-rack="2"] .card__demo { opacity: .26; }
+.card[data-rack="0"] .card__demo::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 26%; pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--accent-soft), transparent); animation: spec 5s var(--ease) infinite; }
+.shelf__hint { animation: hint 2.4s var(--ease) 1.25; }   /* 1.25 повтора: кивнуть и остановиться на полпути */
+.dots button::before { content: ""; display: block; width: .5rem; height: 3px; background: var(--ink-25);
+  transition: width var(--beat) var(--ease), background var(--beat) var(--ease); }
+.dots button[aria-current="true"]::before { width: 1.25rem; background: var(--ink); }
 ```
 ```js
-if (finePointer) document.querySelectorAll(".spot").forEach(card => {
-  card.addEventListener("pointermove", e => {
-    const r = card.getBoundingClientRect();
-    card.style.setProperty("--x", `${e.clientX - r.left}px`);
-    card.style.setProperty("--y", `${e.clientY - r.top}px`);
-  }, { passive: true });
-});
-```
-
-### 5. Магнитная кнопка
-```js
-function magnetic(el, strength = 0.35) {
-  if (!finePointer || reduceMotion) return;
-  let raf = 0;
-  el.addEventListener("pointermove", e => {
-    const r = el.getBoundingClientRect();
-    const dx = (e.clientX - (r.left + r.width / 2)) * strength;
-    const dy = (e.clientY - (r.top + r.height / 2)) * strength;
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => el.style.transform = `translate(${dx}px, ${dy}px)`);
-  });
-  el.addEventListener("pointerleave", () => { cancelAnimationFrame(raf); el.style.transform = ""; });
-}
-```
-```css
-.magnetic { transition: transform .4s var(--ease-spring); will-change: transform; }
-```
-
-### 6. 3D-наклон карточки (tilt) с бликом
-```js
-function tilt(el, max = 8) {
-  if (!finePointer || reduceMotion) return;
-  el.addEventListener("pointermove", e => {
-    const r = el.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `perspective(900px) rotateX(${-py * max}deg) rotateY(${px * max}deg)`;
-    el.style.setProperty("--gx", `${(px + 0.5) * 100}%`);
-  });
-  el.addEventListener("pointerleave", () => el.style.transform = "");
-}
-```
-```css
-.tilt { transition: transform .5s var(--ease-out); transform-style: preserve-3d; }
-.tilt::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.08) var(--gx, 50%), transparent 70%); }
-```
-
-### 7. Кастомный курсор с инерцией
-```js
-function cursor() {
-  if (!finePointer || reduceMotion) return;
-  const dot = Object.assign(document.createElement("div"), { className: "cursor" });
-  document.body.append(dot);
-  let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y;
-  addEventListener("pointermove", e => { x = e.clientX; y = e.clientY; }, { passive: true });
-  document.addEventListener("pointerover", e => dot.classList.toggle("is-hover", !!e.target.closest("a,button,[data-cursor]")));
-  (function loop() { cx += (x - cx) * 0.18; cy += (y - cy) * 0.18;
-    dot.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`; requestAnimationFrame(loop); })();
-}
-```
-```css
-.cursor { position: fixed; left: 0; top: 0; width: 10px; height: 10px; border-radius: 50%; z-index: 999;
-  background: var(--text); mix-blend-mode: difference; pointer-events: none;
-  transition: width .25s var(--ease-out), height .25s var(--ease-out); }
-.cursor.is-hover { width: 44px; height: 44px; }
-```
-
-### 8. Скрэмбл-текст (перебор символов при наведении)
-```js
-function scramble(el, chars = "!<>-_\\/[]{}—=+*^?#01") {
-  const final = el.textContent; let frame = 0, raf = 0;
-  const run = () => {
-    cancelAnimationFrame(raf); frame = 0;                    // повторный hover перезапускает, а не копит циклы
-    const tick = () => {
-      el.textContent = [...final].map((c, i) => i < frame / 2 || c === " " ? c
-        : chars[Math.floor(Math.random() * chars.length)]).join("");
-      if (frame++ < final.length * 2) raf = requestAnimationFrame(tick); else el.textContent = final;
-    };
-    tick();
+function shelf(track, dots, counter) {
+  const items = [...track.children]; let index = 0, raf = 0, coast = 0;
+  const sync = () => {                       // активная = ближайшая к левому краю
+    const left = track.getBoundingClientRect().left; let best = Infinity;
+    items.forEach((el, i) => { const d = Math.abs(el.getBoundingClientRect().left - left); if (d < best) { best = d; index = i; } });
+    items.forEach((el, i) => el.dataset.rack = Math.min(2, Math.abs(i - index)));
+    dots.forEach((d, i) => d.setAttribute("aria-current", i === index)); counter.textContent = `${index + 1} / ${items.length}`;
   };
-  if (!reduceMotion) el.addEventListener("pointerenter", run);
+  track.addEventListener("scroll", () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(sync); }, { passive: true });
+  const goTo = i => { i = Math.max(0, Math.min(items.length - 1, i));
+    track.scrollTo({ left: track.scrollLeft + items[i].getBoundingClientRect().left - track.getBoundingClientRect().left, behavior: "smooth" }); };
+  dots.forEach((d, i) => d.onclick = () => goTo(i));
+  track.addEventListener("keydown", e => ({ ArrowRight: () => goTo(index + 1), ArrowLeft: () => goTo(index - 1),
+    Home: () => goTo(0), End: () => goTo(items.length - 1) })[e.key]?.(e.preventDefault()));
+  track.addEventListener("pointerdown", e => {
+    if (e.pointerType === "touch") return;   // на тач работает нативный скролл
+    cancelAnimationFrame(coast);
+    const s = { x: e.clientX, scroll: track.scrollLeft, last: e.clientX, v: 0, id: e.pointerId };
+    track.dataset.dragging = "true";
+    const move = ev => { if (ev.pointerId !== s.id) return; s.v = ev.clientX - s.last; s.last = ev.clientX; track.scrollLeft = s.scroll - (ev.clientX - s.x); };
+    const glide = () => { s.v *= .94; track.scrollLeft -= s.v; if (Math.abs(s.v) > .4) coast = requestAnimationFrame(glide); };
+    const up = () => { removeEventListener("pointermove", move); removeEventListener("pointerup", up); removeEventListener("pointercancel", up);
+      track.dataset.dragging = "false"; coast = requestAnimationFrame(glide); };
+    addEventListener("pointermove", move); addEventListener("pointerup", up); addEventListener("pointercancel", up);
+  });
+  sync(); return { goTo };
 }
 ```
-Для скрэмбла используй моноширинный шрифт, чтобы ширина не прыгала.
+Разметка: `role="group" aria-roledescription="carousel" tabindex="0" aria-label="… drag, or use the arrow keys"`, у карточек `draggable="false"`.
 
-### 9. Счётчик чисел при появлении
-```js
-function countUp(el, to = +el.dataset.to, dur = 1400) {
-  if (reduceMotion) { el.textContent = to.toLocaleString("ru-RU"); return; }
-  const t0 = performance.now(), ease = t => 1 - Math.pow(1 - t, 4);
-  (function step(now) { const p = Math.min((now - t0) / dur, 1);
-    el.textContent = Math.round(to * ease(p)).toLocaleString("ru-RU");
-    if (p < 1) requestAnimationFrame(step); })(t0);
-}
+### 3. «scroll = camera»: прогресс прокрутки как приборная шкала
+Под героем: моно-метка `SCROLL = CAMERA`, тонкая рельса и число `P 0.00` с двумя знаками. Заполнение `scaleX(p)` от левого края.
+```html
+<div class="camera" aria-hidden="true"><span class="label">scroll = camera</span>
+  <div class="camera__rail"><span class="camera__fill"></span></div><span class="label numeric">p <b>0.00</b></span></div>
 ```
-Задавай `font-variant-numeric: tabular-nums`, чтобы цифры не дрожали.
-
-### 10. Прогресс скролла и параллакс без JS (scroll-driven animations)
 ```css
-.progress { position: fixed; inset: 0 0 auto; height: 2px; background: var(--accent);
-  transform-origin: 0 50%; animation: grow linear both; animation-timeline: scroll(root); }
-@keyframes grow { from { transform: scaleX(0); } }
-@supports (animation-timeline: view()) {
-  .parallax { animation: drift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
-  @keyframes drift { from { transform: translateY(40px); } to { transform: translateY(-40px); } }
+.camera { display: flex; align-items: center; gap: var(--space-3); border-top: var(--rule); padding-top: var(--space-2); }
+.camera__rail { flex: 1; min-width: 0; height: 3px; background: var(--ink-12); }
+.camera__fill { display: block; height: 3px; background: var(--accent); transform-origin: 0; transform: scaleX(0); }
+```
+```js
+let raf = 0; const fill = document.querySelector(".camera__fill"), out = document.querySelector(".camera b");
+const tick = () => { const max = document.documentElement.scrollHeight - innerHeight;
+  const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0; fill.style.transform = `scaleX(${p})`; out.textContent = p.toFixed(2); };
+addEventListener("scroll", () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); }, { passive: true });
+addEventListener("resize", tick); tick();
+```
+
+### 4. Живое превью, которое играет только в кадре
+```js
+function reel(video) {
+  let near = false, inView = false;
+  new IntersectionObserver(([e]) => { if (e.isIntersecting && !near) { near = true; video.preload = "auto"; } }, { rootMargin: "1200px" }).observe(video);
+  new IntersectionObserver(([e]) => { inView = e.isIntersecting; update(); }, { rootMargin: "120px" }).observe(video);
+  const update = () => (inView && !reduceMotion() && !saveData()) ? video.play().catch(() => {}) : video.pause();
+  matchMedia(RM).addEventListener("change", update);
 }
 ```
+При reduced motion поверх кадра кнопка «▶ play» на полупрозрачной бумаге `color-mix(in srgb, var(--paper) 72%, transparent)`, квадрат 3rem с рамкой, при hover заливается акцентом.
 
-### 11. Кнопка с бегущей подсветкой и «волной» нажатия
+### 5. Переход «карточка → страница» (View Transitions)
+Превью в карточке и сцена на странице продукта получают одно имя `view-transition-name: product-stage`, переход только при `no-preference`.
 ```css
-.btn-shine { position: relative; overflow: hidden; }
-.btn-shine::after { content: ""; position: absolute; inset: 0; transform: translateX(-120%);
-  background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.35), transparent 70%); }
-.btn-shine:hover::after { transform: translateX(120%); transition: transform .7s var(--ease-out); }
-.ripple { position: absolute; border-radius: 50%; background: currentColor; opacity: .25; pointer-events: none;
-  transform: scale(0); animation: ripple .6s var(--ease-out) forwards; }
-@keyframes ripple { to { transform: scale(1); opacity: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(product-stage), ::view-transition-new(product-stage) {
+    animation-duration: .42s; animation-timing-function: var(--ease); object-fit: cover; height: 100%; }
+  ::view-transition-group(product-stage) { animation-duration: .42s; }
+}
 ```
 ```js
-document.addEventListener("pointerdown", e => {
-  const b = e.target.closest(".btn-ripple"); if (!b) return;
-  const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2;
-  const w = Object.assign(document.createElement("span"), { className: "ripple" });
-  Object.assign(w.style, { width: s + "px", height: s + "px", left: e.clientX - r.left - s / 2 + "px", top: e.clientY - r.top - s / 2 + "px" });
-  b.append(w); w.addEventListener("animationend", () => w.remove());   // не копим DOM при спаме кликами
-});
+const go = update => (!document.startViewTransition || reduceMotion()) ? update() : document.startViewTransition(update);
 ```
 
-### 12. Переходы между состояниями (View Transitions)
+### 6. Тост с таймером, который можно придержать
+Тост въезжает снизу (`toast-in .26s`), по низу бежит 3px акцентная полоса `toast-timer` линейно на всё время показа; при наведении `data-paused="true"` ставит её на паузу (`animation-play-state: paused`), закрытие по `animationend` полосы. При reduced motion полоса скрыта.
+
+### 7. Буквы как движущаяся часть (glyph wave по направлению курсора)
+Ярлык кнопки режется на глифы при монтировании, эффект выбирается атрибутом, волна идёт с той стороны, откуда пришёл курсор.
 ```js
-function swap(update) { document.startViewTransition ? document.startViewTransition(update) : update(); }
+function glyphs(btn) {
+  const label = btn.querySelector(".glyph"); const text = label.textContent; btn.setAttribute("aria-label", text);
+  label.textContent = ""; [...text].forEach((ch, i) => { const s = document.createElement("span"); s.textContent = ch === " " ? " " : ch;
+    s.setAttribute("aria-hidden", "true"); s.style.setProperty("--i", i); label.append(s); });
+  label.style.setProperty("--n", text.length);
+  const run = fromRight => { btn.dataset.dir = fromRight ? "rtl" : "ltr"; btn.classList.remove("is-wave"); void btn.offsetWidth; btn.classList.add("is-wave"); };
+  btn.addEventListener("pointerenter", e => { const r = btn.getBoundingClientRect(); run(e.clientX > r.left + r.width / 2); });
+  btn.addEventListener("focus", () => run(false));
+}
 ```
-Используй для смены вкладок, фильтров витрины, открытия карточки в полноэкранный превью.
+```css
+.glyph span { display: inline-block; }
+.is-wave .glyph span { animation: glyph-up .5s var(--ease) both; animation-delay: calc(var(--i) * 22ms); }
+[data-dir="rtl"].is-wave .glyph span { animation-delay: calc((var(--n) - var(--i)) * 22ms); }
+@keyframes glyph-up { 40% { transform: translateY(-.45em); opacity: .2 } 41% { transform: translateY(.45em) } }
+```
+
+### 8. Индикатор на двух пружинах (вкладки, нижняя навигация)
+Индикатор не скользит целиком: передний и задний края — две независимые пружины, ведущая жёстче. В пути он вытягивается в «трубку», потом хвост догоняет и он сжимается обратно.
+```js
+function springBar(bar, getTarget) {
+  const L = { x: 0, v: 0 }, R = { x: 0, v: 0 }; let raf = 0;
+  const step = (s, to, k, d) => { s.v += (to - s.x) * k; s.v *= d; s.x += s.v; };
+  const frame = () => { const t = getTarget(); const forward = t.left > L.x;
+    step(L, t.left,  forward ? .06 : .16, .72); step(R, t.right, forward ? .16 : .06, .72);  // ведущий край жёстче
+    bar.style.transform = `translateX(${L.x}px) scaleX(${Math.max(1, R.x - L.x)})`;            // ширина базового элемента 1px
+    if (Math.abs(L.v) + Math.abs(R.v) + Math.abs(t.left - L.x) > .1) raf = requestAnimationFrame(frame); };
+  return () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); };
+}
+```
+Варианты из каталога: капля жидкости под краем панели, которая отрывает каплю в иконку; «бусина», под которой панель прогибается тем глубже, чем быстрее поездка; нить света, растянутая между старой и новой вкладкой.
+
+### 9. «Свёртывание» (furl): пилюля → диск → ответ
+Главный жест каталога. Кнопка-пилюля на время работы сворачивается в круг (ширина через `clip-path`/`scale`, не `width`), по кругу едет прогресс, по завершении круг разворачивается обратно и показывает итог (галочка, «Sent», «Ordered ✓»). Пример реализации в `ui-components` («Кнопка загрузки, чей контур и есть прогресс»). Типичные тайминги, измеренные авторами по кадрам: свёртка 640 мс на `cubic-bezier(.72,0,.33,.95)`, вспышка нового цвета темы 240 мс, поворот иконки 180° за 280 мс.
+
+### 10. Жидкость как индикатор
+Уровень заливки = прогресс. Жидкость вливается от точки нажатия (`clip-path: circle(r at x y)`), поверхность — синусоида в SVG-пути или `border-radius`-волна, рябь сильнее при быстрой передаче и «стекленеет» при паузе. Буквы ниже ватерлинии вырезаются из жидкости (`mix-blend-mode: difference` или дублирующий слой с `clip-path: inset(...)`).
+
+### 11. Наклон «от касания» (nudge) и магнитный ярлык
+Пилюля отклоняется от курсора, как будто её толкнули: `rotate` и `translate` пропорциональны смещению курсора от центра, возвращение пружиной. Только при `(hover: hover) and (pointer: fine)`.
+```js
+el.addEventListener("pointermove", e => { const r = el.getBoundingClientRect();
+  const dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5;
+  el.style.transform = `translate(${-dx * 6}px, ${-dy * 4}px) rotate(${-dx * 6}deg)`; });
+el.addEventListener("pointerleave", () => el.style.transform = "");   /* transition: transform .5s cubic-bezier(.34,1.56,.64,1) */
+```
+
+### 12. Раскрытие без высоты (аккордеон на grid)
+```css
+.accordion__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--beat) var(--ease); }
+.accordion__panel[data-open="true"] { grid-template-rows: 1fr; }
+.accordion__inner { overflow: hidden; }
+```
+
+### 13. Скелетон загрузки до гидрации
+Ещё до JS страница рисует бренд и сетку плиток 9:16 на `--tray` с тонкой рамкой, пульсирующих `boot-pulse 1.2s var(--ease) infinite alternate` (контейнер `role="status" aria-label="Loading"`).
 
 ### Формат вывода
-- Код эффекта (HTML + CSS + JS) готовый к вставке, с токенами из навыка `ui-design-system`.
-- Для каждого эффекта: где включается, как отключается на тач и при reduced motion.
-- Готовая демонстрация всех эффектов: `tools/design-kit/index.html`.
+- Код эффекта (HTML + CSS + JS), подключение, параметры (длительность, кривая, жёсткость пружин) вынесены в CSS-переменные или константы.
+- Отдельно: что видит пользователь при reduced motion и на тач-устройстве.
