@@ -132,12 +132,22 @@ async def serve_hud():
         return FileResponse(hud_index)
     raise HTTPException(status_code=404, detail="HUD UI not found")
 
+@app.get("/design")
+async def serve_design_kit():
+    design_index = config.DESIGN_KIT_DIR / "index.html"
+    if design_index.exists():
+        return FileResponse(design_index)
+    raise HTTPException(status_code=404, detail="Design Kit not found")
+
 # Mount static asset directories
 if config.AI_CHAT_DIR.exists():
     app.mount("/chat", StaticFiles(directory=str(config.AI_CHAT_DIR), html=True), name="chat_static")
 
 if config.HUD_DIR.exists():
     app.mount("/hud", StaticFiles(directory=str(config.HUD_DIR), html=True), name="hud_static")
+
+if config.DESIGN_KIT_DIR.exists():
+    app.mount("/design", StaticFiles(directory=str(config.DESIGN_KIT_DIR), html=True), name="design_static")
 
 if config.PORTAL_DIR.exists():
     app.mount("/", StaticFiles(directory=str(config.PORTAL_DIR), html=True), name="portal_static")

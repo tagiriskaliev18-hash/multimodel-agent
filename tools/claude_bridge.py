@@ -647,13 +647,13 @@ TOOLS = [
     },
     {
         "name": "agent_run",
-        "description": "Запустить задачу через специализированного агента из нашей базы (architect, reviewer, developer, security_auditor, llmops) с подключенным скиллом.",
+        "description": "Запустить задачу через специализированного агента из нашей базы (architect, reviewer, developer, security_auditor, llmops, ui_designer) с подключенным скиллом.",
         "inputSchema": {
             "type": "object",
             "properties": {
                 "agent": {
                     "type": "string",
-                    "description": "Имя агента: 'architect', 'reviewer', 'developer', 'security_auditor', 'llmops'"
+                    "description": "Имя агента: 'architect', 'reviewer', 'developer', 'security_auditor', 'llmops', 'ui_designer'"
                 },
                 "task": {
                     "type": "string",
@@ -661,7 +661,7 @@ TOOLS = [
                 },
                 "skill": {
                     "type": "string",
-                    "description": "Опциональный ID скилла (например: 'code-review', 'security-audit', 'architecture-audit', 'boilerplate-gen', 'llmops-tuning')"
+                    "description": "Опциональный ID скилла (например: 'code-review', 'security-audit', 'architecture-audit', 'boilerplate-gen', 'llmops-tuning', 'ui-design-system', 'ui-motion', 'ui-components', 'landing-page-template')"
                 },
                 "work_folder": {
                     "type": "string",

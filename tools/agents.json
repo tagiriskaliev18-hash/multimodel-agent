@@ -54,6 +54,15 @@
       "allowed_tools": "Read,Grep,Glob",
       "write_access": false,
       "description": "Автономный агент на базе Nous Hermes 3 с нативной поддержкой рассуждений (<scratchpad>) и вызовов инструментов (<tool_call>)"
+    },
+    "ui_designer": {
+      "name": "UI/UX дизайнер и motion-инженер (UI Designer)",
+      "primary_provider": "claude",
+      "fallback_providers": ["openai", "groq", "pollinations"],
+      "skills": ["ui-design-system", "ui-motion", "ui-components", "landing-page-template"],
+      "allowed_tools": "Read,Grep,Glob",
+      "write_access": false,
+      "description": "Интерфейсы в стиле codeandchill.store: бумага и чернила в светлой и тёмной теме, 2px линии, жёсткие тени, моно-подписи, полка с инерцией, scroll-камера и компоненты, которые превращаются в индикатор своего состояния (Furl, Seal, Decant, Gulp, Lumen), на чистом HTML/CSS/JS"
     }
   }
 }

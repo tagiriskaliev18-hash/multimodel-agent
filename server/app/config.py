@@ -44,5 +44,6 @@ DEFAULT_MODEL = os.environ.get("AIDUO_DEFAULT_MODEL", "gpt-4o-mini")
 AI_CHAT_DIR = BASE_DIR / "ai-chat"
 PORTAL_DIR = BASE_DIR / "portal"
 HUD_DIR = BASE_DIR / "tools" / "hud"
+DESIGN_KIT_DIR = BASE_DIR / "tools" / "design-kit"
 PROVIDERS_FILE = BASE_DIR / "tools" / "providers.json"
 AGENTS_FILE = BASE_DIR / "tools" / "agents.json"
