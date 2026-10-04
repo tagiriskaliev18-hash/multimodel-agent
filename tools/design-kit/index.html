@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#171615">
+<title>AI Duo Design Kit</title>
+<meta name="description" content="Живая демонстрация дизайн-навыков AI Duo: тёмная тёплая тема, анимации при скролле, магнитные кнопки, подсветка карточек, бегущая строка и компоненты на чистом HTML, CSS и JS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== Токены (навык ui-design-system) ===== */
+:root {
+  --bg: #171615; --bg-elev: #1e1d1b; --bg-elev-2: #262422;
+  --line: rgba(240,235,225,.10); --line-strong: rgba(240,235,225,.18);
+  --text: #f0ebe1; --text-dim: #a8a196; --text-faint: #6f6a62;
+  --accent: #ff6a3d; --accent-ink: #1a0d07; --ok: #7ad48a;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --fs-hero: clamp(2.75rem, 7vw, 6.5rem); --fs-h2: clamp(1.9rem, 4vw, 3.25rem); --fs-small: .8125rem;
+  --radius-sm: 8px; --radius: 14px; --radius-lg: 22px;
+  --ease-out: cubic-bezier(.22,1,.36,1); --ease-in-out: cubic-bezier(.65,0,.35,1); --ease-spring: cubic-bezier(.34,1.56,.64,1);
+  --dur-fast: 160ms; --dur: 320ms;
+  interpolate-size: allow-keywords;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: dark; scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 400 1rem/1.6 var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+a { color: inherit; }
+.container { width: min(100% - 32px, 1200px); margin-inline: auto; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sr-only:focus { position: fixed; left: 16px; top: 16px; width: auto; height: auto; clip: auto; z-index: 1000; background: var(--accent); color: var(--accent-ink); padding: 8px 12px; border-radius: 8px; }
+section { padding-block: clamp(64px, 10vw, 140px); }
+
+/* Зерно */
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: .06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* Типографика */
+.display { font: 600 var(--fs-hero)/.95 var(--font-display); letter-spacing: -.035em; text-wrap: balance; margin: 0; }
+.h2 { font: 600 var(--fs-h2)/1.05 var(--font-display); letter-spacing: -.03em; text-wrap: balance; margin: 0 0 16px; }
+.lead { font-size: clamp(1.05rem, 1.6vw, 1.25rem); color: var(--text-dim); max-width: 56ch; text-wrap: pretty; }
+.eyebrow { font: 500 var(--fs-small)/1 var(--font-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--text-faint); display: inline-flex; align-items: center; gap: 8px; }
+.eyebrow.live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse-dot 2s var(--ease-out) infinite; }
+@keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(255,106,61,.6); } 70%, 100% { box-shadow: 0 0 0 8px transparent; } }
+.text-glow { background: linear-gradient(100deg, var(--text) 20%, var(--accent) 50%, var(--text) 80%); background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 6s linear infinite; }
+@keyframes sheen { to { background-position: -200% 0; } }
+
+/* Поверхности */
+.card { background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 32px; position: relative; overflow: hidden;
+  transition: border-color var(--dur) var(--ease-out); }
+.card:hover { border-color: var(--line-strong); }
+.grid-bg { background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 56px 56px; }
+.glass { background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); border-bottom: 1px solid var(--line); }
+
+/* Прогресс скролла */
+.progress { position: fixed; inset: 0 0 auto; height: 2px; background: var(--accent); z-index: 60; transform-origin: 0 50%; transform: scaleX(0); }
+@supports (animation-timeline: scroll()) { .progress { animation: grow linear both; animation-timeline: scroll(root); } }
+@keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Шапка */
+.site-header { position: sticky; top: 0; z-index: 40; transition: transform .4s var(--ease-out); }
+.site-header.is-hidden:not(:focus-within) { transform: translateY(-100%); }
+.site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
+.logo { white-space: nowrap; font: 600 clamp(12px, 3.4vw, 15px) var(--font-mono); letter-spacing: .06em; text-decoration: none; text-transform: uppercase; }
+.nav { display: flex; gap: 24px; font-size: 14px; color: var(--text-dim); }
+.nav a { text-decoration: none; transition: color var(--dur-fast); }
+.nav a:hover { color: var(--text); }
+@media (max-width: 720px) { .nav { display: none; } }
+
+/* Герой */
+.hero { position: relative; isolation: isolate; overflow-x: clip; padding-top: clamp(80px, 14vw, 180px); }
+.hero::before { content: ""; position: absolute; inset: 0 -10% auto; height: 80%; z-index: -1;
+  background: radial-gradient(50% 50% at 50% 40%, rgba(255,106,61,.22), transparent 70%); filter: blur(40px); }
+.hero .grid-bg { position: absolute; inset: 0; z-index: -2; mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 70%); }
+.hero .lead { margin: 24px 0 36px; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.trust { margin-top: 40px; font: 12px var(--font-mono); color: var(--text-faint); letter-spacing: .06em; text-transform: uppercase; }
+
+/* Split text */
+.split-mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; }
+.split-inner { display: inline-block; transform: translateY(110%); animation: rise .9s var(--ease-out) forwards; animation-delay: calc(var(--i) * 45ms + 100ms); }
+@keyframes rise { to { transform: none; } }
+
+/* Кнопки */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: var(--bg-elev-2); color: var(--text); font: 500 15px/1 var(--font-sans); cursor: pointer; text-decoration: none;
+  position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; user-select: none;
+  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast), border-color var(--dur-fast); }
+.btn:hover { background: #2e2b28; border-color: rgba(240,235,225,.28); }
+.btn:active { transform: scale(.97); }
+.btn:disabled, .btn[aria-busy="true"] { opacity: .55; cursor: not-allowed; }
+.btn--primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
+.btn--primary:hover { background: #ff8460; }
+.btn .arrow { transition: transform var(--dur) var(--ease-spring); }
+.btn:hover .arrow { transform: translateX(3px); }
+.btn[aria-busy="true"]::before { content: ""; width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.magnetic { transition: transform .4s var(--ease-spring), background var(--dur-fast); will-change: transform; }
+.btn-shine::after { content: ""; position: absolute; inset: 0; transform: translateX(-120%); background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.35), transparent 70%); }
+.btn-shine:hover::after { transform: translateX(120%); transition: transform .7s var(--ease-out); }
+.ripple { position: absolute; border-radius: 50%; background: currentColor; opacity: .25; pointer-events: none; transform: scale(0); animation: ripple .6s var(--ease-out) forwards; }
+@keyframes ripple { to { transform: scale(1); opacity: 0; } }
+
+/* Marquee */
+.marquee { overflow: hidden; padding-block: 28px; border-block: 1px solid var(--line);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.marquee__track { display: flex; gap: 48px; width: max-content; animation: marquee var(--speed, 30s) linear infinite;
+  font: 500 clamp(1.25rem, 3vw, 2rem)/1 var(--font-display); color: var(--text-dim); }
+.marquee__track span::after { content: "✦"; margin-left: 48px; color: var(--accent); }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(calc(-50% - 24px)); } }
+
+/* Reveal */
+.js [data-reveal] { opacity: 0; transform: translateY(24px); filter: blur(6px);
+  transition: opacity .8s var(--ease-out), transform .8s var(--ease-out), filter .8s var(--ease-out); transition-delay: calc(var(--i, 0) * 70ms); }
+.js [data-reveal].is-in { opacity: 1; transform: none; filter: none; }
+
+/* Tabs */
+.tabs { position: relative; display: inline-flex; flex-wrap: wrap; padding: 4px; gap: 2px; border-radius: 999px; background: var(--bg-elev); border: 1px solid var(--line); margin-bottom: 32px; }
+.tabs [role="tab"] { position: relative; z-index: 1; border: 0; background: none; color: var(--text-dim); padding: 8px 16px; border-radius: 999px; font: 500 14px var(--font-sans); cursor: pointer; transition: color var(--dur); }
+.tabs [aria-selected="true"] { color: var(--text); }
+.tabs__pill { position: absolute; top: 4px; bottom: 4px; left: 0; border-radius: 999px; background: var(--bg-elev-2); border: 1px solid var(--line-strong);
+  transition: transform var(--dur) var(--ease-out), width var(--dur) var(--ease-out); }
+
+/* Витрина */
+.showcase { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 20px; }
+.preview { padding: 0; display: grid; }
+.preview[hidden] { display: none; }
+.preview__stage { aspect-ratio: 16/10; display: grid; place-items: center; border-bottom: 1px solid var(--line); padding: 24px; position: relative; overflow: hidden; }
+.preview__meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; min-width: 0; }
+.preview__meta h3 { margin: 0; font-size: 1.05rem; font-weight: 600; overflow-wrap: anywhere; }
+
+/* Spotlight */
+.spot { --x: 50%; --y: 50%; }
+.spot::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 2;
+  background: radial-gradient(400px circle at var(--x) var(--y), rgba(255,106,61,.10), transparent 40%); opacity: 0; transition: opacity .3s; }
+.spot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none; z-index: 2;
+  background: radial-gradient(300px circle at var(--x) var(--y), rgba(255,106,61,.7), transparent 40%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity .3s; }
+.spot:hover::before, .spot:hover::after { opacity: 1; }
+
+/* Tilt */
+.tilt-card { width: 70%; aspect-ratio: 1.6; border-radius: 16px; position: relative; display: grid; place-items: center;
+  background: linear-gradient(135deg, #2b2724, #1b1a18); border: 1px solid var(--line-strong);
+  transition: transform .5s var(--ease-out); transform-style: preserve-3d; font: 600 1.4rem var(--font-display); }
+.tilt-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.10) var(--gx, 50%), transparent 70%); }
+
+/* Switch */
+.switch { width: 46px; height: 28px; padding: 3px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--bg-elev-2); cursor: pointer; transition: background var(--dur) var(--ease-out); }
+.switch__thumb { display: block; width: 20px; height: 20px; border-radius: 50%; background: var(--text); transition: transform var(--dur) var(--ease-spring), width var(--dur-fast), background var(--dur); }
+.switch:active .switch__thumb { width: 24px; }
+.switch[aria-checked="true"] { background: var(--accent); }
+.switch[aria-checked="true"] .switch__thumb { transform: translateX(18px); background: var(--accent-ink); }
+.switch[aria-checked="true"]:active .switch__thumb { transform: translateX(14px); }
+
+/* Scramble, counter */
+.scramble { font: 500 1.4rem var(--font-mono); letter-spacing: .04em; cursor: default; }
+.counter { font: 600 clamp(2.5rem, 6vw, 4rem)/1 var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+
+/* Skeleton */
+.skeleton { border-radius: var(--radius-sm); background: linear-gradient(90deg, var(--bg-elev-2) 0%, #34312d 50%, var(--bg-elev-2) 100%) 0 0 / 200% 100%; animation: shimmer 1.4s linear infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* Toasts */
+.toasts { position: fixed; right: 16px; bottom: 16px; display: grid; gap: 8px; z-index: 50; width: min(360px, calc(100vw - 32px)); }
+.toast { background: var(--bg-elev-2); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 12px 16px; box-shadow: 0 12px 40px rgba(0,0,0,.4); animation: toast-in .45s var(--ease-spring); }
+.toast.is-out { animation: toast-out .25s var(--ease-in-out) forwards; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(16px) scale(.96); } }
+@keyframes toast-out { to { opacity: 0; transform: translateX(24px); } }
+
+/* Bento */
+.bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+.bento > :nth-child(1) { grid-column: span 4; grid-row: span 2; }
+.bento > :nth-child(n+2) { grid-column: span 2; }
+.bento p { color: var(--text-dim); margin: 8px 0 0; }
+@media (max-width: 760px) { .bento > * { grid-column: 1 / -1 !important; grid-row: auto !important; } }
+
+/* Editor */
+.editor { border: 1px solid var(--line); border-radius: var(--radius); background: #12110f; overflow: hidden; }
+.editor__bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.editor__bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-strong); }
+.editor__bar .btn { margin-left: auto; min-height: 30px; padding: 0 12px; font-size: 12px; }
+.editor pre { margin: 0; padding: 20px; overflow-x: auto; font: 13px/1.7 var(--font-mono); color: var(--text-dim); }
+.editor .k { color: var(--accent); } .editor .s { color: var(--ok); } .editor .c { color: var(--text-faint); }
+
+/* Pricing */
+@property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+.pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 20px; }
+.price .amount { font: 600 3rem/1 var(--font-display); letter-spacing: -.03em; margin: 16px 0; }
+.price ul { padding: 0; list-style: none; color: var(--text-dim); margin: 0 0 24px; display: grid; gap: 8px; }
+.price li::before { content: "✓ "; color: var(--ok); }
+.price--featured { border: 1px solid transparent;
+  background: linear-gradient(var(--bg-elev), var(--bg-elev)) padding-box, conic-gradient(from var(--angle), transparent 60%, var(--accent), transparent 90%) border-box;
+  animation: spin-border 4s linear infinite; }
+@keyframes spin-border { to { --angle: 360deg; } }
+.badge { position: absolute; top: 20px; right: 20px; font: 500 11px var(--font-mono); text-transform: uppercase; letter-spacing: .08em; background: var(--accent); color: var(--accent-ink); padding: 4px 8px; border-radius: 999px; }
+
+/* FAQ */
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; padding: 20px 0; display: flex; justify-content: space-between; gap: 16px; font-weight: 500; font-size: 1.1rem; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-size: 1.4rem; line-height: 1; transition: transform var(--dur) var(--ease-out); }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq .answer { color: var(--text-dim); padding-bottom: 20px; max-width: 70ch; }
+.faq details::details-content { block-size: 0; overflow: hidden; transition: block-size var(--dur) var(--ease-out), content-visibility var(--dur) allow-discrete; }
+.faq details[open]::details-content { block-size: auto; }
+
+/* CTA, footer */
+.cta { text-align: center; position: relative; isolation: isolate; }
+.cta::before { content: ""; position: absolute; inset: auto 10% 0; height: 60%; z-index: -1; background: radial-gradient(50% 60% at 50% 100%, rgba(255,106,61,.25), transparent 70%); filter: blur(30px); }
+.cta .display { font-size: clamp(2.5rem, 9vw, 8rem); margin-bottom: 32px; }
+footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--text-faint); font: 12px var(--font-mono); }
+footer .container { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+/* Cursor */
+.cursor { position: fixed; left: 0; top: 0; width: 10px; height: 10px; border-radius: 50%; z-index: 999; background: var(--text); mix-blend-mode: difference; pointer-events: none;
+  transition: width .25s var(--ease-out), height .25s var(--ease-out); }
+.cursor.is-hover { width: 44px; height: 44px; }
+
+/* Parallax */
+@supports (animation-timeline: view()) {
+  .parallax { animation: drift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+  @keyframes drift { from { transform: translateY(40px); } to { transform: translateY(-40px); } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<a class="sr-only" href="#main">К содержимому</a>
+<div class="progress" aria-hidden="true"></div>
+
+<header class="site-header glass">
+  <div class="container">
+    <a class="logo" href="#top">AI Duo / Design Kit</a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#components">Эффекты</a><a href="#why">Принципы</a><a href="#pricing">Цены</a><a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn--primary btn-ripple" href="#components">Смотреть</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="container">
+      <span class="eyebrow live">Живые примеры · 12 эффектов</span>
+      <h1 class="display" data-split style="margin-top:24px">Интерфейсы, которые держат нагрузку</h1>
+      <p class="lead">Демонстрация навыков <code>ui-design-system</code>, <code>ui-motion</code>, <code>ui-components</code> и <code>landing-page-template</code>. Чистые HTML, CSS и JavaScript без зависимостей.</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary magnetic btn-shine" href="#components">Открыть витрину <span class="arrow">→</span></a>
+        <a class="btn btn-ripple" href="#faq">Как это работает <span class="arrow">↓</span></a>
+      </div>
+      <p class="trust">Plain HTML · CSS · JS — 0 зависимостей — reduced motion ready</p>
+    </div>
+  </section>
+
+  <div class="marquee" style="--speed: 32s" aria-label="Категории">
+    <div class="marquee__track"><span>Buttons</span><span>Text effects</span><span>Cards</span><span>Loaders</span><span>Toggles</span><span>Tabs</span><span>Toasts</span><span>Cursors</span></div>
+  </div>
+
+  <section id="components">
+    <div class="container">
+      <span class="eyebrow">01 — Витрина</span>
+      <h2 class="h2" style="margin-top:16px">Каждый эффект работает прямо в карточке</h2>
+      <div class="tabs" role="tablist" aria-label="Фильтр">
+        <span class="tabs__pill" aria-hidden="true"></span>
+        <button role="tab" aria-selected="true" data-filter="all">Все</button>
+        <button role="tab" aria-selected="false" tabindex="-1" data-filter="buttons">Кнопки</button>
+        <button role="tab" aria-selected="false" tabindex="-1" data-filter="text">Текст</button>
+        <button role="tab" aria-selected="false" tabindex="-1" data-filter="cards">Карточки</button>
+      </div>
+
+      <div class="showcase" data-reveal-group>
+        <article class="card spot preview" data-reveal data-cat="buttons">
+          <div class="preview__stage grid-bg"><button class="btn btn--primary magnetic">Магнитная кнопка</button></div>
+          <div class="preview__meta"><h3>Magnetic Button</h3><span class="eyebrow">JS · 0.4 KB</span></div>
+        </article>
+        <article class="card spot preview" data-reveal data-cat="buttons">
+          <div class="preview__stage grid-bg"><button class="btn btn-ripple btn-shine" id="async-btn">Отправить</button></div>
+          <div class="preview__meta"><h3>Async + Ripple</h3><span class="eyebrow">Без двойной отправки</span></div>
+        </article>
+        <article class="card spot preview" data-reveal data-cat="text">
+          <div class="preview__stage grid-bg"><span class="scramble" tabindex="0">НАВЕДИ НА МЕНЯ</span></div>
+          <div class="preview__meta"><h3>Scramble Text</h3><span class="eyebrow">Hover</span></div>
+        </article>
+        <article class="card spot preview" data-reveal data-cat="text">
+          <div class="preview__stage grid-bg"><span class="counter" data-to="128450">0</span></div>
+          <div class="preview__meta"><h3>Count Up</h3><span class="eyebrow">On view</span></div>
+        </article>
+        <article class="card spot preview" data-reveal data-cat="cards">
+          <div class="preview__stage grid-bg"><div class="tilt-card">Tilt + Glare</div></div>
+          <div class="preview__meta"><h3>3D Tilt Card</h3><span class="eyebrow">Pointer</span></div>
+        </article>
+        <article class="card spot preview" data-reveal data-cat="buttons">
+          <div class="preview__stage grid-bg">
+            <div style="display:flex;gap:16px;align-items:center">
+              <button class="switch" role="switch" aria-checked="false" aria-label="Переключатель"><span class="switch__thumb"></span></button>
+              <button class="btn" id="toast-btn">Показать тост</button>
+            </div>
+          </div>
+          <div class="preview__meta"><h3>Switch + Toasts</h3><span class="eyebrow">Стек ≤ 3</span></div>
+        </article>
+        <article class="card spot preview" data-reveal data-cat="cards">
+          <div class="preview__stage grid-bg">
+            <div style="width:80%;display:grid;gap:10px">
+              <div class="skeleton" style="height:18px;width:60%"></div><div class="skeleton" style="height:12px"></div><div class="skeleton" style="height:12px;width:85%"></div>
+            </div>
+          </div>
+          <div class="preview__meta"><h3>Skeleton Shimmer</h3><span class="eyebrow">CSS only</span></div>
+        </article>
+        <article class="card spot preview" data-reveal data-cat="text">
+          <div class="preview__stage grid-bg"><span class="display text-glow" style="font-size:2.6rem">Sheen</span></div>
+          <div class="preview__meta"><h3>Gradient Sheen</h3><span class="eyebrow">CSS only</span></div>
+        </article>
+        <article class="card spot preview" data-reveal data-cat="cards">
+          <div class="preview__stage grid-bg"><span class="eyebrow">Наведи курсор на любую карточку</span></div>
+          <div class="preview__meta"><h3>Spotlight Border</h3><span class="eyebrow">Pointer</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="why">
+    <div class="container">
+      <span class="eyebrow">02 — Принципы</span>
+      <h2 class="h2" style="margin-top:16px">Красиво, но в первую очередь надёжно</h2>
+      <div class="bento" data-reveal-group>
+        <div class="card spot" data-reveal>
+          <div class="editor parallax">
+            <div class="editor__bar"><i></i><i></i><i></i><button class="btn" data-copy="#code-sample">Скопировать</button></div>
+<pre id="code-sample"><span class="c">// Появление при скролле</span>
+<span class="k">const</span> io = <span class="k">new</span> IntersectionObserver(entries =&gt;
+  entries.forEach(e =&gt; {
+    <span class="k">if</span> (e.isIntersecting) {
+      e.target.classList.add(<span class="s">"is-in"</span>);
+      io.unobserve(e.target);
+    }
+  }), { threshold: <span class="s">0.15</span> });</pre>
+          </div>
+        </div>
+        <div class="card spot" data-reveal><div class="counter" data-to="60">0</div><p>кадров в секунду: анимируем только transform и opacity</p></div>
+        <div class="card spot" data-reveal><div class="counter" data-to="0">0</div><p>зависимостей: никаких GSAP и фреймворков</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="container">
+      <span class="eyebrow">03 — Пример блока цен</span>
+      <h2 class="h2" style="margin-top:16px">Разовая оплата, обновления бесплатно</h2>
+      <div class="pricing" data-reveal-group>
+        <div class="card spot price" data-reveal><h3>Компонент</h3><div class="amount">$9</div><ul><li>Один эффект</li><li>HTML, CSS, JS</li></ul><button class="btn btn-ripple">Выбрать</button></div>
+        <div class="card price price--featured" data-reveal><span class="badge">Популярно</span><h3>Набор</h3><div class="amount">$29</div><ul><li>Все эффекты</li><li>Шаблон лендинга</li><li>Обновления</li></ul><button class="btn btn--primary btn-ripple magnetic">Выбрать</button></div>
+        <div class="card spot price" data-reveal><h3>Команда</h3><div class="amount">$79</div><ul><li>До 10 человек</li><li>Коммерческое использование</li></ul><button class="btn btn-ripple">Выбрать</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="faq">
+    <div class="container">
+      <span class="eyebrow">04 — FAQ</span>
+      <h2 class="h2" style="margin-top:16px">Вопросы</h2>
+      <details><summary>Как агент использует эти навыки?</summary><div class="answer">Через <code>agent_run</code> с агентом <code>ui_designer</code> или с параметром <code>skill</code>, например <code>ui-motion</code>. Текст навыка подмешивается в системный промпт модели.</div></details>
+      <details><summary>Что с доступностью?</summary><div class="answer">Все эффекты отключаются при prefers-reduced-motion, курсорные эффекты включаются только на устройствах с мышью, у компонентов есть роли ARIA и управление с клавиатуры.</div></details>
+      <details><summary>Работает ли страница без JavaScript?</summary><div class="answer">Да. Скрытие контента до появления включается только классом <code>.js</code>, который ставит скрипт.</div></details>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <h2 class="display">Делай <span class="text-glow">живые</span> интерфейсы</h2>
+      <a class="btn btn--primary magnetic btn-shine" href="#top">Наверх <span class="arrow">↑</span></a>
+    </div>
+  </section>
+</main>
+
+<footer><div class="container"><span>AI Duo · Design Kit</span><span>Plain HTML / CSS / JS</span></div></footer>
+
+<script type="module">
+document.documentElement.classList.add("js");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+// Split text
+function splitText(el) {
+  const text = el.textContent.trim(); el.setAttribute("aria-label", text); el.textContent = "";
+  text.split(/(\s+)/).forEach((p, i) => {
+    if (/^\s+$/.test(p)) { el.append(" "); return; }
+    const mask = document.createElement("span"); mask.className = "split-mask"; mask.setAttribute("aria-hidden", "true");
+    const inner = document.createElement("span"); inner.className = "split-inner"; inner.textContent = p; inner.style.setProperty("--i", i);
+    mask.append(inner); el.append(mask);
+  });
+}
+document.querySelectorAll("[data-split]").forEach(splitText);
+
+// Reveal + counters
+document.querySelectorAll("[data-reveal-group]").forEach(g => g.querySelectorAll("[data-reveal]").forEach((el, i) => el.style.setProperty("--i", Math.min(i, 8))));
+function countUp(el, to = +el.dataset.to, dur = 1400) {
+  if (reduceMotion || to === 0) { el.textContent = to.toLocaleString("ru-RU"); return; }
+  const t0 = performance.now(), ease = t => 1 - Math.pow(1 - t, 4);
+  (function step(now) { const p = Math.min((now - t0) / dur, 1); el.textContent = Math.round(to * ease(p)).toLocaleString("ru-RU"); if (p < 1) requestAnimationFrame(step); })(t0);
+}
+const io = new IntersectionObserver(entries => entries.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add("is-in"); e.target.querySelectorAll?.(".counter").forEach(c => countUp(c));
+  if (e.target.matches(".counter")) countUp(e.target);
+  io.unobserve(e.target);
+}), { rootMargin: "0px 0px -10% 0px", threshold: 0.15 });
+document.querySelectorAll("[data-reveal]").forEach(el => io.observe(el));
+
+// Marquee duplicate
+document.querySelectorAll(".marquee__track").forEach(t => t.append(...[...t.children].map(n => { const c = n.cloneNode(true); c.setAttribute("aria-hidden", "true"); return c; })));
+
+// Spotlight
+if (finePointer) document.querySelectorAll(".spot").forEach(card => card.addEventListener("pointermove", e => {
+  const r = card.getBoundingClientRect(); card.style.setProperty("--x", `${e.clientX - r.left}px`); card.style.setProperty("--y", `${e.clientY - r.top}px`);
+}, { passive: true }));
+
+// Magnetic
+function magnetic(el, strength = .35) {
+  if (!finePointer || reduceMotion) return; let raf = 0;
+  el.addEventListener("pointermove", e => { const r = el.getBoundingClientRect();
+    const dx = (e.clientX - (r.left + r.width / 2)) * strength, dy = (e.clientY - (r.top + r.height / 2)) * strength;
+    cancelAnimationFrame(raf); raf = requestAnimationFrame(() => el.style.transform = `translate(${dx}px, ${dy}px)`); });
+  el.addEventListener("pointerleave", () => { cancelAnimationFrame(raf); el.style.transform = ""; });
+}
+document.querySelectorAll(".magnetic").forEach(el => magnetic(el));
+
+// Tilt
+function tilt(el, max = 10) {
+  if (!finePointer || reduceMotion) return; const host = el.closest(".preview__stage") || el;
+  host.addEventListener("pointermove", e => { const r = el.getBoundingClientRect();
+    const px = Math.max(-.5, Math.min(.5, (e.clientX - r.left) / r.width - .5)), py = Math.max(-.5, Math.min(.5, (e.clientY - r.top) / r.height - .5));
+    el.style.transform = `perspective(900px) rotateX(${-py * max}deg) rotateY(${px * max}deg)`; el.style.setProperty("--gx", `${(px + .5) * 100}%`); });
+  host.addEventListener("pointerleave", () => el.style.transform = "");
+}
+document.querySelectorAll(".tilt-card").forEach(el => tilt(el));
+
+// Scramble
+function scramble(el, chars = "!<>-_\\/[]{}—=+*^?#01") {
+  const final = el.textContent; let frame = 0, raf = 0;
+  const run = () => { cancelAnimationFrame(raf); frame = 0;
+    const tick = () => { el.textContent = [...final].map((c, i) => i < frame / 2 || c === " " ? c : chars[Math.floor(Math.random() * chars.length)]).join("");
+      if (frame++ < final.length * 2) raf = requestAnimationFrame(tick); else el.textContent = final; };
+    tick(); };
+  if (!reduceMotion) { el.addEventListener("pointerenter", run); el.addEventListener("focus", run); }
+}
+document.querySelectorAll(".scramble").forEach(el => scramble(el));
+
+// Ripple
+document.addEventListener("pointerdown", e => {
+  const b = e.target.closest(".btn-ripple"); if (!b || reduceMotion) return;
+  const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2;
+  const w = Object.assign(document.createElement("span"), { className: "ripple" });
+  Object.assign(w.style, { width: s + "px", height: s + "px", left: e.clientX - r.left - s / 2 + "px", top: e.clientY - r.top - s / 2 + "px" });
+  b.append(w); w.addEventListener("animationend", () => w.remove());
+});
+
+// Async button
+async function withBusy(btn, task) {
+  if (btn.getAttribute("aria-busy") === "true") return;
+  btn.setAttribute("aria-busy", "true"); btn.disabled = true;
+  try { await task(); } finally { btn.removeAttribute("aria-busy"); btn.disabled = false; }
+}
+document.getElementById("async-btn").addEventListener("click", e => withBusy(e.currentTarget, async () => { await new Promise(r => setTimeout(r, 1200)); toast("Отправлено один раз ✓"); }));
+
+// Switch
+document.addEventListener("click", e => { const s = e.target.closest(".switch"); if (s) s.setAttribute("aria-checked", String(s.getAttribute("aria-checked") !== "true")); });
+
+// Toasts
+const toastRoot = Object.assign(document.createElement("div"), { className: "toasts" });
+toastRoot.setAttribute("aria-live", "polite"); document.body.append(toastRoot);
+let toastN = 0;
+function toast(msg, ms = 3000) {
+  while (toastRoot.children.length >= 3) toastRoot.firstElementChild.remove();
+  const t = Object.assign(document.createElement("div"), { className: "toast", textContent: msg }); toastRoot.append(t);
+  let timer = setTimeout(close, ms);
+  t.addEventListener("pointerenter", () => clearTimeout(timer)); t.addEventListener("pointerleave", () => timer = setTimeout(close, 1200));
+  function close() { if (reduceMotion) { t.remove(); return; } t.classList.add("is-out"); t.addEventListener("animationend", () => t.remove(), { once: true }); }
+}
+document.getElementById("toast-btn").addEventListener("click", () => toast(`Уведомление #${++toastN}`));
+
+// Copy
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-copy]"); if (!b) return;
+  const code = document.querySelector(b.dataset.copy)?.innerText ?? "";
+  try { await navigator.clipboard.writeText(code); b.textContent = "Скопировано"; } catch { b.textContent = "Не удалось"; }
+  clearTimeout(b._t); b._t = setTimeout(() => b.textContent = "Скопировать", 1600);
+});
+
+// Tabs + filter with View Transitions
+function initTabs(list) {
+  const tabs = [...list.querySelectorAll('[role="tab"]')], pill = list.querySelector(".tabs__pill");
+  const place = t => { pill.style.width = t.offsetWidth + "px"; pill.style.transform = `translate(${t.offsetLeft}px, ${t.offsetTop - 4}px)`; pill.style.height = t.offsetHeight + "px"; pill.style.bottom = "auto"; };
+  const select = t => {
+    tabs.forEach(x => { const on = x === t; x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1; }); place(t);
+    const f = t.dataset.filter, apply = () => document.querySelectorAll(".showcase [data-cat]").forEach(c => c.hidden = f !== "all" && c.dataset.cat !== f);
+    document.startViewTransition && !reduceMotion ? document.startViewTransition(apply) : apply();
+  };
+  list.addEventListener("click", e => { const t = e.target.closest('[role="tab"]'); if (t) select(t); });
+  list.addEventListener("keydown", e => { const i = tabs.indexOf(document.activeElement); if (i < 0) return;
+    const n = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0; if (!n) return; e.preventDefault();
+    const t = tabs[(i + n + tabs.length) % tabs.length]; t.focus(); select(t); });
+  new ResizeObserver(() => place(tabs.find(t => t.getAttribute("aria-selected") === "true"))).observe(list);
+  document.fonts?.ready.then(() => place(tabs.find(t => t.getAttribute("aria-selected") === "true")));
+}
+document.querySelectorAll(".tabs").forEach(initTabs);
+
+// Hiding header
+let lastY = scrollY, ticking = false;
+const header = document.querySelector(".site-header");
+addEventListener("scroll", () => { if (ticking) return; ticking = true; requestAnimationFrame(() => {
+  const y = scrollY; header.classList.toggle("is-hidden", y > lastY && y > 120); lastY = y; ticking = false; }); }, { passive: true });
+
+// Cursor
+(function cursor() {
+  if (!finePointer || reduceMotion) return;
+  const dot = Object.assign(document.createElement("div"), { className: "cursor" }); dot.setAttribute("aria-hidden", "true"); document.body.append(dot);
+  let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y;
+  addEventListener("pointermove", e => { x = e.clientX; y = e.clientY; }, { passive: true });
+  document.addEventListener("pointerover", e => dot.classList.toggle("is-hover", !!e.target.closest("a,button,[data-cursor],.scramble")));
+  (function loop() { cx += (x - cx) * .18; cy += (y - cy) * .18; dot.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`; requestAnimationFrame(loop); })();
+})();
+</script>
+</body>
+</html>

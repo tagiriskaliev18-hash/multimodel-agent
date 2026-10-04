@@ -21,7 +21,11 @@
   - Встроенный FastAPI шлюз, раздающий Web UI (AI Studio Chat, 3D Neural HUD, Service Portal) и предоставляющий OpenAI-совместимый API `/v1/chat/completions`.
 - **Интеграция с MCP и базой агентов**:
   - Совместимость с Claude Code, Gemini Antigravity, LLM Soup.
-  - Роли: `architect`, `reviewer`, `developer`, `security_auditor`, `llmops`, `hermes_agent`.
+  - Роли: `architect`, `reviewer`, `developer`, `security_auditor`, `llmops`, `hermes_agent`, `ui_designer`.
+- **Дизайн-навыки (UI Design Kit)**:
+  - Агент `ui_designer` и 4 навыка в `tools/skills/`: `ui-design-system` (тёмная тёплая тема, токены, зерно, свечение, стекло), `ui-motion` (появление при скролле, split text, бегущая строка, магнитные кнопки, подсветка под курсором, 3D-наклон, скрэмбл, счётчики, scroll-driven анимации), `ui-components` (кнопки, switch, вкладки, тосты, модалки, FAQ, скелетоны с стресс-тестом) и `landing-page-template` (одностраничная витрина).
+  - Чистые HTML/CSS/JS без зависимостей, поддержка `prefers-reduced-motion` и клавиатуры.
+  - Живая демонстрация всех эффектов: `tools/design-kit/index.html` (в Docker по адресу `/design`).
 
 ---
 
@@ -44,6 +48,7 @@ docker compose up -d --build
 После запуска сервисы доступны по адресам:
 - **AI Studio Chat**: [http://localhost:8000/chat](http://localhost:8000/chat)
 - **3D Neural HUD**: [http://localhost:8000/hud](http://localhost:8000/hud)
+- **Design Kit (живая витрина дизайн-навыков)**: [http://localhost:8000/design](http://localhost:8000/design)
 - **Сервисный портал**: [http://localhost:8000/](http://localhost:8000/)
 - **OpenAI-совместимый API**: `http://localhost:8000/v1/chat/completions`
 - **Проверка здоровья**: [http://localhost:8000/healthz](http://localhost:8000/healthz)
@@ -126,7 +131,8 @@ multimodel-agent/
 │   ├── claude_bridge.py       # MCP сервер связки с Claude Code / Gemini
 │   ├── providers.json         # Глобальный реестр провайдеров
 │   ├── agents.json            # База агентов (architect, developer, hermes_agent...)
-│   └── skills/                # Каталог навыков (code-review, audit, tuning...)
+│   ├── design-kit/            # Живая витрина дизайн-навыков (/design)
+│   └── skills/                # Каталог навыков (code-review, audit, tuning, ui-*...)
 ├── Dockerfile                 # Docker образ приложения
 ├── docker-compose.yml         # Стек с контейнером Ollama
 ├── .env.example               # Шаблон настроек
