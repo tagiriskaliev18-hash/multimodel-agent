@@ -3,503 +3,599 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Camaro. Шесть поколений</title>
+<title>Camaro 3D</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Golos+Text:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: a garage-floor page. Wide stance type, a car that drives in across twin rally stripes, then a working configurator, a to-scale trim table, a tachometer and a dated history. */
+/* Layout: one night road, one real 3D car. The WebGL scene is fixed behind the page; each section is a camera stop on the same car, and the copy sits in glass panels beside it. Single dark look by choice: headlights and lane paint need the night. */
 :root{
-  --bg:#E6E8EB;        /* concrete */
-  --surface:#F4F5F6;
-  --fg:#14171C;
-  --muted:#59606D;
-  --line:#C6CBD2;
-  --word:#D4D8DE;      /* ghost wordmark */
-  --stripe:#F2B400;    /* rally yellow, road-marking yellow */
-  --stripe-ink:#14171C;
-  --glass:#26303C;
-  --tire:#1A1C20;
-  --rim:#B7BDC6;
-  --redline:#C8321E;
-  --paint:#1F4FA3;     /* set by the configurator */
+  --bg:#0B0D11;
+  --panel:rgba(16,19,25,.72);
+  --panel-solid:#12151B;
+  --fg:#ECEEF1;
+  --muted:#9BA2AD;
+  --line:rgba(236,238,241,.14);
+  --stripe:#F2B400;      /* rally stripe / lane paint yellow */
+  --stripe-ink:#121418;
+  --redline:#F0563F;
   --display:"Unbounded","Arial Black",system-ui,sans-serif;
   --body:"Golos Text","Segoe UI",system-ui,-apple-system,sans-serif;
-  --r:6px;
+  --r:8px;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0F1216;--surface:#171B21;--fg:#E7E9EC;--muted:#9AA1AC;--line:#2B313A;--word:#1A1F26;
-  --stripe:#F5BC14;--stripe-ink:#14171C;--glass:#0A0D11;--tire:#050607;--rim:#8F96A0;--redline:#F0563F;color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0F1216;--surface:#171B21;--fg:#E7E9EC;--muted:#9AA1AC;--line:#2B313A;--word:#1A1F26;
-  --stripe:#F5BC14;--stripe-ink:#14171C;--glass:#0A0D11;--tire:#050607;--rim:#8F96A0;--redline:#F0563F;color-scheme:dark}
-
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--fg);font:400 1.0625rem/1.6 var(--body);margin:0}
-.wrap{max-width:76rem;margin-inline:auto;padding-inline:clamp(1rem,4vw,2.5rem)}
-h1,h2,h3{font-family:var(--display);line-height:1.08;text-wrap:balance;margin:0;letter-spacing:-.01em}
-h2{font-size:clamp(1.75rem,4.2vw,3rem);font-weight:700}
-h3{font-size:1.125rem;font-weight:700}
-p{margin:0;max-width:62ch}
+body{background:var(--bg);color:var(--fg);font:400 1.0625rem/1.6 var(--body);margin:0;overflow-x:hidden}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;outline:none}
+.page{position:relative;z-index:1;padding-inline:clamp(1rem,4vw,3rem);pointer-events:none}
+.page a,.page button,.page input,.page select,.page label,.page .panel,.page table{pointer-events:auto}
+h1,h2,h3{font-family:var(--display);line-height:1.06;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(1.7rem,3.6vw,2.8rem);font-weight:700}
+h3{font-size:1.05rem;font-weight:700}
+p{margin:0}
 a{color:inherit}
 :focus-visible{outline:3px solid var(--stripe);outline-offset:3px}
-.lead{font-size:1.1875rem;color:var(--muted)}
-section{padding-block:clamp(3.5rem,8vw,6.5rem)}
-.sec-head{display:grid;gap:1rem;margin-bottom:clamp(2rem,4vw,3rem)}
-
-/* buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;padding:.75rem 1.4rem;border-radius:var(--r);
-  font:600 1rem var(--body);text-decoration:none;cursor:pointer;border:2px solid var(--fg);background:transparent;color:var(--fg);transition:transform .15s,background .15s,color .15s}
-.btn:hover{background:var(--fg);color:var(--bg)}
-.btn:active{transform:translateY(1px)}
-.btn--go{background:var(--stripe);border-color:var(--stripe);color:var(--stripe-ink)}
-.btn--go:hover{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.muted{color:var(--muted)}
 
 /* header */
-.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.top .wrap{display:flex;align-items:center;gap:1.5rem;min-height:4rem}
-.brand{font:900 1.2rem var(--display);letter-spacing:.06em;text-decoration:none;display:flex;align-items:center;gap:.6rem}
-.brand i{display:inline-flex;gap:3px}
-.brand i b{width:5px;height:1.1rem;background:var(--stripe);display:block}
+.top{position:fixed;top:0;left:0;right:0;z-index:5;padding:calc(env(safe-area-inset-top,0px) + .75rem) clamp(1rem,4vw,3rem) .75rem;display:flex;align-items:center;gap:1.5rem;background:linear-gradient(var(--bg),transparent)}
+.brand{font:900 1.15rem var(--display);letter-spacing:.06em;text-decoration:none;display:flex;align-items:center;gap:.6rem}
+.brand i{display:inline-flex;gap:3px}.brand i b{width:5px;height:1.05rem;background:var(--stripe);display:block}
 .nav{display:flex;gap:1.4rem;margin-left:auto}
 .nav a{text-decoration:none;color:var(--muted);font-weight:500;font-size:.95rem}
-.nav a:hover{color:var(--fg)}
-.theme{width:2.5rem;height:2.5rem;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;display:grid;place-items:center}
+.nav a:hover,.nav a.on{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;padding:.75rem 1.4rem;border-radius:var(--r);font:600 1rem var(--body);text-decoration:none;cursor:pointer;border:1.5px solid var(--fg);background:transparent;color:var(--fg);transition:background .15s,color .15s,transform .1s;user-select:none;-webkit-user-select:none}
+.btn:hover{background:var(--fg);color:var(--bg)}
+.btn--go{background:var(--stripe);border-color:var(--stripe);color:var(--stripe-ink)}
+.btn--go:hover{background:var(--fg);border-color:var(--fg);color:var(--bg)}
 .top .btn{min-height:2.5rem;padding:.4rem 1rem;font-size:.9rem}
-@media (max-width:56rem){.nav{display:none}.theme{margin-left:auto}}
-@media (max-width:26rem){.top .btn{display:none}}
+@media (max-width:56rem){.nav{display:none}.top .btn{margin-left:auto}}
+
+/* sections = camera stops */
+.stop{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding-block:6rem}
+.stop--r{justify-content:flex-end}
+.stop--low{align-items:flex-end}
+.panel{background:var(--panel);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border:1px solid var(--line);border-radius:var(--r);padding:clamp(1.25rem,2.6vw,2rem);max-width:30rem;display:grid;gap:1rem;min-width:0}
+.panel--wide{max-width:64rem;width:100%}
+.lead{font-size:1.125rem;color:var(--muted);max-width:56ch}
 
 /* hero */
-.hero{padding-block:clamp(2.5rem,6vw,4.5rem) 0;overflow:hidden}
-.hero__text{display:grid;gap:1.25rem;position:relative;z-index:2}
-.hero h1{font-size:clamp(2.1rem,6vw,4.6rem);font-weight:900;max-width:14ch}
-.hero__cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.5rem}
-.stage{position:relative;margin-top:clamp(.5rem,2vw,1rem);height:clamp(13rem,34vw,26rem)}
-.stage__word{position:absolute;inset:0;display:grid;place-items:center;font:900 clamp(4.5rem,21vw,19rem)/1 var(--display);color:var(--word);letter-spacing:-.02em;user-select:none;white-space:nowrap}
-.stage__stripes{position:absolute;left:0;right:0;top:58%;display:grid;gap:clamp(5px,1vw,12px);transform-origin:left}
-.stage__stripes b{display:block;height:clamp(10px,2.2vw,26px);background:var(--stripe)}
-.stage__road{position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--line)}
-.stage .car{position:absolute;left:50%;bottom:-2%;width:min(92%,62rem);transform:translateX(-50%)}
-.hero__facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1px;background:var(--line);border-block:1px solid var(--line)}
-.hero__facts div{background:var(--bg);padding:1.25rem clamp(1rem,2vw,1.5rem)}
-.hero__facts dt{color:var(--muted);font-size:.9rem}
-.hero__facts dd{margin:0;font:700 1.35rem var(--display);font-variant-numeric:tabular-nums}
+.hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding-block:7rem 2rem}
+.hero h1{font-size:clamp(2.3rem,5.4vw,4.9rem);font-weight:900;max-width:11ch;text-shadow:0 2px 24px rgba(11,13,17,.6)}
+.hero .lead{color:var(--fg);opacity:.85;text-shadow:0 1px 12px rgba(11,13,17,.9)}
+.hero__copy{display:grid;gap:1.25rem;max-width:34rem}
+.hero__cta{display:flex;flex-wrap:wrap;gap:.75rem}
+.hero__facts{display:flex;flex-wrap:wrap;gap:clamp(1.25rem,4vw,3.5rem);margin:0}
+.hero__facts dt{color:var(--muted);font-size:.875rem}
+.hero__facts{text-shadow:0 1px 10px rgba(11,13,17,.95)}
+.hero__facts dd{margin:0;font:700 clamp(1.2rem,2.2vw,1.6rem) var(--display);font-variant-numeric:tabular-nums}
+.scrollhint{font-size:.875rem;color:var(--muted)}
 
-/* car svg parts */
-.car .paint{fill:var(--paint);transition:fill .45s ease}
-.car .glass{fill:var(--glass)}
-.car .tire{fill:var(--tire)}
-.car .rim{fill:var(--rim)}
-.car .hub{fill:var(--tire)}
-.car .shadow{fill:var(--fg);opacity:.18}
-.car .lamp{fill:var(--surface)}
-.car .tail{fill:var(--redline)}
-.car .crease{fill:none;stroke:var(--fg);stroke-opacity:.25;stroke-width:1.5}
-.car .stripes{fill:none;stroke:var(--stripe);stroke-width:7;stroke-linecap:butt;transition:opacity .3s}
-.car .stripes.off{opacity:0}
-.car .spokes{transform-box:fill-box;transform-origin:center}
+/* loader */
+.loader{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);z-index:6;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:.5rem 1rem;font-size:.875rem;display:flex;gap:.75rem;align-items:center;transition:opacity .5s}
+.loader i{display:block;width:8rem;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.loader i b{display:block;height:100%;width:0;background:var(--stripe);transition:width .2s}
+.loader.done{opacity:0;pointer-events:none}
 
-/* load sequence: stripes wipe, car rolls in from the right, wheels turn */
-@media (prefers-reduced-motion:no-preference){
-  .stage__stripes{animation:wipe .7s cubic-bezier(.2,.7,.2,1) both}
-  .stage .car{animation:drive 1.4s .35s cubic-bezier(.15,.75,.25,1) both}
-  .stage .car .spokes{animation:spin 1.4s .35s cubic-bezier(.15,.75,.25,1) both}
-}
-@keyframes wipe{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@keyframes drive{from{transform:translateX(60%)}to{transform:translateX(-50%)}}
-@keyframes spin{from{transform:rotate(0)}to{transform:rotate(-720deg)}}
+/* drive HUD */
+.hud{display:grid;gap:1.25rem}
+.speedo{display:flex;align-items:baseline;gap:.5rem}
+.speedo b{font:900 clamp(3.5rem,9vw,6.5rem)/1 var(--display);font-variant-numeric:tabular-nums}
+.speedo span{color:var(--muted)}
+.revbar{height:10px;border-radius:5px;background:var(--line);overflow:hidden;position:relative}
+.revbar b{position:absolute;inset:0 auto 0 0;width:10%;background:var(--fg);border-radius:5px}
+.revbar::after{content:"";position:absolute;right:0;top:0;bottom:0;width:18.75%;background:var(--redline);opacity:.35}
+.revlabel{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.gas{min-height:3.75rem;font-size:1.05rem;touch-action:none}
+.gas[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
 
 /* configurator */
-.cfg{display:grid;gap:clamp(1.5rem,4vw,3rem);grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:start}
-@media (max-width:60rem){.cfg{grid-template-columns:minmax(0,1fr)}}
-.cfg__view{background:var(--surface);border-radius:var(--r);padding:clamp(1rem,3vw,2rem);display:grid;gap:1rem}
-.cfg__view .car{width:100%;height:auto}
-.cfg__caption{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;color:var(--muted);font-size:.95rem}
-.cfg__caption strong{color:var(--fg)}
-.cfg__panel{display:grid;gap:1.75rem;min-width:0}
 fieldset{border:0;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:.75rem;min-width:0}
 legend{font-weight:600;margin-bottom:.75rem;padding:0}
 .trims{display:flex;flex-wrap:wrap;gap:.5rem}
 .chip{position:relative}
-.chip input{position:absolute;opacity:0;inset:0;cursor:pointer}
-.chip span{display:block;padding:.55rem 1rem;border:1px solid var(--line);border-radius:var(--r);font-weight:600;background:var(--surface)}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.chip span{display:block;padding:.5rem .95rem;border:1px solid var(--line);border-radius:var(--r);font-weight:600}
 .chip input:checked+span{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .chip input:focus-visible+span{outline:3px solid var(--stripe);outline-offset:2px}
-.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.75rem,1fr));gap:.5rem;width:100%;max-width:26rem}
+.swatches{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:.5rem;width:100%}
 .sw{position:relative;aspect-ratio:1;max-width:100%}
 .sw input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0}
-.sw span{display:block;width:100%;height:100%;border-radius:50%;border:1px solid var(--line);box-shadow:inset 0 -8px 12px rgba(0,0,0,.25),inset 0 6px 10px rgba(255,255,255,.25)}
-.sw input:checked+span{outline:3px solid var(--fg);outline-offset:3px}
+.sw span{display:block;width:100%;height:100%;border-radius:50%;border:1px solid var(--line);box-shadow:inset 0 -6px 10px rgba(0,0,0,.35),inset 0 5px 8px rgba(255,255,255,.25)}
+.sw input:checked+span{outline:2px solid var(--fg);outline-offset:3px}
 .sw input:focus-visible+span{outline:3px solid var(--stripe);outline-offset:3px}
-.colorname{color:var(--muted);font-size:.95rem}
-.toggle{display:flex;align-items:center;gap:.75rem;cursor:pointer;font-weight:500}
-.toggle input{width:1.25rem;height:1.25rem;accent-color:var(--fg)}
-.readout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
-.readout div{background:var(--bg);padding:1rem}
-.readout dt{color:var(--muted);font-size:.875rem}
-.readout dd{margin:0;font:700 1.5rem var(--display);font-variant-numeric:tabular-nums;white-space:nowrap}
-.readout dd small{font:500 .85rem var(--body);color:var(--muted);margin-left:.25rem}
-.readout .wide{grid-column:1/-1}
-.readout .wide dd{font:600 1.05rem var(--body);white-space:normal}
+.readout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border-radius:var(--r);overflow:hidden;margin:0}
+.readout div{background:var(--panel-solid);padding:.75rem}
+.readout dt{color:var(--muted);font-size:.8rem}
+.readout dd{margin:0;font:700 1.25rem var(--display);font-variant-numeric:tabular-nums;white-space:nowrap}
+.readout dd small{font:500 .8rem var(--body);color:var(--muted);margin-left:.2rem}
+.hint{font-size:.875rem;color:var(--muted)}
 
 /* trims table */
-.tbl{overflow-x:auto;border-top:2px solid var(--fg)}
+.tbl{overflow-x:auto}
 table{border-collapse:collapse;width:100%;min-width:44rem;font-variant-numeric:tabular-nums}
-th,td{text-align:left;padding:1rem .75rem;border-bottom:1px solid var(--line);vertical-align:middle}
-thead th{font-weight:600;color:var(--muted);font-size:.9rem}
-tbody th{font:700 1.1rem var(--display)}
-.bar{display:flex;align-items:center;gap:.75rem;min-width:14rem}
-.bar i{display:block;height:.6rem;background:var(--fg);border-radius:1px}
+th,td{text-align:left;white-space:nowrap;padding:.85rem .7rem;border-bottom:1px solid var(--line);vertical-align:middle}
+thead th{font-weight:600;color:var(--muted);font-size:.875rem}
+tbody th{font:700 1.05rem var(--display)}
+.bar{display:flex;align-items:center;gap:.75rem;min-width:13rem}
+.bar i{display:block;height:.55rem;background:var(--fg);border-radius:1px}
 tr.top-trim .bar i{background:var(--stripe)}
-.note{color:var(--muted);font-size:.875rem;margin-top:1rem}
-
-/* engine */
-.engine{background:var(--surface)}
-.engine__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(2rem,5vw,4rem);align-items:center}
-@media (max-width:52rem){.engine__grid{grid-template-columns:1fr}}
-.engine__copy{display:grid;gap:1.25rem}
-.engine__list{list-style:none;padding:0;margin:0;display:grid;gap:.75rem}
-.engine__list li{display:grid;grid-template-columns:8.5rem 1fr;gap:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
-.engine__list b{font-variant-numeric:tabular-nums}
-.engine__list span{color:var(--muted)}
-.tach{display:grid;justify-items:center;gap:1rem}
-.tach svg{width:min(100%,26rem);height:auto}
-.tach .face{fill:var(--bg);stroke:var(--line);stroke-width:2}
-.tach .tick{stroke:var(--fg)}
-.tach .tick.red{stroke:var(--redline)}
-.tach .num{fill:var(--fg);font:600 15px var(--body);text-anchor:middle;dominant-baseline:middle}
-.tach .num.red{fill:var(--redline)}
-.tach .unit{fill:var(--muted);font:500 12px var(--body);text-anchor:middle}
-.tach .rpm{fill:var(--fg);font:700 26px var(--display);text-anchor:middle;font-variant-numeric:tabular-nums}
-.tach .needle{stroke:var(--stripe);stroke-width:4;stroke-linecap:round}
-.tach .cap{fill:var(--fg)}
+.note{color:var(--muted);font-size:.85rem}
 
 /* history */
-.timeline{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:2rem 1.5rem}
-.timeline li{border-top:2px solid var(--fg);padding-top:1rem;display:grid;gap:.5rem;align-content:start}
-.timeline time{font:900 2rem var(--display);font-variant-numeric:tabular-nums}
-.timeline li:last-child time{color:var(--fg);box-shadow:inset 0 -.45em 0 var(--stripe);justify-self:start}
-.timeline p{color:var(--muted);font-size:.975rem}
+.timeline{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(12.5rem,1fr));gap:1.25rem 1.25rem}
+.timeline li{border-top:2px solid var(--fg);padding-top:.75rem;display:grid;gap:.35rem;align-content:start}
+.timeline time{font:900 1.6rem var(--display);font-variant-numeric:tabular-nums}
+.timeline li:last-child{border-color:var(--stripe)}
+.timeline p{color:var(--muted);font-size:.925rem}
 
-/* test drive */
-.drive{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(2rem,5vw,4rem);align-items:start}
-@media (max-width:52rem){.drive{grid-template-columns:1fr}}
-form{display:grid;gap:1rem;background:var(--surface);padding:clamp(1.25rem,3vw,2rem);border-radius:var(--r)}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+/* form */
+form{display:grid;gap:.9rem}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
 @media (max-width:30rem){.row{grid-template-columns:1fr}}
-label.f{display:grid;gap:.4rem;font-weight:500;font-size:.95rem;min-width:0}
-input[type=text],input[type=tel],input[type=date],select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:.7rem .8rem;min-height:3rem;width:100%}
-input:focus-visible,select:focus-visible{outline:3px solid var(--stripe);outline-offset:1px}
+label.f{display:grid;gap:.35rem;font-weight:500;font-size:.925rem;min-width:0}
+input[type=text],input[type=tel],input[type=date],select{font:inherit;color:var(--fg);background:var(--panel-solid);border:1px solid var(--line);border-radius:var(--r);padding:.65rem .8rem;min-height:3rem;width:100%}
 .err{color:var(--redline);font-size:.875rem;min-height:1.2em}
-.done{border:2px solid var(--fg);border-radius:var(--r);padding:1.25rem;display:grid;gap:.5rem}
+.done{border:1.5px solid var(--stripe);border-radius:var(--r);padding:1.1rem;display:grid;gap:.5rem}
 .done strong{font-family:var(--display)}
 
-footer{border-top:1px solid var(--line);padding-block:2rem 3rem;color:var(--muted);font-size:.9rem}
-footer .wrap{display:grid;gap:.75rem}
+footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var(--line);padding:2rem clamp(1rem,4vw,3rem) 3rem;color:var(--muted);font-size:.875rem;display:grid;gap:.6rem}
+
+/* phones: car on top of the screen, panels in the lower half */
+@media (max-width:48rem){
+  .stop,.stop--r{align-items:flex-end;justify-content:stretch}
+  .stop .panel{max-width:none;width:100%}
+  .hero{padding-top:5.5rem}
+  .hero__copy{gap:1rem}
+  .hint{display:none}
+  .stop{padding-block:4rem 1.5rem}
+  .panel{gap:.75rem;padding:1.1rem}
+  .speedo b{font-size:3rem}
+}
+.nogl .loader{display:none}
 </style>
 </head>
 <body>
 
+<canvas id="gl" aria-label="3D-модель Chevrolet Camaro на ночной дороге" role="img"></canvas>
+
 <header class="top">
-  <div class="wrap">
-    <a class="brand" href="#top" aria-label="Camaro, наверх"><i aria-hidden="true"><b></b><b></b></i>CAMARO</a>
-    <nav class="nav" aria-label="Разделы">
-      <a href="#build">Конфигуратор</a>
-      <a href="#trims">Версии</a>
-      <a href="#engine">Двигатель</a>
-      <a href="#history">История</a>
-    </nav>
-    <button class="theme" id="themeBtn" type="button" aria-label="Сменить тему">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
-    </button>
-    <a class="btn btn--go" href="#drive">Тест-драйв</a>
-  </div>
+  <a class="brand" href="#hero" aria-label="Camaro, наверх"><i aria-hidden="true"><b></b><b></b></i>CAMARO</a>
+  <nav class="nav" aria-label="Разделы">
+    <a href="#design">Дизайн</a>
+    <a href="#drive">Поехали</a>
+    <a href="#build">Конфигуратор</a>
+    <a href="#trims">Версии</a>
+    <a href="#history">История</a>
+  </nav>
+  <a class="btn btn--go" href="#testdrive">Тест-драйв</a>
 </header>
 
-<main id="top">
-  <section class="hero" aria-labelledby="h1">
-    <div class="wrap hero__text">
+<div class="loader" id="loader" role="status"><span id="loaderText">Загружаем 3D-модель</span><i><b id="loaderBar"></b></i></div>
+
+<main class="page">
+  <section class="hero" id="hero" data-stop="hero" aria-labelledby="h1">
+    <div class="hero__copy">
       <h1 id="h1">Шесть поколений. Один характер.</h1>
-      <p class="lead">Camaro с 1967 года. Длинный капот, короткий хвост, атмосферный V8 под сдвоенными полосами. Соберите свою версию и запишитесь на тест-драйв.</p>
+      <p class="lead">Camaro с 1967 года. Длинный капот, короткий хвост и атмосферный V8. Прокрутите страницу: камера обойдёт машину, а потом вы сами нажмёте на газ.</p>
       <div class="hero__cta">
-        <a class="btn btn--go" href="#build">Собрать свою</a>
-        <a class="btn" href="#trims">Сравнить версии</a>
+        <a class="btn btn--go" href="#drive">Прокатиться</a>
+        <a class="btn" href="#build">Собрать свою</a>
       </div>
     </div>
-    <div class="stage" aria-hidden="true">
-      <div class="stage__word">CAMARO</div>
-      <div class="stage__stripes"><b></b><b></b></div>
-      <div class="stage__road"></div>
-      <svg class="car" data-car viewBox="0 0 800 280"></svg>
-    </div>
-    <div class="wrap">
-      <dl class="hero__facts">
-        <div><dt>ZL1, компрессорный V8</dt><dd>659 л.с.</dd></div>
-        <div><dt>Крутящий момент ZL1</dt><dd>881 Н·м</dd></div>
-        <div><dt>0–96 км/ч, ZL1</dt><dd>3,5 с</dd></div>
-        <div><dt>Коробки передач</dt><dd>6МКПП · 10АКПП</dd></div>
+    <dl class="hero__facts">
+      <div><dt>ZL1, компрессорный V8</dt><dd>659 л.с.</dd></div>
+      <div><dt>Крутящий момент</dt><dd>881 Н·м</dd></div>
+      <div><dt>0–96 км/ч</dt><dd>3,5 с</dd></div>
+      <div><dt>Колёсная база</dt><dd>2811 мм</dd></div>
+    </dl>
+  </section>
+
+  <section class="stop stop--r" id="design" data-stop="design" aria-labelledby="design-h">
+    <div class="panel">
+      <h2 id="design-h">Профиль, который узнают за квартал</h2>
+      <p class="lead">Низкая крыша, высокая линия окон и мощные задние крылья. Кузов шестого поколения на платформе Alpha легче и жёстче предшественника, а колёса вынесены в самые углы.</p>
+      <dl class="readout">
+        <div><dt>Длина</dt><dd>4784<small>мм</small></dd></div>
+        <div><dt>Высота</dt><dd>1348<small>мм</small></dd></div>
+        <div><dt>Ширина</dt><dd>1897<small>мм</small></dd></div>
       </dl>
     </div>
   </section>
 
-  <section id="build" aria-labelledby="build-h">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 id="build-h">Соберите свою Camaro</h2>
-        <p class="lead">Выберите версию, цвет кузова и полосы. Характеристики обновляются сразу.</p>
+  <section class="stop" id="drive" data-stop="drive" aria-labelledby="drive-h">
+    <div class="panel hud">
+      <h2 id="drive-h">Нажмите и держите газ</h2>
+      <div class="speedo" aria-live="off"><b id="kmh">0</b><span>км/ч</span></div>
+      <div>
+        <div class="revbar" aria-hidden="true"><b id="revb"></b></div>
+        <div class="revlabel"><span id="rpmv">800 об/мин</span><span>отсечка 6500</span></div>
       </div>
-      <div class="cfg">
-        <div class="cfg__view">
-          <svg class="car" data-car viewBox="0 0 800 280" role="img" aria-label="Camaro в выбранном цвете"></svg>
-          <div class="cfg__caption"><span>Ваша сборка: <strong id="sumText">SS, Riverside Blue, с полосами</strong></span><span>Модельный год 2024</span></div>
-        </div>
-        <div class="cfg__panel">
-          <fieldset>
-            <legend>Версия</legend>
-            <div class="trims" id="trims-pick"></div>
-          </fieldset>
-          <fieldset>
-            <legend>Цвет кузова</legend>
-            <div class="swatches" id="swatches"></div>
-            <div class="colorname" id="colorName" aria-live="polite"></div>
-          </fieldset>
-          <label class="toggle"><input type="checkbox" id="stripes" checked> Сдвоенные полосы на капоте и крышке багажника</label>
-          <dl class="readout" aria-live="polite">
-            <div><dt>Мощность</dt><dd><span id="o-hp">461</span><small>л.с.</small></dd></div>
-            <div><dt>Момент</dt><dd><span id="o-nm">617</span><small>Н·м</small></dd></div>
-            <div><dt>0–96 км/ч</dt><dd><span id="o-acc">4,0</span><small>с</small></dd></div>
-            <div><dt>Цилиндры</dt><dd><span id="o-cyl">V8</span></dd></div>
-            <div class="wide"><dt>Двигатель и коробка</dt><dd id="o-eng"></dd></div>
-          </dl>
-        </div>
-      </div>
+      <button class="btn btn--go gas" id="gas" type="button" aria-pressed="false">Газ</button>
+      <p class="hint">Или удерживайте пробел, пока этот раздел на экране. Отпустите, и машина покатится накатом.</p>
     </div>
   </section>
 
-  <section id="trims" aria-labelledby="trims-h" style="padding-top:0">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 id="trims-h">Пять версий, от турбочетвёрки до 659 сил</h2>
-      </div>
+  <section class="stop stop--r" id="build" data-stop="build" aria-labelledby="build-h">
+    <div class="panel">
+      <h2 id="build-h">Соберите свою</h2>
+      <fieldset>
+        <legend>Цвет кузова</legend>
+        <div class="swatches" id="swatches"></div>
+        <div class="hint" id="colorName" aria-live="polite"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Версия</legend>
+        <div class="trims" id="trims-pick"></div>
+      </fieldset>
+      <dl class="readout" aria-live="polite">
+        <div><dt>Мощность</dt><dd><span id="o-hp">461</span><small>л.с.</small></dd></div>
+        <div><dt>Момент</dt><dd><span id="o-nm">617</span><small>Н·м</small></dd></div>
+        <div><dt>0–96 км/ч</dt><dd><span id="o-acc">4,0</span><small>с</small></dd></div>
+      </dl>
+      <p class="hint" id="o-eng"></p>
+      <p class="hint">Потяните машину мышкой или пальцем, чтобы повернуть её.</p>
+    </div>
+  </section>
+
+  <section class="stop stop--low" id="trims" data-stop="trims" aria-labelledby="trims-h">
+    <div class="panel panel--wide">
+      <h2 id="trims-h">Пять версий, от турбочетвёрки до 659 сил</h2>
       <div class="tbl">
         <table>
           <thead><tr><th scope="col">Версия</th><th scope="col">Двигатель</th><th scope="col">Мощность, в масштабе</th><th scope="col">Момент</th><th scope="col">0–96 км/ч</th><th scope="col">Коробка</th></tr></thead>
           <tbody id="trimRows"></tbody>
         </table>
       </div>
-      <p class="note">Данные для модельного года 2024, рынок США. Мощность пересчитана из hp в метрические л.с., момент из lb-ft в Н·м. 96 км/ч соответствуют 60 милям в час.</p>
+      <p class="note">Модельный год 2024, рынок США. Мощность пересчитана из hp в метрические л.с., момент из lb-ft в Н·м. 96 км/ч соответствуют 60 милям в час.</p>
     </div>
   </section>
 
-  <section id="engine" class="engine" aria-labelledby="engine-h">
-    <div class="wrap engine__grid">
-      <div class="engine__copy">
-        <h2 id="engine-h">LT4: 6,2 литра под компрессором</h2>
-        <p class="lead">Сердце ZL1. Нагнетатель объёмом 1,7 л сидит в развале блока, интеркулер стоит прямо на нём. Отсечка на 6500 об/мин.</p>
-        <ul class="engine__list">
-          <li><b>6162 см³</b><span>рабочий объём, V8, 2 клапана на цилиндр</span></li>
-          <li><b>1,7 л</b><span>компрессор Eaton R1740 TVS</span></li>
-          <li><b>до 0,8 бар</b><span>давление наддува</span></li>
-          <li><b>319 км/ч</b><span>максимальная скорость ZL1</span></li>
-        </ul>
-        <div><button class="btn btn--go" id="revBtn" type="button">Дать перегазовку</button></div>
-      </div>
-      <div class="tach">
-        <svg viewBox="0 0 320 320" role="img" aria-label="Тахометр, отсечка 6500 об/мин">
-          <circle class="face" cx="160" cy="160" r="150"/>
-          <g id="ticks"></g>
-          <line class="needle" id="needle" x1="160" y1="160" x2="160" y2="40"/>
-          <circle class="cap" cx="160" cy="160" r="10"/>
-          <text class="rpm" x="160" y="232" id="rpmText">800</text>
-          <text class="unit" x="160" y="254">об/мин</text>
-        </svg>
-      </div>
-    </div>
-  </section>
-
-  <section id="history" aria-labelledby="history-h">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 id="history-h">От 1967 до Collector's Edition</h2>
-        <p class="lead">Camaro появилась как ответ на Ford Mustang и пережила шесть поколений с одним перерывом.</p>
-      </div>
+  <section class="stop stop--low" id="history" data-stop="history" aria-labelledby="history-h">
+    <div class="panel panel--wide">
+      <h2 id="history-h">От 1967 до Collector's Edition</h2>
       <ol class="timeline">
-        <li><time>1967</time><h3>Первое поколение</h3><p>Дебют в сентябре 1966 года. Пакеты RS и SS, а для гонок Trans-Am версия Z/28.</p></li>
-        <li><time>1970</time><h3>Второе поколение</h3><p>Самое долгое: выпускалось до 1981 года. Европейские пропорции и фастбэк без форточек.</p></li>
-        <li><time>1982</time><h3>Третье поколение</h3><p>Впервые впрыск топлива и пятиступенчатая механика. С 1985 года легендарная IROC-Z.</p></li>
-        <li><time>1993</time><h3>Четвёртое поколение</h3><p>Пластиковые панели кузова, мотор LT1, а с 1998 года алюминиевый LS1. Выпуск прекращён в 2002-м.</p></li>
-        <li><time>2010</time><h3>Пятое поколение</h3><p>Возвращение после восьмилетней паузы. Ретро-дизайн по мотивам 1969 года и роль в кино.</p></li>
-        <li><time>2016</time><h3>Шестое поколение</h3><p>Платформа Alpha, кузов заметно легче и жёстче. Версии 1LE и ZL1 1LE для трека.</p></li>
-        <li><time>2024</time><h3>Collector's Edition</h3><p>Финальная серия шестого поколения. Последняя машина сошла с конвейера в Лансинге в декабре 2023 года.</p></li>
+        <li><time>1967</time><h3>Первое поколение</h3><p>Ответ на Ford Mustang. Пакеты RS и SS, для гонок Trans-Am версия Z/28.</p></li>
+        <li><time>1970</time><h3>Второе</h3><p>Самое долгое поколение, до 1981 года. Фастбэк без форточек.</p></li>
+        <li><time>1982</time><h3>Третье</h3><p>Впрыск топлива, а с 1985 года легендарная IROC-Z.</p></li>
+        <li><time>1993</time><h3>Четвёртое</h3><p>Мотор LT1, с 1998 года алюминиевый LS1. Пауза с 2002-го.</p></li>
+        <li><time>2010</time><h3>Пятое</h3><p>Возвращение в ретро-стиле по мотивам 1969 года.</p></li>
+        <li><time>2016</time><h3>Шестое</h3><p>Платформа Alpha, версии 1LE и ZL1 1LE для трека.</p></li>
+        <li><time>2024</time><h3>Collector's Edition</h3><p>Финальная серия. Последняя машина собрана в Лансинге в декабре 2023 года.</p></li>
       </ol>
     </div>
   </section>
 
-  <section id="drive" aria-labelledby="drive-h" style="padding-top:0">
-    <div class="wrap drive">
-      <div class="sec-head">
-        <h2 id="drive-h">Запишитесь на тест-драйв</h2>
-        <p class="lead">Выберите версию и удобный день. Менеджер перезвонит, чтобы подтвердить время.</p>
-      </div>
-      <div id="formBox">
-        <form id="driveForm" novalidate>
-          <label class="f">Имя<input type="text" id="f-name" autocomplete="given-name" required></label>
-          <div class="row">
-            <label class="f">Телефон<input type="tel" id="f-phone" autocomplete="tel" placeholder="+7 900 000-00-00" required></label>
-            <label class="f">Город<select id="f-city"><option>Москва</option><option>Санкт-Петербург</option><option>Казань</option><option>Екатеринбург</option><option>Новосибирск</option></select></label>
-          </div>
-          <div class="row">
-            <label class="f">Версия<select id="f-trim"></select></label>
-            <label class="f">Дата<input type="date" id="f-date" required></label>
-          </div>
-          <div class="err" id="f-err" role="alert"></div>
-          <button class="btn btn--go" type="submit">Записаться на тест-драйв</button>
-        </form>
-      </div>
+  <section class="stop stop--r" id="testdrive" data-stop="testdrive" aria-labelledby="td-h">
+    <div class="panel" id="formBox">
+      <h2 id="td-h">Запишитесь на тест-драйв</h2>
+      <form id="driveForm" novalidate>
+        <label class="f">Имя<input type="text" id="f-name" autocomplete="given-name" required></label>
+        <div class="row">
+          <label class="f">Телефон<input type="tel" id="f-phone" autocomplete="tel" placeholder="+7 900 000-00-00" required></label>
+          <label class="f">Город<select id="f-city"><option>Москва</option><option>Санкт-Петербург</option><option>Казань</option><option>Екатеринбург</option><option>Новосибирск</option></select></label>
+        </div>
+        <div class="row">
+          <label class="f">Версия<select id="f-trim"></select></label>
+          <label class="f">Дата<input type="date" id="f-date" required></label>
+        </div>
+        <div class="err" id="f-err" role="alert"></div>
+        <button class="btn btn--go" type="submit">Записаться на тест-драйв</button>
+      </form>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">
-    <p>Демонстрационный промо-сайт, собранный для проекта дизайн-скиллов. Это не официальный сайт Chevrolet, заявки никуда не отправляются.</p>
-    <p>Chevrolet и Camaro являются товарными знаками General Motors. Иллюстрации нарисованы с нуля и не воспроизводят фирменные материалы.</p>
-  </div>
+  <p>3D-модель «Chevrolet Camaro»: автор <a href="https://sketchfab.com/GregX">GregX</a>, <a href="https://sketchfab.com/3d-models/chevrolet-camaro-dee5eed83d2442c49ce360e87ef08ef1">Sketchfab</a>, лицензия <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Для сайта модель сжата, текстуры переведены в WebP, материал кузова заменён.</p>
+  <p>Демонстрационный промо-сайт, не официальный сайт Chevrolet. Заявки никуда не отправляются. Chevrolet и Camaro являются товарными знаками General Motors.</p>
 </footer>
 
 <script>
+/* Page content and form: plain script, works without WebGL */
+window.TRIMS=[
+  {id:'1LT',hp:279,nm:400,acc:'5,4',eng:'2,0 л турбо L4',box:'6МКПП или 8АКПП'},
+  {id:'3LT',hp:340,nm:385,acc:'5,1',eng:'3,6 л V6',box:'8АКПП'},
+  {id:'LT1',hp:461,nm:617,acc:'4,4',eng:'6,2 л V8 LT1',box:'6МКПП или 10АКПП'},
+  {id:'SS',hp:461,nm:617,acc:'4,0',eng:'6,2 л V8 LT1, Brembo, Magnetic Ride',box:'6МКПП или 10АКПП'},
+  {id:'ZL1',hp:659,nm:881,acc:'3,5',eng:'6,2 л V8 LT4 с компрессором',box:'6МКПП или 10АКПП'}
+];
+window.COLORS=[
+  {n:'Red Hot',ru:'красный',c:'#B5121B'},
+  {n:'Riverside Blue Metallic',ru:'синий металлик',c:'#1D4E9E'},
+  {n:'Shock',ru:'жёлто-зелёный',c:'#D4CC1C'},
+  {n:'Vivid Orange Metallic',ru:'оранжевый металлик',c:'#D9561A'},
+  {n:'Rally Green Metallic',ru:'тёмно-зелёный металлик',c:'#24503A'},
+  {n:'Satin Steel Grey Metallic',ru:'стальной серый',c:'#5E636B'},
+  {n:'Summit White',ru:'белый',c:'#E9EAEB'},
+  {n:'Black',ru:'чёрный',c:'#111214'}
+];
 (function(){
-  var root=document.documentElement;
-  try{var t=localStorage.getItem('camaro-theme');if(t)root.setAttribute('data-theme',t)}catch(e){}
-  document.getElementById('themeBtn').addEventListener('click',function(){
-    var cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
-    var next=cur==='dark'?'light':'dark';root.setAttribute('data-theme',next);
-    try{localStorage.setItem('camaro-theme',next)}catch(e){}
-  });
-
-  /* car: side profile facing left, drawn once and reused */
-  var NS='http://www.w3.org/2000/svg';
-  var carMarkup=
-    '<defs><linearGradient id="SHINE" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient></defs>'+
-    '<ellipse class="shadow" cx="400" cy="262" rx="360" ry="12"/>'+
-    '<path class="paint" d="M62 214 L58 186 Q60 160 96 152 L248 134 Q318 128 362 120 L438 82 Q470 74 522 77 Q566 80 606 96 Q636 110 664 118 L738 126 L746 140 L748 192 Q746 212 724 214 L661 214 A52 52 0 0 0 559 214 L241 214 A52 52 0 0 0 139 214 Z"/>'+
-    '<path d="M62 214 L58 186 Q60 160 96 152 L248 134 Q318 128 362 120 L438 82 Q470 74 522 77 Q566 80 606 96 Q636 110 664 118 L738 126 L746 140 L748 192 Q746 212 724 214 L661 214 A52 52 0 0 0 559 214 L241 214 A52 52 0 0 0 139 214 Z" fill="url(#SHINE)"/>'+
-    '<path class="glass" d="M378 124 L444 90 Q470 84 512 86 L512 124 Z"/>'+
-    '<path class="glass" d="M522 87 Q560 90 596 104 L616 122 L522 124 Z"/>'+
-    '<path class="crease" d="M96 166 L300 150 Q520 140 742 146"/>'+
-    '<path class="crease" d="M150 200 L700 196"/>'+
-    '<path class="lamp" d="M66 170 L134 160 L132 170 L70 178 Z"/>'+
-    '<path class="tail" d="M728 140 L746 142 L746 160 L730 158 Z"/>'+
-    '<path class="glass" d="M70 196 L120 192 L118 204 L72 206 Z" opacity=".7"/>'+
-    '<g class="stripes"><path d="M104 147 L246 131 Q300 126 340 120"/><path d="M670 116 L736 123"/></g>'+
-    wheel(190)+wheel(610);
-  function wheel(cx){
-    var s='<circle class="tire" cx="'+cx+'" cy="222" r="44"/><circle class="rim" cx="'+cx+'" cy="222" r="31"/><g class="spokes">';
-    for(var i=0;i<5;i++){var a=i*72*Math.PI/180;
-      s+='<path class="hub" d="M'+cx+' 222 L'+(cx+29*Math.cos(a-0.2)).toFixed(1)+' '+(222+29*Math.sin(a-0.2)).toFixed(1)+' L'+(cx+29*Math.cos(a+0.2)).toFixed(1)+' '+(222+29*Math.sin(a+0.2)).toFixed(1)+' Z" opacity=".55"/>';}
-    return s+'<circle class="hub" cx="'+cx+'" cy="222" r="8"/></g>';
-  }
-  var cars=document.querySelectorAll('[data-car]');
-  cars.forEach(function(svg,i){svg.innerHTML=carMarkup.replace(/SHINE/g,'shine'+i)});
-
-  /* data, MY2024 US: hp -> metric PS (x1.0139), lb-ft -> N·m (x1.3558) */
-  var TRIMS=[
-    {id:'1LT',hp:279,nm:400,acc:'5,4',cyl:'L4',eng:'2,0 л турбо L4',box:'6МКПП или 8АКПП'},
-    {id:'3LT',hp:340,nm:385,acc:'5,1',cyl:'V6',eng:'3,6 л V6',box:'8АКПП'},
-    {id:'LT1',hp:461,nm:617,acc:'4,4',cyl:'V8',eng:'6,2 л V8 LT1',box:'6МКПП или 10АКПП'},
-    {id:'SS',hp:461,nm:617,acc:'4,0',cyl:'V8',eng:'6,2 л V8 LT1, Brembo, Magnetic Ride',box:'6МКПП или 10АКПП'},
-    {id:'ZL1',hp:659,nm:881,acc:'3,5',cyl:'V8',eng:'6,2 л V8 LT4 с компрессором',box:'6МКПП или 10АКПП'}
-  ];
-  var COLORS=[
-    {n:'Riverside Blue Metallic',ru:'синий металлик',c:'#1F4FA3'},
-    {n:'Red Hot',ru:'красный',c:'#C21F1F'},
-    {n:'Shock',ru:'жёлто-зелёный',c:'#D9D21A'},
-    {n:'Vivid Orange Metallic',ru:'оранжевый металлик',c:'#E0641B'},
-    {n:'Rally Green Metallic',ru:'тёмно-зелёный металлик',c:'#2E5A3E'},
-    {n:'Satin Steel Grey Metallic',ru:'стальной серый',c:'#6B7078'},
-    {n:'Summit White',ru:'белый',c:'#ECEDEE'},
-    {n:'Black',ru:'чёрный',c:'#1B1C1F'}
-  ];
-  var state={trim:'SS',color:0,stripes:true};
-
-  var tp=document.getElementById('trims-pick'), sel=document.getElementById('f-trim'), rows=document.getElementById('trimRows');
-  var maxHp=Math.max.apply(null,TRIMS.map(function(t){return t.hp}));
-  TRIMS.forEach(function(t){
+  var T=window.TRIMS,C=window.COLORS,state={trim:'SS',color:0};
+  var tp=document.getElementById('trims-pick'),sel=document.getElementById('f-trim'),rows=document.getElementById('trimRows'),sw=document.getElementById('swatches');
+  var maxHp=Math.max.apply(null,T.map(function(t){return t.hp}));
+  T.forEach(function(t){
     tp.insertAdjacentHTML('beforeend','<label class="chip"><input type="radio" name="trim" id="trim-'+t.id+'" value="'+t.id+'"'+(t.id===state.trim?' checked':'')+'><span>'+t.id+'</span></label>');
     sel.insertAdjacentHTML('beforeend','<option'+(t.id===state.trim?' selected':'')+'>'+t.id+'</option>');
-    rows.insertAdjacentHTML('beforeend','<tr'+(t.hp===maxHp?' class="top-trim"':'')+'><th scope="row">'+t.id+'</th><td>'+t.eng+'</td><td><div class="bar"><i style="width:'+(t.hp/maxHp*10).toFixed(2)+'rem"></i>'+t.hp+' л.с.</div></td><td>'+t.nm+' Н·м</td><td>'+t.acc+' с</td><td>'+t.box+'</td></tr>');
+    rows.insertAdjacentHTML('beforeend','<tr'+(t.hp===maxHp?' class="top-trim"':'')+'><th scope="row">'+t.id+'</th><td>'+t.eng+'</td><td><div class="bar"><i style="width:'+(t.hp/maxHp*9).toFixed(2)+'rem"></i>'+t.hp+' л.с.</div></td><td>'+t.nm+' Н·м</td><td>'+t.acc+' с</td><td>'+t.box+'</td></tr>');
   });
-  var sw=document.getElementById('swatches');
-  COLORS.forEach(function(c,i){
+  C.forEach(function(c,i){
     sw.insertAdjacentHTML('beforeend','<label class="sw" title="'+c.n+'"><input type="radio" name="color" id="color-'+i+'" value="'+i+'" aria-label="'+c.n+', '+c.ru+'"'+(i===state.color?' checked':'')+'><span style="background:'+c.c+'"></span></label>');
   });
-
   function tween(el,to,dec){
-    var from=parseFloat(el.textContent.replace(',','.'))||0,start=null,dur=500;
-    if(matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=dec?to.toFixed(1).replace('.',','):to;return}
-    function step(ts){if(!start)start=ts;var k=Math.min(1,(ts-start)/dur);k=1-Math.pow(1-k,3);
-      var v=from+(to-from)*k;el.textContent=dec?v.toFixed(1).replace('.',','):Math.round(v);if(k<1)requestAnimationFrame(step)}
+    var from=parseFloat(el.textContent.replace(',','.'))||0,start=null;
+    function step(ts){if(!start)start=ts;var k=Math.min(1,(ts-start)/450);k=1-Math.pow(1-k,3);var v=from+(to-from)*k;
+      el.textContent=dec?v.toFixed(1).replace('.',','):Math.round(v);if(k<1)requestAnimationFrame(step)}
     requestAnimationFrame(step);
   }
   function render(first){
-    var t=TRIMS.find(function(x){return x.id===state.trim}), c=COLORS[state.color];
-    root.style.setProperty('--paint',c.c);
-    document.querySelectorAll('.car .stripes').forEach(function(g){g.classList.toggle('off',!state.stripes)});
+    var t=T.find(function(x){return x.id===state.trim}),c=C[state.color];
     document.getElementById('colorName').textContent=c.n+', '+c.ru;
-    document.getElementById('o-cyl').textContent=t.cyl;
     document.getElementById('o-eng').textContent=t.eng+', '+t.box;
-    if(first){document.getElementById('o-hp').textContent=t.hp;document.getElementById('o-nm').textContent=t.nm;document.getElementById('o-acc').textContent=t.acc}
-    else{tween(document.getElementById('o-hp'),t.hp);tween(document.getElementById('o-nm'),t.nm);tween(document.getElementById('o-acc'),parseFloat(t.acc.replace(',','.')),true)}
-    document.getElementById('sumText').textContent=t.id+', '+c.n.replace(' Metallic','')+(state.stripes?', с полосами':', без полос');
+    var hp=document.getElementById('o-hp'),nm=document.getElementById('o-nm'),acc=document.getElementById('o-acc');
+    if(first){hp.textContent=t.hp;nm.textContent=t.nm;acc.textContent=t.acc}
+    else{tween(hp,t.hp);tween(nm,t.nm);tween(acc,parseFloat(t.acc.replace(',','.')),true)}
     sel.value=t.id;
+    window.dispatchEvent(new CustomEvent('camaro:paint',{detail:c.c}));
   }
   tp.addEventListener('change',function(e){state.trim=e.target.value;render()});
   sw.addEventListener('change',function(e){state.color=+e.target.value;render()});
-  document.getElementById('stripes').addEventListener('change',function(e){state.stripes=e.target.checked;render()});
+  window.CAMARO_COLOR=C[state.color].c;
   render(true);
 
-  /* tachometer, drawn to one scale: 0..8000 rpm over -135..135 deg */
-  var ticks=document.getElementById('ticks'), MAX=8000, RED=6500;
-  function ang(r){return -135+270*r/MAX}
-  function pt(a,rad){var t=(a-90)*Math.PI/180;return [160+rad*Math.cos(t),160+rad*Math.sin(t)]}
-  var g='';
-  for(var r=0;r<=MAX;r+=250){var a=ang(r),major=r%1000===0,p1=pt(a,140),p2=pt(a,major?120:130),red=r>=RED;
-    g+='<line class="tick'+(red?' red':'')+'" x1="'+p1[0].toFixed(1)+'" y1="'+p1[1].toFixed(1)+'" x2="'+p2[0].toFixed(1)+'" y2="'+p2[1].toFixed(1)+'" stroke-width="'+(major?3:1.5)+'"/>';
-    if(major){var q=pt(a,103);g+='<text class="num'+(red?' red':'')+'" x="'+q[0].toFixed(1)+'" y="'+q[1].toFixed(1)+'">'+(r/1000)+'</text>'}}
-  ticks.innerHTML=g;
-  var needle=document.getElementById('needle'), rpmText=document.getElementById('rpmText'), rpm=800, busy=false;
-  function setRpm(v){rpm=v;needle.setAttribute('transform','rotate('+ang(v).toFixed(2)+' 160 160)');rpmText.textContent=Math.round(v/10)*10}
-  setRpm(800);
-  document.getElementById('revBtn').addEventListener('click',function(){
-    if(busy)return;busy=true;
-    var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(reduce){setRpm(RED);setTimeout(function(){setRpm(800);busy=false},700);return}
-    var t0=null;
-    function f(ts){if(!t0)t0=ts;var t=(ts-t0)/1000,v;
-      if(t<.45)v=800+(RED-800)*(1-Math.pow(1-t/.45,2));
-      else if(t<.6)v=RED-Math.abs(Math.sin(t*90))*180;
-      else if(t<1.8)v=800+(RED-800)*Math.pow(1-(t-.6)/1.2,2.2);
-      else{setRpm(800);busy=false;return}
-      setRpm(v);requestAnimationFrame(f)}
-    requestAnimationFrame(f);
-  });
-
-  /* test-drive form: validated in page, nothing is sent */
-  var d=new Date();d.setDate(d.getDate()+1);var iso=d.toISOString().slice(0,10);
-  var fd=document.getElementById('f-date');fd.min=iso;fd.value=iso;
+  var d=new Date();d.setDate(d.getDate()+1);var fd=document.getElementById('f-date');fd.min=fd.value=d.toISOString().slice(0,10);
   document.getElementById('driveForm').addEventListener('submit',function(e){
     e.preventDefault();
-    var name=document.getElementById('f-name').value.trim(), phone=document.getElementById('f-phone').value.replace(/\D/g,''), err=document.getElementById('f-err');
+    var name=document.getElementById('f-name').value.trim(),phone=document.getElementById('f-phone').value.replace(/\D/g,''),err=document.getElementById('f-err');
     if(!name){err.textContent='Укажите имя, чтобы менеджер знал, как к вам обращаться.';return}
     if(phone.length<10){err.textContent='Проверьте телефон: нужно не меньше 10 цифр.';return}
     if(!fd.value){err.textContent='Выберите дату тест-драйва.';return}
     var dt=new Date(fd.value+'T12:00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
     var box=document.getElementById('formBox');
-    box.innerHTML='<div class="done" role="status"><strong>Заявка заполнена</strong><p></p><p class="note" style="margin:0">Это демо-сайт: заявка сохранена только на этой странице и никуда не отправлена.</p></div>';
-    box.querySelector('p').textContent=name+', ждём вас на '+sel.value+' '+dt+' в городе '+document.getElementById('f-city').value+'.';
+    box.innerHTML='<h2>Заявка заполнена</h2><div class="done" role="status"><p></p><p class="note">Это демо-сайт: заявка осталась на этой странице и никуда не отправлена.</p></div>';
+    box.querySelector('p').textContent=name+', ждём вас на '+sel.value+' '+dt+', город '+document.getElementById('f-city').value+'.';
   });
 })();
+</script>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+
+const canvas=document.getElementById('gl');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const loaderEl=document.getElementById('loader'),loaderBar=document.getElementById('loaderBar'),loaderText=document.getElementById('loaderText');
+
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'})}
+catch(e){document.documentElement.classList.add('nogl');canvas.remove();throw e}
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.0;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+
+const BG=0x0B0D11;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(BG);
+scene.fog=new THREE.FogExp2(BG,0.045);
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;
+scene.environmentIntensity=0.55;
+
+const camera=new THREE.PerspectiveCamera(32,1,0.1,200);
+
+/* lights: cool moon fill, warm key, two headlight beams */
+scene.add(new THREE.HemisphereLight(0x8fa3c4,0x0b0d11,0.6));
+const key=new THREE.DirectionalLight(0xfff1dd,2.2);key.position.set(5,8,4);scene.add(key);
+const rim=new THREE.DirectionalLight(0x9db8ff,1.6);rim.position.set(-6,3,-6);scene.add(rim);
+
+/* road: canvas texture with double yellow centre line, white edges */
+function roadTexture(){
+  const c=document.createElement('canvas');c.width=512;c.height=1024;const g=c.getContext('2d');
+  g.fillStyle='#1b1d21';g.fillRect(0,0,512,1024);
+  for(let i=0;i<9000;i++){const v=20+Math.random()*28;g.fillStyle=`rgb(${v},${v},${v+3})`;g.fillRect(Math.random()*512,Math.random()*1024,2,2)}
+  g.fillStyle='#e9e9e4';g.fillRect(28,0,10,1024);g.fillRect(474,0,10,1024);
+  g.fillStyle='#e8b10a';g.fillRect(244,0,8,1024);g.fillRect(260,0,8,1024);
+  g.fillStyle='rgba(233,233,228,.9)';for(let y=0;y<1024;y+=256){g.fillRect(140,y,7,120);g.fillRect(365,y,7,120)}
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1,24);
+  t.anisotropy=renderer.capabilities.getMaxAnisotropy();return t;
+}
+const roadTex=roadTexture();
+const road=new THREE.Mesh(new THREE.PlaneGeometry(14,240),new THREE.MeshStandardMaterial({map:roadTex,roughness:.82,metalness:0}));
+road.rotation.x=-Math.PI/2;road.position.set(-3.1,0,0);scene.add(road);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshStandardMaterial({color:0x0e1014,roughness:1}));
+ground.rotation.x=-Math.PI/2;ground.position.y=-0.01;scene.add(ground);
+
+/* roadside posts with reflectors: they stream past and sell the speed */
+const posts=new THREE.Group();scene.add(posts);
+const postGeo=new THREE.BoxGeometry(.12,1,.12),postMat=new THREE.MeshStandardMaterial({color:0xd9dadc,roughness:.6});
+const refGeo=new THREE.BoxGeometry(.13,.14,.13),refMat=new THREE.MeshStandardMaterial({color:0xf2b400,emissive:0xf2b400,emissiveIntensity:1.4});
+const POST_GAP=12,POSTS=20;
+for(let i=0;i<POSTS;i++){for(const x of [-10.6,4.4]){const p=new THREE.Mesh(postGeo,postMat);p.position.set(x,.5,0);const r=new THREE.Mesh(refGeo,refMat);r.position.set(0,.35,0);p.add(r);p.userData.z0=i*POST_GAP;posts.add(p)}}
+
+/* contact shadow blob */
+function blobTex(){const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');
+  const gr=g.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,'rgba(0,0,0,.85)');gr.addColorStop(.6,'rgba(0,0,0,.45)');gr.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=gr;g.fillRect(0,0,256,256);return new THREE.CanvasTexture(c)}
+const shadow=new THREE.Mesh(new THREE.PlaneGeometry(2.9,6.2),new THREE.MeshBasicMaterial({map:blobTex(),transparent:true,depthWrite:false}));
+shadow.rotation.x=-Math.PI/2;shadow.position.y=0.012;
+
+/* car */
+const car=new THREE.Group();scene.add(car);car.add(shadow);
+const body=new THREE.Group();car.add(body);
+const wheels=[];let paint,lamps;
+const paintTarget=new THREE.Color(window.CAMARO_COLOR||'#B5121B');
+
+const beams=[];
+for(const x of [-.62,.62]){
+  const s=new THREE.SpotLight(0xfff4e0,0,28,0.42,0.55,1.4);s.position.set(x,.72,2.15);s.target.position.set(x*1.6,0,14);
+  body.add(s);body.add(s.target);beams.push(s);
+}
+
+const manager=new THREE.LoadingManager();
+/* the model ships as glTF JSON with its buffer inlined; rebuild a GLB in memory so nothing needs a data: fetch */
+function toGLB(j){
+  const uri=j.buffers[0].uri,bin=Uint8Array.from(atob(uri.slice(uri.indexOf(',')+1)),c=>c.charCodeAt(0));
+  delete j.buffers[0].uri;
+  let js=new TextEncoder().encode(JSON.stringify(j));const jp=(4-js.length%4)%4,bp=(4-bin.length%4)%4;
+  const total=12+8+js.length+jp+8+bin.length+bp,out=new ArrayBuffer(total),dv=new DataView(out),u8=new Uint8Array(out);
+  dv.setUint32(0,0x46546C67,true);dv.setUint32(4,2,true);dv.setUint32(8,total,true);
+  dv.setUint32(12,js.length+jp,true);dv.setUint32(16,0x4E4F534A,true);u8.set(js,20);u8.fill(0x20,20+js.length,20+js.length+jp);
+  let o=20+js.length+jp;dv.setUint32(o,bin.length+bp,true);dv.setUint32(o+4,0x004E4942,true);u8.set(bin,o+8);
+  return out;
+}
+function loadModel(onLoad,onProgress,onError){
+  const xhr=new XMLHttpRequest();xhr.open('GET','camaro.gltf.json');xhr.responseType='json';
+  xhr.onprogress=onProgress;
+  xhr.onload=()=>{if(xhr.status>=400||!xhr.response)return onError(new Error('HTTP '+xhr.status));try{new GLTFLoader(manager).parse(toGLB(xhr.response),'',onLoad,onError)}catch(e){onError(e)}};
+  xhr.onerror=()=>onError(new Error('network'));xhr.send();
+}
+loadModel(gltf=>{
+  const m=gltf.scene;m.scale.setScalar(0.01);m.position.y=0.195;body.add(m);
+  car.updateMatrixWorld(true);
+  const found=[];
+  m.traverse(o=>{
+    if(!o.isMesh)return;
+    const name=o.material.name;
+    if(name==='Body_3'){
+      paint=o.material=new THREE.MeshPhysicalMaterial({color:paintTarget.clone(),metalness:.55,roughness:.32,clearcoat:1,clearcoatRoughness:.06,envMapIntensity:1.2});
+    }else if(name==='Lights_1_8_001_003'){
+      lamps=o.material;lamps.emissive=new THREE.Color(0xffffff);lamps.emissiveMap=lamps.map;lamps.emissiveIntensity=.4;
+    }else if(name==='Matte_3'){o.material.roughness=.4}
+    if(/^Wheel/.test(o.parent.name))found.push(o);
+  });
+  for(const w of found){
+    const c=new THREE.Box3().setFromObject(w).getCenter(new THREE.Vector3());
+    const pivot=new THREE.Group();pivot.position.copy(car.worldToLocal(c.clone()));car.add(pivot);pivot.updateMatrixWorld(true);pivot.attach(w);wheels.push(pivot);
+  }
+  ready=true;
+},e=>{if(e.total){loaderBar.style.width=(e.loaded/e.total*100).toFixed(0)+'%'}},err=>{loaderText.textContent='Не удалось загрузить 3D-модель. Обновите страницу.';console.error(err)});
+let ready=false;
+
+window.addEventListener('camaro:paint',e=>paintTarget.set(e.detail));
+
+/* camera stops: pos, look-at, horizontal frame shift (fraction of width), car yaw */
+const STOPS={
+  hero:     {p:[6.2,1.3,7.4], t:[0,.55,0],  sx:.2, yaw:0},
+  design:   {p:[-9.4,1.0,.3],  t:[0,.6,0],   sx:-.14, yaw:0},
+  drive:    {p:[-3.4,1.35,-7.4],t:[0,.7,1.6], sx:.2, yaw:0},
+  build:    {p:[-5.4,1.7,5.6], t:[0,.5,0],   sx:-.2, yaw:0},
+  trims:    {p:[3.6,7.8,-3.2], t:[0,.2,0],   sx:0,   yaw:0},
+  history:  {p:[1.8,1.0,-8.2], t:[0,.75,0],  sx:0,   yaw:0},
+  testdrive:{p:[5.2,.6,5.9],  t:[0,.65,0],  sx:-.2, yaw:0}
+};
+const MOBILE={hero:{p:[6.6,1.6,8.4],t:[0,.3,0]},design:{p:[-10.5,1.2,.3]},drive:{p:[-2.4,1.9,-9.6],t:[0,.4,1.6]},build:{p:[-6.8,2.2,7]},history:{p:[1.8,1.2,-9.6]},testdrive:{p:[5.2,.9,6.2]}};
+const sections=[...document.querySelectorAll('[data-stop]')];
+let W=1,H=1,mobile=false;
+function resize(){
+  W=innerWidth;H=innerHeight;mobile=W<768;
+  renderer.setSize(W,H,false);camera.aspect=W/H;camera.fov=mobile?44:32;camera.updateProjectionMatrix();
+}
+addEventListener('resize',resize);resize();
+function stopFor(id){const s=STOPS[id],m=mobile?(MOBILE[id]||{}):{};return {p:m.p||s.p,t:m.t||s.t,sx:mobile?0:s.sx,sy:mobile?(id==='hero'?-.2:.26):0}}
+
+/* scroll progress between section anchors */
+function progress(){
+  const y=scrollY+H*.5;let i=0;
+  for(let k=0;k<sections.length;k++){if(sections[k].offsetTop<=y)i=k}
+  const a=sections[i],b=sections[i+1];if(!b)return {i,f:0};
+  const start=a.offsetTop+a.offsetHeight*.5,end=b.offsetTop+b.offsetHeight*.5;
+  let f=(y-start)/(end-start);if(f<0){return {i,f:0}}
+  return {i,f:Math.min(1,f)};
+}
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const v3=a=>new THREE.Vector3(...a);
+const camPos=new THREE.Vector3(14,2,18),camLook=new THREE.Vector3(0,.5,0),wantPos=new THREE.Vector3(),wantLook=new THREE.Vector3();
+let sx=0,sy=0,driveWeight=0,activeId='hero';
+
+/* nav highlight */
+const navLinks=[...document.querySelectorAll('.nav a')];
+
+/* gas pedal */
+let gas=false;const gasBtn=document.getElementById('gas');
+const setGas=v=>{gas=v;gasBtn.setAttribute('aria-pressed',v?'true':'false')};
+gasBtn.addEventListener('pointerdown',e=>{e.preventDefault();try{gasBtn.setPointerCapture(e.pointerId)}catch(_){}setGas(true)});
+['pointerup','pointercancel','lostpointercapture'].forEach(n=>gasBtn.addEventListener(n,()=>setGas(false)));
+gasBtn.addEventListener('keydown',e=>{if(e.key==='Enter'){setGas(true)}});
+gasBtn.addEventListener('keyup',e=>{if(e.key==='Enter')setGas(false)});
+addEventListener('keydown',e=>{if(e.code==='Space'&&activeId==='drive'&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();setGas(true)}});
+addEventListener('keyup',e=>{if(e.code==='Space')setGas(false)});
+
+/* drag to turn the car in the configurator */
+let yawUser=0,yawVel=0,drag=null;
+canvas.style.touchAction='pan-y';
+const dragTarget=document.body;
+dragTarget.addEventListener('pointerdown',e=>{if(activeId!=='build'||e.target.closest('.panel,a,button,header'))return;drag={x:e.clientX,y0:yawUser}});
+addEventListener('pointermove',e=>{if(!drag)return;const nv=drag.y0+(e.clientX-drag.x)*.008;yawVel=nv-yawUser;yawUser=nv});
+addEventListener('pointerup',()=>{drag=null});
+
+const kmhEl=document.getElementById('kmh'),revEl=document.getElementById('revb'),rpmEl=document.getElementById('rpmv');
+let speed=0,dist=0,t0=performance.now(),last=t0,intro=reduce?1:0,shown=0;
+const WHEEL_R=0.35;
+
+function frame(now){
+  const rawDt=Math.min(.5,(now-last)/1000),dt=Math.min(.05,rawDt);last=now;
+  const {i,f}=progress();
+  const A=sections[i].dataset.stop,B=(sections[i+1]||sections[i]).dataset.stop,k=ease(f);
+  activeId=f<.5?A:B;
+  const sa=stopFor(A),sb=stopFor(B);
+  wantPos.lerpVectors(v3(sa.p),v3(sb.p),k);wantLook.lerpVectors(v3(sa.t),v3(sb.t),k);
+  const wsx=sa.sx+(sb.sx-sa.sx)*k,wsy=sa.sy+(sb.sy-sa.sy)*k;
+  const damp=1-Math.pow(.0015,rawDt);
+  camPos.lerp(wantPos,damp);camLook.lerp(wantLook,damp);sx+=(wsx-sx)*damp;sy+=(wsy-sy)*damp;
+
+  /* driving: cruise in the drive stop, throttle adds speed */
+  const dw=(A==='drive'?1-k:0)+(B==='drive'?k:0);driveWeight+=(dw-driveWeight)*damp;
+  const target=gas?250:(driveWeight>.5?60:0);
+  const acc=gas?(speed<100?38:speed<180?20:10):(target>speed?16:-22);
+  speed=Math.max(0,Math.min(250,speed+acc*dt));if(!gas&&speed>target&&target>0)speed=Math.max(target,speed-12*dt);
+  const ms=speed/3.6;dist+=ms*dt;
+
+  /* intro: car rolls in from far down the road and settles */
+  let introZ=0,introV=0;
+  if(intro<1){intro=Math.min(1,(now-t0)/2600);const e=1-Math.pow(1-intro,3);introZ=-34*(1-e);introV=34*3*Math.pow(1-intro,2)/2.6}
+  car.position.z=introZ;
+
+  roadTex.offset.y=-(dist/10)%1;
+  for(const p of posts.children){let z=((p.userData.z0-dist)%(POST_GAP*POSTS)+POST_GAP*POSTS)%(POST_GAP*POSTS)-POST_GAP*5;p.position.z=z}
+  const spin=(ms+introV)/WHEEL_R*dt;for(const w of wheels)w.rotation.x+=spin;
+
+  /* body: squat under throttle, a little road buzz */
+  const buzz=speed>1?Math.sin(now*.031)*.004*Math.min(1,speed/120):0;
+  body.position.y+=(buzz-body.position.y)*.3;
+  body.rotation.x+=(((gas&&speed<200)?-.012:0)-body.rotation.x)*.08;
+
+  /* yaw: user drag in configurator, eases back elsewhere */
+  if(!drag){yawUser+=yawVel;yawVel*=.92;if(activeId!=='build'){yawUser*=.94}}
+  car.rotation.y=yawUser;
+
+  /* headlights brighter while driving and on the hero */
+  const lightOn=Math.min(1,driveWeight+(A==='hero'?1-k:0)+(B==='testdrive'?k:0)+(A==='testdrive'?1-k:0));
+  for(const b of beams)b.intensity=60*lightOn;
+  if(lamps)lamps.emissiveIntensity=.35+1.4*Math.max(lightOn,(A==='history'?1-k:0)+(B==='history'?k:0));
+  if(paint)paint.color.lerp(paintTarget,1-Math.pow(.02,dt));
+
+  /* camera: FOV opens with speed, slight shake at the top end */
+  const shake=speed>150?(speed-150)/100*.02:0;
+  camera.position.set(camPos.x+Math.sin(now*.05)*shake,camPos.y+Math.cos(now*.043)*shake,camPos.z);
+  camera.lookAt(camLook);
+  const baseFov=mobile?44:32;camera.fov+=((baseFov+speed*.05)-camera.fov)*.08;
+  camera.setViewOffset(W,H,-sx*W,sy*H,W,H);camera.updateProjectionMatrix();
+
+  if(Math.abs(shown-speed)>.4||speed===0){shown=speed;kmhEl.textContent=Math.round(speed);
+    const gear=speed<1?0:speed<60?1:speed<100?2:speed<140?3:speed<180?4:speed<220?5:6;
+    const rpm=speed<1?800:Math.min(6500,1800+((speed-[0,0,60,100,140,180,220][gear])/[1,60,40,40,40,40,30][gear])*4300);
+    revEl.style.width=(rpm/8000*100).toFixed(1)+'%';rpmEl.textContent=Math.round(rpm/50)*50+' об/мин'+(gear?', '+gear+'-я':'');}
+  navLinks.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+activeId));
+
+  renderer.render(scene,camera);
+  if(ready&&!shown_ready){shown_ready=true;loaderEl.classList.add('done');window.READY=true}
+}
+let shown_ready=false;
+renderer.setAnimationLoop(frame);
 </script>
 </body>
 </html>
