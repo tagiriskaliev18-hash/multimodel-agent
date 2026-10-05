@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Camaro. Шесть поколений</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a garage-floor page. Wide stance type, a car that drives in across twin rally stripes, then a working configurator, a to-scale trim table, a tachometer and a dated history. */
+:root{
+  --bg:#E6E8EB;        /* concrete */
+  --surface:#F4F5F6;
+  --fg:#14171C;
+  --muted:#59606D;
+  --line:#C6CBD2;
+  --word:#D4D8DE;      /* ghost wordmark */
+  --stripe:#F2B400;    /* rally yellow, road-marking yellow */
+  --stripe-ink:#14171C;
+  --glass:#26303C;
+  --tire:#1A1C20;
+  --rim:#B7BDC6;
+  --redline:#C8321E;
+  --paint:#1F4FA3;     /* set by the configurator */
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Golos Text","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:6px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1216;--surface:#171B21;--fg:#E7E9EC;--muted:#9AA1AC;--line:#2B313A;--word:#1A1F26;
+  --stripe:#F5BC14;--stripe-ink:#14171C;--glass:#0A0D11;--tire:#050607;--rim:#8F96A0;--redline:#F0563F;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1216;--surface:#171B21;--fg:#E7E9EC;--muted:#9AA1AC;--line:#2B313A;--word:#1A1F26;
+  --stripe:#F5BC14;--stripe-ink:#14171C;--glass:#0A0D11;--tire:#050607;--rim:#8F96A0;--redline:#F0563F;color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font:400 1.0625rem/1.6 var(--body);margin:0}
+.wrap{max-width:76rem;margin-inline:auto;padding-inline:clamp(1rem,4vw,2.5rem)}
+h1,h2,h3{font-family:var(--display);line-height:1.08;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(1.75rem,4.2vw,3rem);font-weight:700}
+h3{font-size:1.125rem;font-weight:700}
+p{margin:0;max-width:62ch}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--stripe);outline-offset:3px}
+.lead{font-size:1.1875rem;color:var(--muted)}
+section{padding-block:clamp(3.5rem,8vw,6.5rem)}
+.sec-head{display:grid;gap:1rem;margin-bottom:clamp(2rem,4vw,3rem)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;padding:.75rem 1.4rem;border-radius:var(--r);
+  font:600 1rem var(--body);text-decoration:none;cursor:pointer;border:2px solid var(--fg);background:transparent;color:var(--fg);transition:transform .15s,background .15s,color .15s}
+.btn:hover{background:var(--fg);color:var(--bg)}
+.btn:active{transform:translateY(1px)}
+.btn--go{background:var(--stripe);border-color:var(--stripe);color:var(--stripe-ink)}
+.btn--go:hover{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:1.5rem;min-height:4rem}
+.brand{font:900 1.2rem var(--display);letter-spacing:.06em;text-decoration:none;display:flex;align-items:center;gap:.6rem}
+.brand i{display:inline-flex;gap:3px}
+.brand i b{width:5px;height:1.1rem;background:var(--stripe);display:block}
+.nav{display:flex;gap:1.4rem;margin-left:auto}
+.nav a{text-decoration:none;color:var(--muted);font-weight:500;font-size:.95rem}
+.nav a:hover{color:var(--fg)}
+.theme{width:2.5rem;height:2.5rem;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;display:grid;place-items:center}
+.top .btn{min-height:2.5rem;padding:.4rem 1rem;font-size:.9rem}
+@media (max-width:56rem){.nav{display:none}.theme{margin-left:auto}}
+@media (max-width:26rem){.top .btn{display:none}}
+
+/* hero */
+.hero{padding-block:clamp(2.5rem,6vw,4.5rem) 0;overflow:hidden}
+.hero__text{display:grid;gap:1.25rem;position:relative;z-index:2}
+.hero h1{font-size:clamp(2.1rem,6vw,4.6rem);font-weight:900;max-width:14ch}
+.hero__cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.5rem}
+.stage{position:relative;margin-top:clamp(.5rem,2vw,1rem);height:clamp(13rem,34vw,26rem)}
+.stage__word{position:absolute;inset:0;display:grid;place-items:center;font:900 clamp(4.5rem,21vw,19rem)/1 var(--display);color:var(--word);letter-spacing:-.02em;user-select:none;white-space:nowrap}
+.stage__stripes{position:absolute;left:0;right:0;top:58%;display:grid;gap:clamp(5px,1vw,12px);transform-origin:left}
+.stage__stripes b{display:block;height:clamp(10px,2.2vw,26px);background:var(--stripe)}
+.stage__road{position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--line)}
+.stage .car{position:absolute;left:50%;bottom:-2%;width:min(92%,62rem);transform:translateX(-50%)}
+.hero__facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1px;background:var(--line);border-block:1px solid var(--line)}
+.hero__facts div{background:var(--bg);padding:1.25rem clamp(1rem,2vw,1.5rem)}
+.hero__facts dt{color:var(--muted);font-size:.9rem}
+.hero__facts dd{margin:0;font:700 1.35rem var(--display);font-variant-numeric:tabular-nums}
+
+/* car svg parts */
+.car .paint{fill:var(--paint);transition:fill .45s ease}
+.car .glass{fill:var(--glass)}
+.car .tire{fill:var(--tire)}
+.car .rim{fill:var(--rim)}
+.car .hub{fill:var(--tire)}
+.car .shadow{fill:var(--fg);opacity:.18}
+.car .lamp{fill:var(--surface)}
+.car .tail{fill:var(--redline)}
+.car .crease{fill:none;stroke:var(--fg);stroke-opacity:.25;stroke-width:1.5}
+.car .stripes{fill:none;stroke:var(--stripe);stroke-width:7;stroke-linecap:butt;transition:opacity .3s}
+.car .stripes.off{opacity:0}
+.car .spokes{transform-box:fill-box;transform-origin:center}
+
+/* load sequence: stripes wipe, car rolls in from the right, wheels turn */
+@media (prefers-reduced-motion:no-preference){
+  .stage__stripes{animation:wipe .7s cubic-bezier(.2,.7,.2,1) both}
+  .stage .car{animation:drive 1.4s .35s cubic-bezier(.15,.75,.25,1) both}
+  .stage .car .spokes{animation:spin 1.4s .35s cubic-bezier(.15,.75,.25,1) both}
+}
+@keyframes wipe{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes drive{from{transform:translateX(60%)}to{transform:translateX(-50%)}}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(-720deg)}}
+
+/* configurator */
+.cfg{display:grid;gap:clamp(1.5rem,4vw,3rem);grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:start}
+@media (max-width:60rem){.cfg{grid-template-columns:minmax(0,1fr)}}
+.cfg__view{background:var(--surface);border-radius:var(--r);padding:clamp(1rem,3vw,2rem);display:grid;gap:1rem}
+.cfg__view .car{width:100%;height:auto}
+.cfg__caption{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;color:var(--muted);font-size:.95rem}
+.cfg__caption strong{color:var(--fg)}
+.cfg__panel{display:grid;gap:1.75rem;min-width:0}
+fieldset{border:0;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:.75rem;min-width:0}
+legend{font-weight:600;margin-bottom:.75rem;padding:0}
+.trims{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.chip span{display:block;padding:.55rem 1rem;border:1px solid var(--line);border-radius:var(--r);font-weight:600;background:var(--surface)}
+.chip input:checked+span{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip input:focus-visible+span{outline:3px solid var(--stripe);outline-offset:2px}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(2.75rem,1fr));gap:.5rem;width:100%;max-width:26rem}
+.sw{position:relative;aspect-ratio:1;max-width:100%}
+.sw input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0}
+.sw span{display:block;width:100%;height:100%;border-radius:50%;border:1px solid var(--line);box-shadow:inset 0 -8px 12px rgba(0,0,0,.25),inset 0 6px 10px rgba(255,255,255,.25)}
+.sw input:checked+span{outline:3px solid var(--fg);outline-offset:3px}
+.sw input:focus-visible+span{outline:3px solid var(--stripe);outline-offset:3px}
+.colorname{color:var(--muted);font-size:.95rem}
+.toggle{display:flex;align-items:center;gap:.75rem;cursor:pointer;font-weight:500}
+.toggle input{width:1.25rem;height:1.25rem;accent-color:var(--fg)}
+.readout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.readout div{background:var(--bg);padding:1rem}
+.readout dt{color:var(--muted);font-size:.875rem}
+.readout dd{margin:0;font:700 1.5rem var(--display);font-variant-numeric:tabular-nums;white-space:nowrap}
+.readout dd small{font:500 .85rem var(--body);color:var(--muted);margin-left:.25rem}
+.readout .wide{grid-column:1/-1}
+.readout .wide dd{font:600 1.05rem var(--body);white-space:normal}
+
+/* trims table */
+.tbl{overflow-x:auto;border-top:2px solid var(--fg)}
+table{border-collapse:collapse;width:100%;min-width:44rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:1rem .75rem;border-bottom:1px solid var(--line);vertical-align:middle}
+thead th{font-weight:600;color:var(--muted);font-size:.9rem}
+tbody th{font:700 1.1rem var(--display)}
+.bar{display:flex;align-items:center;gap:.75rem;min-width:14rem}
+.bar i{display:block;height:.6rem;background:var(--fg);border-radius:1px}
+tr.top-trim .bar i{background:var(--stripe)}
+.note{color:var(--muted);font-size:.875rem;margin-top:1rem}
+
+/* engine */
+.engine{background:var(--surface)}
+.engine__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(2rem,5vw,4rem);align-items:center}
+@media (max-width:52rem){.engine__grid{grid-template-columns:1fr}}
+.engine__copy{display:grid;gap:1.25rem}
+.engine__list{list-style:none;padding:0;margin:0;display:grid;gap:.75rem}
+.engine__list li{display:grid;grid-template-columns:8.5rem 1fr;gap:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
+.engine__list b{font-variant-numeric:tabular-nums}
+.engine__list span{color:var(--muted)}
+.tach{display:grid;justify-items:center;gap:1rem}
+.tach svg{width:min(100%,26rem);height:auto}
+.tach .face{fill:var(--bg);stroke:var(--line);stroke-width:2}
+.tach .tick{stroke:var(--fg)}
+.tach .tick.red{stroke:var(--redline)}
+.tach .num{fill:var(--fg);font:600 15px var(--body);text-anchor:middle;dominant-baseline:middle}
+.tach .num.red{fill:var(--redline)}
+.tach .unit{fill:var(--muted);font:500 12px var(--body);text-anchor:middle}
+.tach .rpm{fill:var(--fg);font:700 26px var(--display);text-anchor:middle;font-variant-numeric:tabular-nums}
+.tach .needle{stroke:var(--stripe);stroke-width:4;stroke-linecap:round}
+.tach .cap{fill:var(--fg)}
+
+/* history */
+.timeline{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:2rem 1.5rem}
+.timeline li{border-top:2px solid var(--fg);padding-top:1rem;display:grid;gap:.5rem;align-content:start}
+.timeline time{font:900 2rem var(--display);font-variant-numeric:tabular-nums}
+.timeline li:last-child time{color:var(--fg);box-shadow:inset 0 -.45em 0 var(--stripe);justify-self:start}
+.timeline p{color:var(--muted);font-size:.975rem}
+
+/* test drive */
+.drive{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(2rem,5vw,4rem);align-items:start}
+@media (max-width:52rem){.drive{grid-template-columns:1fr}}
+form{display:grid;gap:1rem;background:var(--surface);padding:clamp(1.25rem,3vw,2rem);border-radius:var(--r)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:30rem){.row{grid-template-columns:1fr}}
+label.f{display:grid;gap:.4rem;font-weight:500;font-size:.95rem;min-width:0}
+input[type=text],input[type=tel],input[type=date],select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:.7rem .8rem;min-height:3rem;width:100%}
+input:focus-visible,select:focus-visible{outline:3px solid var(--stripe);outline-offset:1px}
+.err{color:var(--redline);font-size:.875rem;min-height:1.2em}
+.done{border:2px solid var(--fg);border-radius:var(--r);padding:1.25rem;display:grid;gap:.5rem}
+.done strong{font-family:var(--display)}
+
+footer{border-top:1px solid var(--line);padding-block:2rem 3rem;color:var(--muted);font-size:.9rem}
+footer .wrap{display:grid;gap:.75rem}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Camaro, наверх"><i aria-hidden="true"><b></b><b></b></i>CAMARO</a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#build">Конфигуратор</a>
+      <a href="#trims">Версии</a>
+      <a href="#engine">Двигатель</a>
+      <a href="#history">История</a>
+    </nav>
+    <button class="theme" id="themeBtn" type="button" aria-label="Сменить тему">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
+    </button>
+    <a class="btn btn--go" href="#drive">Тест-драйв</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap hero__text">
+      <h1 id="h1">Шесть поколений. Один характер.</h1>
+      <p class="lead">Camaro с 1967 года. Длинный капот, короткий хвост, атмосферный V8 под сдвоенными полосами. Соберите свою версию и запишитесь на тест-драйв.</p>
+      <div class="hero__cta">
+        <a class="btn btn--go" href="#build">Собрать свою</a>
+        <a class="btn" href="#trims">Сравнить версии</a>
+      </div>
+    </div>
+    <div class="stage" aria-hidden="true">
+      <div class="stage__word">CAMARO</div>
+      <div class="stage__stripes"><b></b><b></b></div>
+      <div class="stage__road"></div>
+      <svg class="car" data-car viewBox="0 0 800 280"></svg>
+    </div>
+    <div class="wrap">
+      <dl class="hero__facts">
+        <div><dt>ZL1, компрессорный V8</dt><dd>659 л.с.</dd></div>
+        <div><dt>Крутящий момент ZL1</dt><dd>881 Н·м</dd></div>
+        <div><dt>0–96 км/ч, ZL1</dt><dd>3,5 с</dd></div>
+        <div><dt>Коробки передач</dt><dd>6МКПП · 10АКПП</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="build" aria-labelledby="build-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="build-h">Соберите свою Camaro</h2>
+        <p class="lead">Выберите версию, цвет кузова и полосы. Характеристики обновляются сразу.</p>
+      </div>
+      <div class="cfg">
+        <div class="cfg__view">
+          <svg class="car" data-car viewBox="0 0 800 280" role="img" aria-label="Camaro в выбранном цвете"></svg>
+          <div class="cfg__caption"><span>Ваша сборка: <strong id="sumText">SS, Riverside Blue, с полосами</strong></span><span>Модельный год 2024</span></div>
+        </div>
+        <div class="cfg__panel">
+          <fieldset>
+            <legend>Версия</legend>
+            <div class="trims" id="trims-pick"></div>
+          </fieldset>
+          <fieldset>
+            <legend>Цвет кузова</legend>
+            <div class="swatches" id="swatches"></div>
+            <div class="colorname" id="colorName" aria-live="polite"></div>
+          </fieldset>
+          <label class="toggle"><input type="checkbox" id="stripes" checked> Сдвоенные полосы на капоте и крышке багажника</label>
+          <dl class="readout" aria-live="polite">
+            <div><dt>Мощность</dt><dd><span id="o-hp">461</span><small>л.с.</small></dd></div>
+            <div><dt>Момент</dt><dd><span id="o-nm">617</span><small>Н·м</small></dd></div>
+            <div><dt>0–96 км/ч</dt><dd><span id="o-acc">4,0</span><small>с</small></dd></div>
+            <div><dt>Цилиндры</dt><dd><span id="o-cyl">V8</span></dd></div>
+            <div class="wide"><dt>Двигатель и коробка</dt><dd id="o-eng"></dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="trims" aria-labelledby="trims-h" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="trims-h">Пять версий, от турбочетвёрки до 659 сил</h2>
+      </div>
+      <div class="tbl">
+        <table>
+          <thead><tr><th scope="col">Версия</th><th scope="col">Двигатель</th><th scope="col">Мощность, в масштабе</th><th scope="col">Момент</th><th scope="col">0–96 км/ч</th><th scope="col">Коробка</th></tr></thead>
+          <tbody id="trimRows"></tbody>
+        </table>
+      </div>
+      <p class="note">Данные для модельного года 2024, рынок США. Мощность пересчитана из hp в метрические л.с., момент из lb-ft в Н·м. 96 км/ч соответствуют 60 милям в час.</p>
+    </div>
+  </section>
+
+  <section id="engine" class="engine" aria-labelledby="engine-h">
+    <div class="wrap engine__grid">
+      <div class="engine__copy">
+        <h2 id="engine-h">LT4: 6,2 литра под компрессором</h2>
+        <p class="lead">Сердце ZL1. Нагнетатель объёмом 1,7 л сидит в развале блока, интеркулер стоит прямо на нём. Отсечка на 6500 об/мин.</p>
+        <ul class="engine__list">
+          <li><b>6162 см³</b><span>рабочий объём, V8, 2 клапана на цилиндр</span></li>
+          <li><b>1,7 л</b><span>компрессор Eaton R1740 TVS</span></li>
+          <li><b>до 0,8 бар</b><span>давление наддува</span></li>
+          <li><b>319 км/ч</b><span>максимальная скорость ZL1</span></li>
+        </ul>
+        <div><button class="btn btn--go" id="revBtn" type="button">Дать перегазовку</button></div>
+      </div>
+      <div class="tach">
+        <svg viewBox="0 0 320 320" role="img" aria-label="Тахометр, отсечка 6500 об/мин">
+          <circle class="face" cx="160" cy="160" r="150"/>
+          <g id="ticks"></g>
+          <line class="needle" id="needle" x1="160" y1="160" x2="160" y2="40"/>
+          <circle class="cap" cx="160" cy="160" r="10"/>
+          <text class="rpm" x="160" y="232" id="rpmText">800</text>
+          <text class="unit" x="160" y="254">об/мин</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section id="history" aria-labelledby="history-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="history-h">От 1967 до Collector's Edition</h2>
+        <p class="lead">Camaro появилась как ответ на Ford Mustang и пережила шесть поколений с одним перерывом.</p>
+      </div>
+      <ol class="timeline">
+        <li><time>1967</time><h3>Первое поколение</h3><p>Дебют в сентябре 1966 года. Пакеты RS и SS, а для гонок Trans-Am версия Z/28.</p></li>
+        <li><time>1970</time><h3>Второе поколение</h3><p>Самое долгое: выпускалось до 1981 года. Европейские пропорции и фастбэк без форточек.</p></li>
+        <li><time>1982</time><h3>Третье поколение</h3><p>Впервые впрыск топлива и пятиступенчатая механика. С 1985 года легендарная IROC-Z.</p></li>
+        <li><time>1993</time><h3>Четвёртое поколение</h3><p>Пластиковые панели кузова, мотор LT1, а с 1998 года алюминиевый LS1. Выпуск прекращён в 2002-м.</p></li>
+        <li><time>2010</time><h3>Пятое поколение</h3><p>Возвращение после восьмилетней паузы. Ретро-дизайн по мотивам 1969 года и роль в кино.</p></li>
+        <li><time>2016</time><h3>Шестое поколение</h3><p>Платформа Alpha, кузов заметно легче и жёстче. Версии 1LE и ZL1 1LE для трека.</p></li>
+        <li><time>2024</time><h3>Collector's Edition</h3><p>Финальная серия шестого поколения. Последняя машина сошла с конвейера в Лансинге в декабре 2023 года.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="drive" aria-labelledby="drive-h" style="padding-top:0">
+    <div class="wrap drive">
+      <div class="sec-head">
+        <h2 id="drive-h">Запишитесь на тест-драйв</h2>
+        <p class="lead">Выберите версию и удобный день. Менеджер перезвонит, чтобы подтвердить время.</p>
+      </div>
+      <div id="formBox">
+        <form id="driveForm" novalidate>
+          <label class="f">Имя<input type="text" id="f-name" autocomplete="given-name" required></label>
+          <div class="row">
+            <label class="f">Телефон<input type="tel" id="f-phone" autocomplete="tel" placeholder="+7 900 000-00-00" required></label>
+            <label class="f">Город<select id="f-city"><option>Москва</option><option>Санкт-Петербург</option><option>Казань</option><option>Екатеринбург</option><option>Новосибирск</option></select></label>
+          </div>
+          <div class="row">
+            <label class="f">Версия<select id="f-trim"></select></label>
+            <label class="f">Дата<input type="date" id="f-date" required></label>
+          </div>
+          <div class="err" id="f-err" role="alert"></div>
+          <button class="btn btn--go" type="submit">Записаться на тест-драйв</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Демонстрационный промо-сайт, собранный для проекта дизайн-скиллов. Это не официальный сайт Chevrolet, заявки никуда не отправляются.</p>
+    <p>Chevrolet и Camaro являются товарными знаками General Motors. Иллюстрации нарисованы с нуля и не воспроизводят фирменные материалы.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  try{var t=localStorage.getItem('camaro-theme');if(t)root.setAttribute('data-theme',t)}catch(e){}
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    var next=cur==='dark'?'light':'dark';root.setAttribute('data-theme',next);
+    try{localStorage.setItem('camaro-theme',next)}catch(e){}
+  });
+
+  /* car: side profile facing left, drawn once and reused */
+  var NS='http://www.w3.org/2000/svg';
+  var carMarkup=
+    '<defs><linearGradient id="SHINE" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient></defs>'+
+    '<ellipse class="shadow" cx="400" cy="262" rx="360" ry="12"/>'+
+    '<path class="paint" d="M62 214 L58 186 Q60 160 96 152 L248 134 Q318 128 362 120 L438 82 Q470 74 522 77 Q566 80 606 96 Q636 110 664 118 L738 126 L746 140 L748 192 Q746 212 724 214 L661 214 A52 52 0 0 0 559 214 L241 214 A52 52 0 0 0 139 214 Z"/>'+
+    '<path d="M62 214 L58 186 Q60 160 96 152 L248 134 Q318 128 362 120 L438 82 Q470 74 522 77 Q566 80 606 96 Q636 110 664 118 L738 126 L746 140 L748 192 Q746 212 724 214 L661 214 A52 52 0 0 0 559 214 L241 214 A52 52 0 0 0 139 214 Z" fill="url(#SHINE)"/>'+
+    '<path class="glass" d="M378 124 L444 90 Q470 84 512 86 L512 124 Z"/>'+
+    '<path class="glass" d="M522 87 Q560 90 596 104 L616 122 L522 124 Z"/>'+
+    '<path class="crease" d="M96 166 L300 150 Q520 140 742 146"/>'+
+    '<path class="crease" d="M150 200 L700 196"/>'+
+    '<path class="lamp" d="M66 170 L134 160 L132 170 L70 178 Z"/>'+
+    '<path class="tail" d="M728 140 L746 142 L746 160 L730 158 Z"/>'+
+    '<path class="glass" d="M70 196 L120 192 L118 204 L72 206 Z" opacity=".7"/>'+
+    '<g class="stripes"><path d="M104 147 L246 131 Q300 126 340 120"/><path d="M670 116 L736 123"/></g>'+
+    wheel(190)+wheel(610);
+  function wheel(cx){
+    var s='<circle class="tire" cx="'+cx+'" cy="222" r="44"/><circle class="rim" cx="'+cx+'" cy="222" r="31"/><g class="spokes">';
+    for(var i=0;i<5;i++){var a=i*72*Math.PI/180;
+      s+='<path class="hub" d="M'+cx+' 222 L'+(cx+29*Math.cos(a-0.2)).toFixed(1)+' '+(222+29*Math.sin(a-0.2)).toFixed(1)+' L'+(cx+29*Math.cos(a+0.2)).toFixed(1)+' '+(222+29*Math.sin(a+0.2)).toFixed(1)+' Z" opacity=".55"/>';}
+    return s+'<circle class="hub" cx="'+cx+'" cy="222" r="8"/></g>';
+  }
+  var cars=document.querySelectorAll('[data-car]');
+  cars.forEach(function(svg,i){svg.innerHTML=carMarkup.replace(/SHINE/g,'shine'+i)});
+
+  /* data, MY2024 US: hp -> metric PS (x1.0139), lb-ft -> N·m (x1.3558) */
+  var TRIMS=[
+    {id:'1LT',hp:279,nm:400,acc:'5,4',cyl:'L4',eng:'2,0 л турбо L4',box:'6МКПП или 8АКПП'},
+    {id:'3LT',hp:340,nm:385,acc:'5,1',cyl:'V6',eng:'3,6 л V6',box:'8АКПП'},
+    {id:'LT1',hp:461,nm:617,acc:'4,4',cyl:'V8',eng:'6,2 л V8 LT1',box:'6МКПП или 10АКПП'},
+    {id:'SS',hp:461,nm:617,acc:'4,0',cyl:'V8',eng:'6,2 л V8 LT1, Brembo, Magnetic Ride',box:'6МКПП или 10АКПП'},
+    {id:'ZL1',hp:659,nm:881,acc:'3,5',cyl:'V8',eng:'6,2 л V8 LT4 с компрессором',box:'6МКПП или 10АКПП'}
+  ];
+  var COLORS=[
+    {n:'Riverside Blue Metallic',ru:'синий металлик',c:'#1F4FA3'},
+    {n:'Red Hot',ru:'красный',c:'#C21F1F'},
+    {n:'Shock',ru:'жёлто-зелёный',c:'#D9D21A'},
+    {n:'Vivid Orange Metallic',ru:'оранжевый металлик',c:'#E0641B'},
+    {n:'Rally Green Metallic',ru:'тёмно-зелёный металлик',c:'#2E5A3E'},
+    {n:'Satin Steel Grey Metallic',ru:'стальной серый',c:'#6B7078'},
+    {n:'Summit White',ru:'белый',c:'#ECEDEE'},
+    {n:'Black',ru:'чёрный',c:'#1B1C1F'}
+  ];
+  var state={trim:'SS',color:0,stripes:true};
+
+  var tp=document.getElementById('trims-pick'), sel=document.getElementById('f-trim'), rows=document.getElementById('trimRows');
+  var maxHp=Math.max.apply(null,TRIMS.map(function(t){return t.hp}));
+  TRIMS.forEach(function(t){
+    tp.insertAdjacentHTML('beforeend','<label class="chip"><input type="radio" name="trim" id="trim-'+t.id+'" value="'+t.id+'"'+(t.id===state.trim?' checked':'')+'><span>'+t.id+'</span></label>');
+    sel.insertAdjacentHTML('beforeend','<option'+(t.id===state.trim?' selected':'')+'>'+t.id+'</option>');
+    rows.insertAdjacentHTML('beforeend','<tr'+(t.hp===maxHp?' class="top-trim"':'')+'><th scope="row">'+t.id+'</th><td>'+t.eng+'</td><td><div class="bar"><i style="width:'+(t.hp/maxHp*10).toFixed(2)+'rem"></i>'+t.hp+' л.с.</div></td><td>'+t.nm+' Н·м</td><td>'+t.acc+' с</td><td>'+t.box+'</td></tr>');
+  });
+  var sw=document.getElementById('swatches');
+  COLORS.forEach(function(c,i){
+    sw.insertAdjacentHTML('beforeend','<label class="sw" title="'+c.n+'"><input type="radio" name="color" id="color-'+i+'" value="'+i+'" aria-label="'+c.n+', '+c.ru+'"'+(i===state.color?' checked':'')+'><span style="background:'+c.c+'"></span></label>');
+  });
+
+  function tween(el,to,dec){
+    var from=parseFloat(el.textContent.replace(',','.'))||0,start=null,dur=500;
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=dec?to.toFixed(1).replace('.',','):to;return}
+    function step(ts){if(!start)start=ts;var k=Math.min(1,(ts-start)/dur);k=1-Math.pow(1-k,3);
+      var v=from+(to-from)*k;el.textContent=dec?v.toFixed(1).replace('.',','):Math.round(v);if(k<1)requestAnimationFrame(step)}
+    requestAnimationFrame(step);
+  }
+  function render(first){
+    var t=TRIMS.find(function(x){return x.id===state.trim}), c=COLORS[state.color];
+    root.style.setProperty('--paint',c.c);
+    document.querySelectorAll('.car .stripes').forEach(function(g){g.classList.toggle('off',!state.stripes)});
+    document.getElementById('colorName').textContent=c.n+', '+c.ru;
+    document.getElementById('o-cyl').textContent=t.cyl;
+    document.getElementById('o-eng').textContent=t.eng+', '+t.box;
+    if(first){document.getElementById('o-hp').textContent=t.hp;document.getElementById('o-nm').textContent=t.nm;document.getElementById('o-acc').textContent=t.acc}
+    else{tween(document.getElementById('o-hp'),t.hp);tween(document.getElementById('o-nm'),t.nm);tween(document.getElementById('o-acc'),parseFloat(t.acc.replace(',','.')),true)}
+    document.getElementById('sumText').textContent=t.id+', '+c.n.replace(' Metallic','')+(state.stripes?', с полосами':', без полос');
+    sel.value=t.id;
+  }
+  tp.addEventListener('change',function(e){state.trim=e.target.value;render()});
+  sw.addEventListener('change',function(e){state.color=+e.target.value;render()});
+  document.getElementById('stripes').addEventListener('change',function(e){state.stripes=e.target.checked;render()});
+  render(true);
+
+  /* tachometer, drawn to one scale: 0..8000 rpm over -135..135 deg */
+  var ticks=document.getElementById('ticks'), MAX=8000, RED=6500;
+  function ang(r){return -135+270*r/MAX}
+  function pt(a,rad){var t=(a-90)*Math.PI/180;return [160+rad*Math.cos(t),160+rad*Math.sin(t)]}
+  var g='';
+  for(var r=0;r<=MAX;r+=250){var a=ang(r),major=r%1000===0,p1=pt(a,140),p2=pt(a,major?120:130),red=r>=RED;
+    g+='<line class="tick'+(red?' red':'')+'" x1="'+p1[0].toFixed(1)+'" y1="'+p1[1].toFixed(1)+'" x2="'+p2[0].toFixed(1)+'" y2="'+p2[1].toFixed(1)+'" stroke-width="'+(major?3:1.5)+'"/>';
+    if(major){var q=pt(a,103);g+='<text class="num'+(red?' red':'')+'" x="'+q[0].toFixed(1)+'" y="'+q[1].toFixed(1)+'">'+(r/1000)+'</text>'}}
+  ticks.innerHTML=g;
+  var needle=document.getElementById('needle'), rpmText=document.getElementById('rpmText'), rpm=800, busy=false;
+  function setRpm(v){rpm=v;needle.setAttribute('transform','rotate('+ang(v).toFixed(2)+' 160 160)');rpmText.textContent=Math.round(v/10)*10}
+  setRpm(800);
+  document.getElementById('revBtn').addEventListener('click',function(){
+    if(busy)return;busy=true;
+    var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce){setRpm(RED);setTimeout(function(){setRpm(800);busy=false},700);return}
+    var t0=null;
+    function f(ts){if(!t0)t0=ts;var t=(ts-t0)/1000,v;
+      if(t<.45)v=800+(RED-800)*(1-Math.pow(1-t/.45,2));
+      else if(t<.6)v=RED-Math.abs(Math.sin(t*90))*180;
+      else if(t<1.8)v=800+(RED-800)*Math.pow(1-(t-.6)/1.2,2.2);
+      else{setRpm(800);busy=false;return}
+      setRpm(v);requestAnimationFrame(f)}
+    requestAnimationFrame(f);
+  });
+
+  /* test-drive form: validated in page, nothing is sent */
+  var d=new Date();d.setDate(d.getDate()+1);var iso=d.toISOString().slice(0,10);
+  var fd=document.getElementById('f-date');fd.min=iso;fd.value=iso;
+  document.getElementById('driveForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var name=document.getElementById('f-name').value.trim(), phone=document.getElementById('f-phone').value.replace(/\D/g,''), err=document.getElementById('f-err');
+    if(!name){err.textContent='Укажите имя, чтобы менеджер знал, как к вам обращаться.';return}
+    if(phone.length<10){err.textContent='Проверьте телефон: нужно не меньше 10 цифр.';return}
+    if(!fd.value){err.textContent='Выберите дату тест-драйва.';return}
+    var dt=new Date(fd.value+'T12:00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
+    var box=document.getElementById('formBox');
+    box.innerHTML='<div class="done" role="status"><strong>Заявка заполнена</strong><p></p><p class="note" style="margin:0">Это демо-сайт: заявка сохранена только на этой странице и никуда не отправлена.</p></div>';
+    box.querySelector('p').textContent=name+', ждём вас на '+sel.value+' '+dt+' в городе '+document.getElementById('f-city').value+'.';
+  });
+})();
+</script>
+</body>
+</html>
