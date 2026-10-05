@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Golos+Text:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: one night road, one real 3D car. The WebGL scene is fixed behind the page; each section is a camera stop on the same car, and the copy sits in glass panels beside it. Single dark look by choice: headlights and lane paint need the night. */
+/* Layout: one alpine road, one real 3D car. The WebGL scene is fixed behind the page; each section is a camera stop on the same car, and the copy sits in glass panels beside it. Single dark look by choice: headlights and lane paint need the night. */
 :root{
   --bg:#0B0D11;
   --panel:rgba(16,19,25,.72);
@@ -58,13 +58,16 @@ a{color:inherit}
 .stop--low{align-items:flex-end}
 .panel{background:var(--panel);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border:1px solid var(--line);border-radius:var(--r);padding:clamp(1.25rem,2.6vw,2rem);max-width:30rem;display:grid;gap:1rem;min-width:0}
 .panel--wide{max-width:64rem;width:100%}
+#trims .panel--wide{max-width:58rem}
 .lead{font-size:1.125rem;color:var(--muted);max-width:56ch}
 
 /* hero */
 .hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding-block:7rem 2rem}
 .hero h1{font-size:clamp(2.3rem,5.4vw,4.9rem);font-weight:900;max-width:11ch;text-shadow:0 2px 24px rgba(11,13,17,.6)}
 .hero .lead{color:var(--fg);opacity:.85;text-shadow:0 1px 12px rgba(11,13,17,.9)}
-.hero__copy{display:grid;gap:1.25rem;max-width:34rem}
+.hero__copy{display:grid;gap:1.25rem;max-width:34rem;position:relative}
+.hero::before{content:"";position:absolute;inset:0 35% 0 calc(-1*clamp(1rem,4vw,3rem));background:linear-gradient(90deg,rgba(11,13,17,.62),rgba(11,13,17,0));pointer-events:none;z-index:-1}
+.hero{position:relative}
 .hero__cta{display:flex;flex-wrap:wrap;gap:.75rem}
 .hero__facts{display:flex;flex-wrap:wrap;gap:clamp(1.25rem,4vw,3.5rem);margin:0}
 .hero__facts dt{color:var(--muted);font-size:.875rem}
@@ -115,8 +118,9 @@ legend{font-weight:600;margin-bottom:.75rem;padding:0}
 /* trims table */
 .tbl{overflow-x:auto}
 table{border-collapse:collapse;width:100%;min-width:44rem;font-variant-numeric:tabular-nums}
-th,td{text-align:left;white-space:nowrap;padding:.85rem .7rem;border-bottom:1px solid var(--line);vertical-align:middle}
+th,td{text-align:left;padding:.85rem .7rem;border-bottom:1px solid var(--line);vertical-align:middle}
 thead th{font-weight:600;color:var(--muted);font-size:.875rem}
+td:nth-child(2),td:last-child{min-width:9rem}
 tbody th{font:700 1.05rem var(--display)}
 .bar{display:flex;align-items:center;gap:.75rem;min-width:13rem}
 .bar i{display:block;height:.55rem;background:var(--fg);border-radius:1px}
@@ -155,8 +159,6 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 }
 .nogl .loader{display:none}
 </style>
-</head>
-<body>
 
 <canvas id="gl" aria-label="3D-модель Chevrolet Camaro на ночной дороге" role="img"></canvas>
 
@@ -229,6 +231,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
         <legend>Версия</legend>
         <div class="trims" id="trims-pick"></div>
       </fieldset>
+      <label class="toggle"><input type="checkbox" id="stripes" checked> Сдвоенные гоночные полосы</label>
       <dl class="readout" aria-live="polite">
         <div><dt>Мощность</dt><dd><span id="o-hp">461</span><small>л.с.</small></dd></div>
         <div><dt>Момент</dt><dd><span id="o-nm">617</span><small>Н·м</small></dd></div>
@@ -239,7 +242,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
     </div>
   </section>
 
-  <section class="stop stop--low" id="trims" data-stop="trims" aria-labelledby="trims-h">
+  <section class="stop stop--r" id="trims" data-stop="trims" aria-labelledby="trims-h">
     <div class="panel panel--wide">
       <h2 id="trims-h">Пять версий, от турбочетвёрки до 659 сил</h2>
       <div class="tbl">
@@ -288,7 +291,8 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 </main>
 
 <footer>
-  <p>3D-модель «Chevrolet Camaro»: автор <a href="https://sketchfab.com/GregX">GregX</a>, <a href="https://sketchfab.com/3d-models/chevrolet-camaro-dee5eed83d2442c49ce360e87ef08ef1">Sketchfab</a>, лицензия <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Для сайта модель сжата, текстуры переведены в WebP, материал кузова заменён.</p>
+  <p>3D-модель «Chevrolet Camaro»: автор <a href="https://sketchfab.com/GregX">GregX</a>, <a href="https://sketchfab.com/3d-models/chevrolet-camaro-dee5eed83d2442c49ce360e87ef08ef1">Sketchfab</a>, лицензия <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Для сайта модель сжата, материалы кузова заменены, добавлены полосы, вентиляция капота, сплиттеры и антикрылья по версиям.</p>
+  <p>Панорама «Alps Field» (Andreas Mischok) и текстура асфальта «Asphalt 07» с <a href="https://polyhaven.com">Poly Haven</a>, лицензия CC0.</p>
   <p>Демонстрационный промо-сайт, не официальный сайт Chevrolet. Заявки никуда не отправляются. Chevrolet и Camaro являются товарными знаками General Motors.</p>
 </footer>
 
@@ -338,10 +342,12 @@ window.COLORS=[
     else{tween(hp,t.hp);tween(nm,t.nm);tween(acc,parseFloat(t.acc.replace(',','.')),true)}
     sel.value=t.id;
     window.dispatchEvent(new CustomEvent('camaro:paint',{detail:c.c}));
+    window.dispatchEvent(new CustomEvent('camaro:trim',{detail:state.trim}));
   }
   tp.addEventListener('change',function(e){state.trim=e.target.value;render()});
   sw.addEventListener('change',function(e){state.color=+e.target.value;render()});
   window.CAMARO_COLOR=C[state.color].c;
+  document.getElementById('stripes').addEventListener('change',function(e){window.dispatchEvent(new CustomEvent('camaro:stripes',{detail:e.target.checked}))});
   render(true);
 
   var d=new Date();d.setDate(d.getDate()+1);var fd=document.getElementById('f-date');fd.min=fd.value=d.toISOString().slice(0,10);
@@ -359,159 +365,272 @@ window.COLORS=[
 })();
 </script>
 
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {RGBELoader} from 'three/addons/loaders/RGBELoader.js';
+import {GroundedSkybox} from 'three/addons/objects/GroundedSkybox.js';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
 
 const canvas=document.getElementById('gl');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const loaderEl=document.getElementById('loader'),loaderBar=document.getElementById('loaderBar'),loaderText=document.getElementById('loaderText');
+const SKYROT=Math.PI*0.5;               // puts the Alps behind the car for front-facing cameras
+const SUN0=new THREE.Vector3(0.601,0.669,0.437); // sun direction measured in the source panorama
 
 let renderer;
-try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'})}
+try{renderer=new THREE.WebGLRenderer({canvas,antialias:false,powerPreference:'high-performance'})}
 catch(e){document.documentElement.classList.add('nogl');canvas.remove();throw e}
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.toneMapping=THREE.ACESFilmicToneMapping;
+const isMobile=()=>innerWidth<768;
+renderer.setPixelRatio(Math.min(devicePixelRatio,isMobile()?1.5:2));
+renderer.toneMapping=THREE.NeutralToneMapping;
 renderer.toneMappingExposure=1.0;
 renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const maxAniso=renderer.capabilities.getMaxAnisotropy();
 
-const BG=0x0B0D11;
 const scene=new THREE.Scene();
-scene.background=new THREE.Color(BG);
-scene.fog=new THREE.FogExp2(BG,0.045);
+scene.background=new THREE.Color(0x9fb8d6);
+const camera=new THREE.PerspectiveCamera(32,1,0.1,1200);
+
+/* loading progress across all assets */
+let assetsDone=0;const ASSETS=4;
+function assetLoaded(label){assetsDone++;loaderBar.style.width=(assetsDone/ASSETS*100).toFixed(0)+'%';if(label)loaderText.textContent=label}
+
+/* sky: real 4k panorama projected so the meadow becomes a flat ground under the car */
 const pmrem=new THREE.PMREMGenerator(renderer);
-scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;
-scene.environmentIntensity=0.55;
+new THREE.TextureLoader().load('sky.jpg',tex=>{
+  tex.colorSpace=THREE.SRGBColorSpace;tex.mapping=THREE.EquirectangularReflectionMapping;tex.anisotropy=maxAniso;
+  const sky=new GroundedSkybox(tex,2.2,300);sky.position.y=2.2;sky.rotation.y=SKYROT;scene.add(sky);scene.background=null;
+  assetLoaded('Загружаем освещение');
+},undefined,()=>assetLoaded());
+/* HDR for lighting and reflections */
+const envRot=new THREE.Euler(0,SKYROT,0);
+fetch('env.b64.txt').then(r=>r.text()).then(b=>{
+  const bin=atob(b.trim()),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+  const url=URL.createObjectURL(new Blob([u8]));
+  new RGBELoader().setDataType(THREE.HalfFloatType).load(url,tex=>{
+    tex.mapping=THREE.EquirectangularReflectionMapping;
+    scene.environment=pmrem.fromEquirectangular(tex).texture;scene.environmentRotation=envRot;scene.environmentIntensity=1.05;tex.dispose();
+    URL.revokeObjectURL(url);assetLoaded('Загружаем дорогу');
+  },undefined,()=>assetLoaded());
+}).catch(()=>assetLoaded());
 
-const camera=new THREE.PerspectiveCamera(32,1,0.1,200);
+/* sun */
+const sunDir=SUN0.clone().applyEuler(envRot).normalize();
+const sun=new THREE.DirectionalLight(0xfff0dc,2.6);
+sun.position.copy(sunDir).multiplyScalar(14);sun.target.position.set(0,0,0);
+sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-6,right:6,top:6,bottom:-6,near:1,far:40});
+sun.shadow.bias=-0.0004;sun.shadow.normalBias=0.025;sun.shadow.radius=3;
+scene.add(sun,sun.target);
+const fill=new THREE.DirectionalLight(0xdbe8ff,0.7);fill.position.set(-4,3,7);scene.add(fill);
 
-/* lights: cool moon fill, warm key, two headlight beams */
-scene.add(new THREE.HemisphereLight(0x8fa3c4,0x0b0d11,0.6));
-const key=new THREE.DirectionalLight(0xfff1dd,2.2);key.position.set(5,8,4);scene.add(key);
-const rim=new THREE.DirectionalLight(0x9db8ff,1.6);rim.position.set(-6,3,-6);scene.add(rim);
-
-/* road: canvas texture with double yellow centre line, white edges */
-function roadTexture(){
+/* road */
+const texLoader=new THREE.TextureLoader();
+function roadMap(url,srgb,cb){return texLoader.load(url,t=>{t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(14/3,90);t.anisotropy=maxAniso;if(srgb)t.colorSpace=THREE.SRGBColorSpace;cb&&cb()})}
+let roadLoaded=0;const roadDone=()=>{if(++roadLoaded===3)assetLoaded('Загружаем модель')};
+const roadMat=new THREE.MeshStandardMaterial({
+  map:roadMap('road_diff.jpg',true,roadDone),normalMap:roadMap('road_nor.jpg',false,roadDone),roughnessMap:roadMap('road_rough.jpg',false,roadDone),
+  roughness:1,envMapIntensity:.7});
+roadMat.normalScale.set(1.2,1.2);
+const ROAD_L=260;
+const road=new THREE.Mesh(new THREE.PlaneGeometry(14,ROAD_L),roadMat);
+road.rotation.x=-Math.PI/2;road.position.set(-3.1,0.012,0);road.receiveShadow=true;scene.add(road);
+function markingTexture(){
   const c=document.createElement('canvas');c.width=512;c.height=1024;const g=c.getContext('2d');
-  g.fillStyle='#1b1d21';g.fillRect(0,0,512,1024);
-  for(let i=0;i<9000;i++){const v=20+Math.random()*28;g.fillStyle=`rgb(${v},${v},${v+3})`;g.fillRect(Math.random()*512,Math.random()*1024,2,2)}
-  g.fillStyle='#e9e9e4';g.fillRect(28,0,10,1024);g.fillRect(474,0,10,1024);
-  g.fillStyle='#e8b10a';g.fillRect(244,0,8,1024);g.fillRect(260,0,8,1024);
-  g.fillStyle='rgba(233,233,228,.9)';for(let y=0;y<1024;y+=256){g.fillRect(140,y,7,120);g.fillRect(365,y,7,120)}
-  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1,24);
-  t.anisotropy=renderer.capabilities.getMaxAnisotropy();return t;
+  g.clearRect(0,0,512,1024);
+  g.fillStyle='rgba(236,236,228,.88)';g.fillRect(28,0,9,1024);g.fillRect(475,0,9,1024);
+  g.fillStyle='rgba(232,176,12,.92)';g.fillRect(244,0,8,1024);g.fillRect(260,0,8,1024);
+  g.fillStyle='rgba(236,236,228,.9)';for(let y=0;y<1024;y+=256){g.fillRect(140,y,7,120);g.fillRect(365,y,7,120)}
+  for(let i=0;i<4000;i++){g.clearRect(Math.random()*512,Math.random()*1024,2+Math.random()*3,1+Math.random()*3)} // worn paint
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1,ROAD_L/10);t.anisotropy=maxAniso;return t;
 }
-const roadTex=roadTexture();
-const road=new THREE.Mesh(new THREE.PlaneGeometry(14,240),new THREE.MeshStandardMaterial({map:roadTex,roughness:.82,metalness:0}));
-road.rotation.x=-Math.PI/2;road.position.set(-3.1,0,0);scene.add(road);
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshStandardMaterial({color:0x0e1014,roughness:1}));
-ground.rotation.x=-Math.PI/2;ground.position.y=-0.01;scene.add(ground);
+const markTex=markingTexture();
+const marks=new THREE.Mesh(new THREE.PlaneGeometry(14,ROAD_L),new THREE.MeshStandardMaterial({map:markTex,transparent:true,roughness:.7,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,envMapIntensity:.6}));
+marks.rotation.x=-Math.PI/2;marks.position.set(-3.1,0.016,0);marks.receiveShadow=true;scene.add(marks);
 
-/* roadside posts with reflectors: they stream past and sell the speed */
+/* gravel shoulders so the asphalt edge blends into the meadow */
+function shoulderTexture(){
+  const c=document.createElement('canvas');c.width=256;c.height=256;const g=c.getContext('2d');
+  const gr=g.createLinearGradient(0,0,256,0);gr.addColorStop(0,'rgba(92,80,62,0)');gr.addColorStop(.35,'rgba(92,80,62,.85)');gr.addColorStop(1,'rgba(92,80,62,.95)');
+  g.fillStyle=gr;g.fillRect(0,0,256,256);
+  for(let i=0;i<5000;i++){const v=60+Math.random()*60;g.fillStyle=`rgba(${v},${v-8},${v-20},${.2+Math.random()*.4})`;g.fillRect(Math.random()*256,Math.random()*256,2,2)}
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1,ROAD_L/4);return t;
+}
+const shMat=new THREE.MeshStandardMaterial({map:shoulderTexture(),transparent:true,roughness:1,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1});
+const shL=new THREE.Mesh(new THREE.PlaneGeometry(3,ROAD_L),shMat);shL.rotation.x=-Math.PI/2;shL.rotation.z=Math.PI;shL.position.set(-10.1-1.5+.4,0.008,0);shL.receiveShadow=true;
+const shR=new THREE.Mesh(new THREE.PlaneGeometry(3,ROAD_L),shMat);shR.rotation.x=-Math.PI/2;shR.position.set(3.9+1.5-.4,0.008,0);shR.receiveShadow=true;
+scene.add(shL,shR);
+
+/* roadside delineators */
 const posts=new THREE.Group();scene.add(posts);
-const postGeo=new THREE.BoxGeometry(.12,1,.12),postMat=new THREE.MeshStandardMaterial({color:0xd9dadc,roughness:.6});
-const refGeo=new THREE.BoxGeometry(.13,.14,.13),refMat=new THREE.MeshStandardMaterial({color:0xf2b400,emissive:0xf2b400,emissiveIntensity:1.4});
-const POST_GAP=12,POSTS=20;
-for(let i=0;i<POSTS;i++){for(const x of [-10.6,4.4]){const p=new THREE.Mesh(postGeo,postMat);p.position.set(x,.5,0);const r=new THREE.Mesh(refGeo,refMat);r.position.set(0,.35,0);p.add(r);p.userData.z0=i*POST_GAP;posts.add(p)}}
+const postGeo=new THREE.CylinderGeometry(.04,.04,1.1,8),postMat=new THREE.MeshStandardMaterial({color:0xe8e8e4,roughness:.55});
+const capGeo=new THREE.BoxGeometry(.07,.16,.02),capMat=new THREE.MeshStandardMaterial({color:0xf2b400,emissive:0xf2b400,emissiveIntensity:.25,roughness:.4});
+const POST_GAP=14,POSTS=18;
+for(let i=0;i<POSTS;i++){for(const x of [-10.8,9.6]){const p=new THREE.Mesh(postGeo,postMat);p.position.set(x,.55,0);p.castShadow=true;const r=new THREE.Mesh(capGeo,capMat);r.position.set(0,.34,x<0?.045:-.045);p.add(r);p.userData.z0=i*POST_GAP;posts.add(p)}}
 
-/* contact shadow blob */
+/* soft contact shadow under the tyres */
 function blobTex(){const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');
-  const gr=g.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,'rgba(0,0,0,.85)');gr.addColorStop(.6,'rgba(0,0,0,.45)');gr.addColorStop(1,'rgba(0,0,0,0)');
+  const gr=g.createRadialGradient(128,128,8,128,128,128);gr.addColorStop(0,'rgba(0,0,0,.9)');gr.addColorStop(.55,'rgba(0,0,0,.5)');gr.addColorStop(1,'rgba(0,0,0,0)');
   g.fillStyle=gr;g.fillRect(0,0,256,256);return new THREE.CanvasTexture(c)}
-const shadow=new THREE.Mesh(new THREE.PlaneGeometry(2.9,6.2),new THREE.MeshBasicMaterial({map:blobTex(),transparent:true,depthWrite:false}));
-shadow.rotation.x=-Math.PI/2;shadow.position.y=0.012;
+const blob=new THREE.Mesh(new THREE.PlaneGeometry(2.6,5.6),new THREE.MeshBasicMaterial({map:blobTex(),transparent:true,depthWrite:false,opacity:.75}));
+blob.rotation.x=-Math.PI/2;blob.position.set(0,0.02,-.35);
 
 /* car */
-const car=new THREE.Group();scene.add(car);car.add(shadow);
+const car=new THREE.Group();scene.add(car);car.add(blob);
 const body=new THREE.Group();car.add(body);
-const wheels=[];let paint,lamps;
+const wheels=[];let paint,lamps,wheelMat,bodyMesh;
 const paintTarget=new THREE.Color(window.CAMARO_COLOR||'#B5121B');
+const carbon=new THREE.MeshPhysicalMaterial({color:0x0c0d0f,roughness:.38,metalness:.2,clearcoat:.9,clearcoatRoughness:.12});
+const extras=new THREE.Group();   // splitter, spoiler, wing (rebuilt per trim)
+const uniforms={uStripeCol:{value:new THREE.Color(0xf3f3ef)},uStripeOn:{value:1},uVent:{value:1}};
+let trimId='SS',stripesOn=true;
 
-const beams=[];
-for(const x of [-.62,.62]){
-  const s=new THREE.SpotLight(0xfff4e0,0,28,0.42,0.55,1.4);s.position.set(x,.72,2.15);s.target.position.set(x*1.6,0,14);
-  body.add(s);body.add(s.target);beams.push(s);
+const TRIM_FX={
+  '1LT':{drop:0,  wheel:.96,rim:1.0, splitter:0,spoiler:0,wing:0,vents:0,tail:0},
+  '3LT':{drop:.01,wheel:.99,rim:.82, splitter:0,spoiler:0,wing:0,vents:0,tail:0},
+  'LT1':{drop:.02,wheel:1.0,rim:.5,  splitter:0,spoiler:0,wing:0,vents:1,tail:0},
+  'SS': {drop:.035,wheel:1.02,rim:.14,splitter:1,spoiler:1,wing:0,vents:1,tail:1},
+  'ZL1':{drop:.055,wheel:1.04,rim:.12,splitter:2,spoiler:0,wing:1,vents:2,tail:1}
+};
+
+const ray=new THREE.Raycaster();
+function surfaceY(x,z){ray.set(new THREE.Vector3(x,3,z),new THREE.Vector3(0,-1,0));const h=ray.intersectObject(bodyMesh,false);return h.length?h[0].point.y:1}
+
+function buildExtras(){
+  extras.clear();
+  const fx=TRIM_FX[trimId];const add=(geo,x,y,z,rx=0)=>{const m=new THREE.Mesh(geo,carbon);m.position.set(x,y,z);m.rotation.x=rx;m.castShadow=true;m.receiveShadow=true;extras.add(m);return m};
+  if(fx.splitter){const big=fx.splitter===2;add(new THREE.BoxGeometry(big?1.5:1.3,.02,big?.17:.1),0,.17,big?1.9:1.88,.04);if(big){add(new THREE.BoxGeometry(.02,.05,.17),.75,.18,1.9);add(new THREE.BoxGeometry(.02,.05,.17),-.75,.18,1.9)}}
+  const yTrunk=surfaceY(0,-2.35);
+  if(fx.spoiler){add(new THREE.BoxGeometry(1.42,.03,.17),0,yTrunk+.05,-2.55,.18)}
+  if(fx.wing){
+    const zc=-2.58,yw=yTrunk+.3;
+    add(new THREE.BoxGeometry(1.62,.028,.38),0,yw,zc,.1);
+    add(new THREE.BoxGeometry(.03,.14,.4),.81,yw+.02,zc,.1);add(new THREE.BoxGeometry(.03,.14,.4),-.81,yw+.02,zc,.1);
+    for(const x of [-.42,.42])add(new THREE.BoxGeometry(.05,.3,.1),x,yTrunk+.12,zc+.05);
+  }
 }
+function applyTrim(){
+  const fx=TRIM_FX[trimId];if(!bodyMesh)return;
+  body.position.y=-fx.drop;
+  if(wheelMat)wheelMat.color.setScalar(fx.rim);
+  for(const w of wheels){w.scale.setScalar(fx.wheel);w.position.y=w.userData.r*fx.wheel}
+  uniforms.uVent.value=fx.vents?1:0;uniforms.uStripeOn.value=stripesOn?1:0;
+  buildExtras();
+}
+window.addEventListener('camaro:trim',e=>{trimId=e.detail;applyTrim()});
+window.addEventListener('camaro:stripes',e=>{stripesOn=e.detail;uniforms.uStripeOn.value=stripesOn?1:0});
+function updateStripeColor(){
+  const lum=paintTarget.r*.2126+paintTarget.g*.7152+paintTarget.b*.0722;
+  uniforms.uStripeCol.value.set(lum>.28?0x0c0d0f:0xf3f3ef);
+}
+window.addEventListener('camaro:paint',e=>{paintTarget.set(e.detail);updateStripeColor()});
 
-const manager=new THREE.LoadingManager();
-/* the model ships as glTF JSON with its buffer inlined; rebuild a GLB in memory so nothing needs a data: fetch */
+/* model ships as glTF JSON with an inlined buffer; rebuild a GLB in memory */
 function toGLB(j){
   const uri=j.buffers[0].uri,bin=Uint8Array.from(atob(uri.slice(uri.indexOf(',')+1)),c=>c.charCodeAt(0));
   delete j.buffers[0].uri;
-  let js=new TextEncoder().encode(JSON.stringify(j));const jp=(4-js.length%4)%4,bp=(4-bin.length%4)%4;
+  const js=new TextEncoder().encode(JSON.stringify(j));const jp=(4-js.length%4)%4,bp=(4-bin.length%4)%4;
   const total=12+8+js.length+jp+8+bin.length+bp,out=new ArrayBuffer(total),dv=new DataView(out),u8=new Uint8Array(out);
   dv.setUint32(0,0x46546C67,true);dv.setUint32(4,2,true);dv.setUint32(8,total,true);
   dv.setUint32(12,js.length+jp,true);dv.setUint32(16,0x4E4F534A,true);u8.set(js,20);u8.fill(0x20,20+js.length,20+js.length+jp);
-  let o=20+js.length+jp;dv.setUint32(o,bin.length+bp,true);dv.setUint32(o+4,0x004E4942,true);u8.set(bin,o+8);
+  const o=20+js.length+jp;dv.setUint32(o,bin.length+bp,true);dv.setUint32(o+4,0x004E4942,true);u8.set(bin,o+8);
   return out;
 }
-function loadModel(onLoad,onProgress,onError){
+function loadModel(onLoad,onError){
   const xhr=new XMLHttpRequest();xhr.open('GET','camaro.gltf.json');xhr.responseType='json';
-  xhr.onprogress=onProgress;
-  xhr.onload=()=>{if(xhr.status>=400||!xhr.response)return onError(new Error('HTTP '+xhr.status));try{new GLTFLoader(manager).parse(toGLB(xhr.response),'',onLoad,onError)}catch(e){onError(e)}};
+  xhr.onload=()=>{if(xhr.status>=400||!xhr.response)return onError(new Error('HTTP '+xhr.status));try{new GLTFLoader().parse(toGLB(xhr.response),'',onLoad,onError)}catch(e){onError(e)}};
   xhr.onerror=()=>onError(new Error('network'));xhr.send();
 }
+let ready=false;
 loadModel(gltf=>{
   const m=gltf.scene;m.scale.setScalar(0.01);m.position.y=0.195;body.add(m);
-  car.updateMatrixWorld(true);
+  car.position.set(0,0,0);car.rotation.set(0,0,0);car.updateMatrixWorld(true);
   const found=[];
   m.traverse(o=>{
     if(!o.isMesh)return;
+    o.castShadow=true;o.receiveShadow=true;
     const name=o.material.name;
     if(name==='Body_3'){
-      paint=o.material=new THREE.MeshPhysicalMaterial({color:paintTarget.clone(),metalness:.55,roughness:.32,clearcoat:1,clearcoatRoughness:.06,envMapIntensity:1.2});
+      bodyMesh=o;
+      paint=o.material=new THREE.MeshPhysicalMaterial({color:paintTarget.clone(),metalness:.75,roughness:.34,clearcoat:1,clearcoatRoughness:.1,envMapIntensity:1.3});
+      paint.onBeforeCompile=sh=>{Object.assign(sh.uniforms,uniforms);
+        sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vOP;varying vec3 vON;').replace('#include <begin_vertex>','#include <begin_vertex>\nvOP=position;vON=normal;');
+        sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vOP;varying vec3 vON;uniform vec3 uStripeCol;uniform float uStripeOn;uniform float uVent;').replace('#include <color_fragment>',`#include <color_fragment>
+          float top=step(.55,normalize(vON).y)*step(.6,vOP.y);
+          float st=step(abs(abs(vOP.x)-.135),.085)*top*uStripeOn*step(vOP.z,1.88)*step(-2.72,vOP.z);
+          diffuseColor.rgb=mix(diffuseColor.rgb,uStripeCol,st);
+          float vx=step(.32,abs(vOP.x))*step(abs(vOP.x),.62);float vz=step(1.02,vOP.z)*step(vOP.z,1.58);
+          float slat=step(.42,fract(vOP.z*16.));
+          float vm=vx*vz*top*uVent;
+          diffuseColor.rgb=mix(diffuseColor.rgb,mix(vec3(.01),vec3(.07),slat),vm);`)};
     }else if(name==='Lights_1_8_001_003'){
-      lamps=o.material;lamps.emissive=new THREE.Color(0xffffff);lamps.emissiveMap=lamps.map;lamps.emissiveIntensity=.4;
-    }else if(name==='Matte_3'){o.material.roughness=.4}
+      lamps=o.material;lamps.emissive=new THREE.Color(0xffffff);lamps.emissiveMap=lamps.map;lamps.emissiveIntensity=.25;lamps.envMapIntensity=1.2;
+    }else if(name==='Matte_3'){o.material.roughness=.42;o.material.envMapIntensity=1;o.material.metalness=.1}
+    else if(name==='Wheels_3'){wheelMat=o.material;o.material.roughness=.5;o.material.metalness=.35;o.material.envMapIntensity=1.2}
+    else o.material.envMapIntensity=.8;
     if(/^Wheel/.test(o.parent.name))found.push(o);
   });
   for(const w of found){
     const c=new THREE.Box3().setFromObject(w).getCenter(new THREE.Vector3());
-    const pivot=new THREE.Group();pivot.position.copy(car.worldToLocal(c.clone()));car.add(pivot);pivot.updateMatrixWorld(true);pivot.attach(w);wheels.push(pivot);
+    const pivot=new THREE.Group();pivot.position.copy(car.worldToLocal(c.clone()));pivot.userData.r=pivot.position.y;car.add(pivot);pivot.updateMatrixWorld(true);pivot.attach(w);wheels.push(pivot);
   }
-  ready=true;
-},e=>{if(e.total){loaderBar.style.width=(e.loaded/e.total*100).toFixed(0)+'%'}},err=>{loaderText.textContent='Не удалось загрузить 3D-модель. Обновите страницу.';console.error(err)});
-let ready=false;
+  body.add(extras);
+  updateStripeColor();applyTrim();
+  ready=true;assetLoaded('Готово');
+},err=>{loaderText.textContent='Не удалось загрузить 3D-модель. Обновите страницу.';console.error(err)});
 
-window.addEventListener('camaro:paint',e=>paintTarget.set(e.detail));
+/* post-processing: bloom for glints, soft vignette */
+const composer=new EffectComposer(renderer,new THREE.WebGLRenderTarget(4,4,{type:THREE.HalfFloatType,samples:isMobile()?2:4}));
+composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(256,256),.1,.4,6.0);composer.addPass(bloom);
+composer.addPass(new OutputPass());
+composer.addPass(new ShaderPass({
+  uniforms:{tDiffuse:{value:null},amt:{value:.22}},
+  vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+  fragmentShader:'uniform sampler2D tDiffuse;uniform float amt;varying vec2 vUv;void main(){vec4 c=texture2D(tDiffuse,vUv);vec2 d=vUv-.5;float v=smoothstep(.85,.2,length(d*vec2(1.,.8)));c.rgb*=mix(1.-amt,1.,v);gl_FragColor=c;}'
+}));
 
-/* camera stops: pos, look-at, horizontal frame shift (fraction of width), car yaw */
+/* camera stops: pos, look-at, horizontal frame shift */
 const STOPS={
-  hero:     {p:[6.2,1.3,7.4], t:[0,.55,0],  sx:.2, yaw:0},
-  design:   {p:[-9.4,1.0,.3],  t:[0,.6,0],   sx:-.14, yaw:0},
-  drive:    {p:[-3.4,1.35,-7.4],t:[0,.7,1.6], sx:.2, yaw:0},
-  build:    {p:[-5.4,1.7,5.6], t:[0,.5,0],   sx:-.2, yaw:0},
-  trims:    {p:[3.6,7.8,-3.2], t:[0,.2,0],   sx:0,   yaw:0},
-  history:  {p:[1.8,1.0,-8.2], t:[0,.75,0],  sx:0,   yaw:0},
-  testdrive:{p:[5.2,.6,5.9],  t:[0,.65,0],  sx:-.2, yaw:0}
+  hero:     {p:[4.6,1.1,6.6],  t:[0,.6,0],  sx:.2},
+  design:   {p:[8.4,1.0,.4],   t:[0,.62,0], sx:-.14},
+  drive:    {p:[3.0,.62,6.8],  t:[0,.6,0],  sx:.2},
+  build:    {p:[-5.6,1.5,5.2], t:[0,.55,0], sx:-.2},
+  trims:    {p:[4.4,1.15,7.4], t:[0,.6,0],  sx:-.27},
+  history:  {p:[1.9,1.0,-8.0], t:[0,.75,0], sx:0,  sy:.26},
+  testdrive:{p:[-5.4,.7,5.0],  t:[0,.65,0], sx:-.2}
 };
-const MOBILE={hero:{p:[6.6,1.6,8.4],t:[0,.3,0]},design:{p:[-10.5,1.2,.3]},drive:{p:[-2.4,1.9,-9.6],t:[0,.4,1.6]},build:{p:[-6.8,2.2,7]},history:{p:[1.8,1.2,-9.6]},testdrive:{p:[5.2,.9,6.2]}};
+const MOBILE={hero:{p:[5.8,1.5,8.6],t:[0,.35,0]},design:{p:[10.6,1.2,.4]},drive:{p:[3.6,.8,8.8],t:[0,.4,0]},build:{p:[-6.8,2.1,6.8]},history:{p:[1.9,1.2,-9.8]},testdrive:{p:[-6.4,.9,6.2]}};
 const sections=[...document.querySelectorAll('[data-stop]')];
 let W=1,H=1,mobile=false;
 function resize(){
-  W=innerWidth;H=innerHeight;mobile=W<768;
-  renderer.setSize(W,H,false);camera.aspect=W/H;camera.fov=mobile?44:32;camera.updateProjectionMatrix();
+  W=innerWidth;H=innerHeight;mobile=isMobile();
+  renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.5:2));
+  renderer.setSize(W,H,false);composer.setPixelRatio(renderer.getPixelRatio());composer.setSize(W,H);
+  camera.aspect=W/H;camera.fov=mobile?44:32;camera.updateProjectionMatrix();
 }
 addEventListener('resize',resize);resize();
-function stopFor(id){const s=STOPS[id],m=mobile?(MOBILE[id]||{}):{};return {p:m.p||s.p,t:m.t||s.t,sx:mobile?0:s.sx,sy:mobile?(id==='hero'?-.2:.26):0}}
-
-/* scroll progress between section anchors */
+function stopFor(id){const s=STOPS[id],m=mobile?(MOBILE[id]||{}):{};return {p:m.p||s.p,t:m.t||s.t,sx:mobile?0:s.sx,sy:mobile?(id==='hero'?-.2:.26):(s.sy||0)}}
 function progress(){
   const y=scrollY+H*.5;let i=0;
   for(let k=0;k<sections.length;k++){if(sections[k].offsetTop<=y)i=k}
   const a=sections[i],b=sections[i+1];if(!b)return {i,f:0};
   const start=a.offsetTop+a.offsetHeight*.5,end=b.offsetTop+b.offsetHeight*.5;
-  let f=(y-start)/(end-start);if(f<0){return {i,f:0}}
+  const f=(y-start)/(end-start);if(f<0)return {i,f:0};
   return {i,f:Math.min(1,f)};
 }
 const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 const v3=a=>new THREE.Vector3(...a);
-const camPos=new THREE.Vector3(14,2,18),camLook=new THREE.Vector3(0,.5,0),wantPos=new THREE.Vector3(),wantLook=new THREE.Vector3();
-let sx=0,sy=0,driveWeight=0,activeId='hero';
-
-/* nav highlight */
+const camPos=new THREE.Vector3(12,2,16),camLook=new THREE.Vector3(0,.5,0),wantPos=new THREE.Vector3(),wantLook=new THREE.Vector3();
+let sx=0,sy=0,activeId='hero';
 const navLinks=[...document.querySelectorAll('.nav a')];
 
 /* gas pedal */
@@ -519,21 +638,19 @@ let gas=false;const gasBtn=document.getElementById('gas');
 const setGas=v=>{gas=v;gasBtn.setAttribute('aria-pressed',v?'true':'false')};
 gasBtn.addEventListener('pointerdown',e=>{e.preventDefault();try{gasBtn.setPointerCapture(e.pointerId)}catch(_){}setGas(true)});
 ['pointerup','pointercancel','lostpointercapture'].forEach(n=>gasBtn.addEventListener(n,()=>setGas(false)));
-gasBtn.addEventListener('keydown',e=>{if(e.key==='Enter'){setGas(true)}});
+gasBtn.addEventListener('keydown',e=>{if(e.key==='Enter')setGas(true)});
 gasBtn.addEventListener('keyup',e=>{if(e.key==='Enter')setGas(false)});
 addEventListener('keydown',e=>{if(e.code==='Space'&&activeId==='drive'&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();setGas(true)}});
 addEventListener('keyup',e=>{if(e.code==='Space')setGas(false)});
 
 /* drag to turn the car in the configurator */
 let yawUser=0,yawVel=0,drag=null;
-canvas.style.touchAction='pan-y';
-const dragTarget=document.body;
-dragTarget.addEventListener('pointerdown',e=>{if(activeId!=='build'||e.target.closest('.panel,a,button,header'))return;drag={x:e.clientX,y0:yawUser}});
+document.body.addEventListener('pointerdown',e=>{if(activeId!=='build'||e.target.closest('.panel,a,button,header'))return;drag={x:e.clientX,y0:yawUser}});
 addEventListener('pointermove',e=>{if(!drag)return;const nv=drag.y0+(e.clientX-drag.x)*.008;yawVel=nv-yawUser;yawUser=nv});
 addEventListener('pointerup',()=>{drag=null});
 
 const kmhEl=document.getElementById('kmh'),revEl=document.getElementById('revb'),rpmEl=document.getElementById('rpmv');
-let speed=0,dist=0,t0=performance.now(),last=t0,intro=reduce?1:0,shown=0;
+let speed=0,dist=0,t0=performance.now(),last=t0,intro=reduce?1:0,shown=0,loaderHidden=false;
 const WHEEL_R=0.35;
 
 function frame(now){
@@ -547,38 +664,33 @@ function frame(now){
   const damp=1-Math.pow(.0015,rawDt);
   camPos.lerp(wantPos,damp);camLook.lerp(wantLook,damp);sx+=(wsx-sx)*damp;sy+=(wsy-sy)*damp;
 
-  /* driving: cruise in the drive stop, throttle adds speed */
-  const dw=(A==='drive'?1-k:0)+(B==='drive'?k:0);driveWeight+=(dw-driveWeight)*damp;
-  const target=gas?250:(driveWeight>.5?60:0);
+  const driveW=(A==='drive'?1-k:0)+(B==='drive'?k:0);
+  const target=gas?250:(driveW>.5?60:0);
   const acc=gas?(speed<100?38:speed<180?20:10):(target>speed?16:-22);
   speed=Math.max(0,Math.min(250,speed+acc*dt));if(!gas&&speed>target&&target>0)speed=Math.max(target,speed-12*dt);
   const ms=speed/3.6;dist+=ms*dt;
 
-  /* intro: car rolls in from far down the road and settles */
   let introZ=0,introV=0;
-  if(intro<1){intro=Math.min(1,(now-t0)/2600);const e=1-Math.pow(1-intro,3);introZ=-34*(1-e);introV=34*3*Math.pow(1-intro,2)/2.6}
+  if(intro<1&&ready){if(!t0r)t0r=now;intro=Math.min(1,(now-t0r)/2600);const e=1-Math.pow(1-intro,3);introZ=-34*(1-e);introV=34*3*Math.pow(1-intro,2)/2.6}
+  else if(intro<1){introZ=-34}
   car.position.z=introZ;
 
-  roadTex.offset.y=-(dist/10)%1;
-  for(const p of posts.children){let z=((p.userData.z0-dist)%(POST_GAP*POSTS)+POST_GAP*POSTS)%(POST_GAP*POSTS)-POST_GAP*5;p.position.z=z}
+  const sc=-(dist/3)%1,sm=-(dist/10)%1;
+  roadMat.map.offset.y=sc;roadMat.normalMap.offset.y=sc;roadMat.roughnessMap.offset.y=sc;markTex.offset.y=sm;shMat.map.offset.y=-(dist/4)%1;
+  for(const p of posts.children){p.position.z=((p.userData.z0-dist)%(POST_GAP*POSTS)+POST_GAP*POSTS)%(POST_GAP*POSTS)-POST_GAP*6}
   const spin=(ms+introV)/WHEEL_R*dt;for(const w of wheels)w.rotation.x+=spin;
 
-  /* body: squat under throttle, a little road buzz */
   const buzz=speed>1?Math.sin(now*.031)*.004*Math.min(1,speed/120):0;
-  body.position.y+=(buzz-body.position.y)*.3;
+  const fx=TRIM_FX[trimId];
+  body.position.y+=((-fx.drop+buzz)-body.position.y)*.3;
   body.rotation.x+=(((gas&&speed<200)?-.012:0)-body.rotation.x)*.08;
 
-  /* yaw: user drag in configurator, eases back elsewhere */
   if(!drag){yawUser+=yawVel;yawVel*=.92;if(activeId!=='build'){yawUser*=.94}}
   car.rotation.y=yawUser;
 
-  /* headlights brighter while driving and on the hero */
-  const lightOn=Math.min(1,driveWeight+(A==='hero'?1-k:0)+(B==='testdrive'?k:0)+(A==='testdrive'?1-k:0));
-  for(const b of beams)b.intensity=60*lightOn;
-  if(lamps)lamps.emissiveIntensity=.35+1.4*Math.max(lightOn,(A==='history'?1-k:0)+(B==='history'?k:0));
+  if(lamps)lamps.emissiveIntensity=.25+(speed>1?.25:0);
   if(paint)paint.color.lerp(paintTarget,1-Math.pow(.02,dt));
 
-  /* camera: FOV opens with speed, slight shake at the top end */
   const shake=speed>150?(speed-150)/100*.02:0;
   camera.position.set(camPos.x+Math.sin(now*.05)*shake,camPos.y+Math.cos(now*.043)*shake,camPos.z);
   camera.lookAt(camLook);
@@ -591,11 +703,12 @@ function frame(now){
     revEl.style.width=(rpm/8000*100).toFixed(1)+'%';rpmEl.textContent=Math.round(rpm/50)*50+' об/мин'+(gear?', '+gear+'-я':'');}
   navLinks.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+activeId));
 
-  renderer.render(scene,camera);
-  if(ready&&!shown_ready){shown_ready=true;loaderEl.classList.add('done');window.READY=true}
+  composer.render();
+  if(ready&&assetsDone>=ASSETS&&!loaderHidden){loaderHidden=true;loaderEl.classList.add('done');window.READY=true}
 }
-let shown_ready=false;
+let t0r=0;
 renderer.setAnimationLoop(frame);
 </script>
+
 </body>
 </html>
