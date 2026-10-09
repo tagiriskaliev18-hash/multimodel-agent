@@ -152,7 +152,7 @@ AI Duo (multimodel-agent) входит в **[MindTagSystem](https://github.com/t
 | Слой | Проект | Что делает |
 |---|---|---|
 | Платформа | [AIsktagOS](https://github.com/tagiriskaliev18-hash/AisktagOS) | Операционная система для разработчиков в стиле macOS на любом железе |
-| Инструменты разработчика | [Mind IDE](https://github.com/tagiriskaliev18-hash/Mind-IDE) | Собственная среда разработки, рабочее место программиста |
+| Инструменты разработчика | [Mind IDE](https://github.com/tagiriskaliev18-hash/Mind-IDE) | ИИ-среда разработки: один чат с моделями, Claude Code и Antigravity |
 | Инструменты разработчика | [ITIS Browser](https://github.com/tagiriskaliev18-hash/ITIS-browser) | Браузер с ИИ-агентом, который сам кликает и листает страницы |
 | ИИ-ядро | **AI Duo (multimodel-agent)** ← вы здесь | Единый ИИ-шлюз с OpenAI-совместимым API для всех моделей |
 | ИИ-ядро | [Antigravity ↔ Claude Code Bridge](https://github.com/tagiriskaliev18-hash/antigravity-claude-bridge) | MCP-мост, который связывает Antigravity, Claude Code и пул моделей |
