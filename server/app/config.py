@@ -20,6 +20,17 @@ if env_path.exists():
                     k, v = line.split("=", 1)
                     os.environ.setdefault(k.strip(), v.strip())
 
+# Связка ключей Mind (MindKit, экосистема MindTagSystem): ключ, введённый один раз
+# командой «mindkit keychain set GROQ_API_KEY», виден шлюзу без .env. Переменные окружения
+# и .env важнее. В Docker-образе MindKit нет — там ключи по-прежнему из .env.
+try:
+    from mindkit import keychain as _mindkit_keychain
+    _mindkit_keychain.load_env(["OPENAI_API_KEY", "OPENROUTER_API_KEY", "GROQ_API_KEY"])
+except ImportError:
+    pass
+except Exception:  # связка недоступна — работаем как раньше
+    pass
+
 # Configuration Settings
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8000"))
