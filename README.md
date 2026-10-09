@@ -107,6 +107,14 @@ pip install -r server/requirements.txt
 uvicorn server.app.main:app --reload --port 8000
 ```
 
+Без Docker шлюз берёт ключи и из **связки ключей Mind** ([MindKit](https://github.com/tagiriskaliev18-hash/MindTagSystem/blob/main/docs/MINDKIT.md) экосистемы MindTagSystem): ключ вводится один раз и виден всем проектам экосистемы.
+
+```bash
+pip install "mindkit[full] @ git+https://github.com/tagiriskaliev18-hash/MindTagSystem"
+mindkit keychain import .env      # или: mindkit keychain set GROQ_API_KEY
+mindkit ask "привет"              # ассистент Mind отвечает через этот шлюз
+```
+
 ---
 
 ## 📂 Структура проекта
