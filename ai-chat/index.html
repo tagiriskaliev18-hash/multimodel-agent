@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- Единый стиль Mind (MindKit: mindtagsystem/design) — иконки, градиент, 3D, bounce -->
+  <link rel="icon" href="mind-ui/mind.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="mind-ui/mind-ui.css">
+  <link rel="stylesheet" href="mind-ui/mind-icons-extra.css">
+  <script src="mind-ui/mind-ui.js" defer></script>
   <title>AI Studio • Интеллектуальный ассистент без регистрации</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
@@ -22,9 +27,9 @@
       --text-secondary: #6e6e73;
       --text-tertiary: #86868b;
       
-      --accent-blue: #0071e3;
-      --accent-blue-hover: #0077ed;
-      --accent-blue-subtle: rgba(0, 113, 227, 0.08);
+      --accent-blue: #7c66df;
+      --accent-blue-hover: #8b63e8;
+      --accent-blue-subtle: rgba(124, 102, 223, 0.08);
       
       --badge-green-bg: #e3f9e5;
       --badge-green-text: #1b7340;
@@ -35,9 +40,9 @@
       
       --border-light: rgba(0, 0, 0, 0.08);
       --border-subtle: rgba(0, 0, 0, 0.04);
-      --border-focus: #0071e3;
+      --border-focus: #7c66df;
       
-      --user-bubble-bg: #0071e3;
+      --user-bubble-bg: #7c66df;
       --user-bubble-text: #ffffff;
       --bot-bubble-bg: #ffffff;
       --bot-bubble-text: #1d1d1f;
@@ -68,13 +73,13 @@
       --text-secondary: #a1a1a6;
       --text-tertiary: #86868b;
       
-      --accent-blue: #2997ff;
-      --accent-blue-hover: #47a6ff;
-      --accent-blue-subtle: rgba(41, 151, 255, 0.15);
+      --accent-blue: #a48cf5;
+      --accent-blue-hover: #b39df7;
+      --accent-blue-subtle: rgba(164, 140, 245, 0.15);
       
       --badge-green-bg: rgba(52, 199, 89, 0.15);
       --badge-green-text: #4cd964;
-      --badge-blue-bg: rgba(41, 151, 255, 0.15);
+      --badge-blue-bg: rgba(164, 140, 245, 0.15);
       --badge-blue-text: #5ac8fa;
       --badge-amber-bg: rgba(255, 159, 10, 0.15);
       --badge-amber-text: #ff9f0a;
@@ -82,7 +87,7 @@
       --border-light: rgba(255, 255, 255, 0.1);
       --border-subtle: rgba(255, 255, 255, 0.05);
       
-      --user-bubble-bg: #2997ff;
+      --user-bubble-bg: #a48cf5;
       --user-bubble-text: #ffffff;
       --bot-bubble-bg: #1c1c1e;
       --bot-bubble-text: #f5f5f7;
@@ -155,14 +160,14 @@
       width: 28px;
       height: 28px;
       border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, var(--accent-blue), #5856d6);
+      background: linear-gradient(135deg, var(--accent-blue), #5b8dee);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
     }
 
-    .brand-icon-box svg {
+    .brand-icon-box svg, .brand-icon-box .mi  {
       width: 16px;
       height: 16px;
     }
@@ -338,7 +343,7 @@
 
     .btn-auth-trigger {
       background: var(--accent-blue-subtle);
-      border: 1px solid rgba(0, 113, 227, 0.2);
+      border: 1px solid rgba(124, 102, 223, 0.2);
       color: var(--accent-blue);
       padding: 6px 14px;
       border-radius: var(--radius-full);
@@ -457,7 +462,7 @@
       color: var(--text-primary);
     }
 
-    .prompt-chip-head svg {
+    .prompt-chip-head svg, .prompt-chip-head .mi  {
       width: 16px;
       height: 16px;
       color: var(--accent-blue);
@@ -504,11 +509,11 @@
     }
 
     .msg-avatar.assistant {
-      background: linear-gradient(135deg, var(--accent-blue), #5856d6);
+      background: linear-gradient(135deg, var(--accent-blue), #5b8dee);
       color: white;
     }
 
-    .msg-avatar.assistant svg {
+    .msg-avatar.assistant svg, .msg-avatar.assistant .mi  {
       width: 16px;
       height: 16px;
     }
@@ -704,7 +709,7 @@
       border-radius: var(--radius-full);
       background: var(--accent-blue-subtle);
       color: var(--accent-blue);
-      border: 1px solid rgba(0, 113, 227, 0.2);
+      border: 1px solid rgba(124, 102, 223, 0.2);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -880,7 +885,7 @@
       gap: 8px;
       padding: 6px 12px;
       background: var(--accent-blue-subtle);
-      border: 1px solid rgba(0, 113, 227, 0.2);
+      border: 1px solid rgba(124, 102, 223, 0.2);
       border-radius: var(--radius-full);
       font-size: 12px;
       color: var(--accent-blue);
@@ -939,7 +944,7 @@
     .btn-visualize-code {
       background: var(--accent-blue-subtle);
       color: var(--accent-blue);
-      border: 1px solid rgba(0, 113, 227, 0.3);
+      border: 1px solid rgba(124, 102, 223, 0.3);
       padding: 4px 8px;
       border-radius: 4px;
       font-size: 11px;
@@ -1623,6 +1628,84 @@
         font-size: 11px;
       }
     }
+  
+    /* ================= Стиль Mind (MindKit) =================
+       Фиолетово-синий переливающийся градиент, 3D-вставки, пружина. */
+    .brand-icon-box, .msg-avatar.assistant {
+      background: var(--mt-gradient-flow); background-size: 200% 200%;
+      animation: mt-flow var(--mt-shimmer) ease-in-out infinite;
+      box-shadow: var(--mt-depth-highlight), 0 4px 12px rgba(91, 77, 207, 0.35);
+    }
+    .brand-icon-box .mi, .msg-avatar.assistant .mi, .btn-send .mi, .btn-auth-trigger:hover .mi,
+    .message-row.user .bubble .mi { background: #fff; animation: none; }
+    .brand-logo span { background: var(--mt-gradient-flow); background-size: 200% 200%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: mt-flow var(--mt-shimmer) ease-in-out infinite; }
+    .welcome-title { background: var(--mt-gradient-flow); background-size: 200% 200%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: mt-flow var(--mt-shimmer) ease-in-out infinite; }
+    .welcome-container { animation: mt-bounce-in .6s var(--mt-spring) both; }
+
+    /* главные кнопки — объёмные, с переливом и пружиной */
+    .btn-send, .btn-submit-auth {
+      position: relative;
+      background: var(--mt-gradient-flow); background-size: 200% 200%;
+      animation: mt-flow var(--mt-shimmer) ease-in-out infinite;
+      box-shadow: var(--mt-depth-highlight), var(--mt-depth-raised);
+      transition: transform .4s var(--mt-spring), box-shadow .25s ease, filter .2s ease;
+    }
+    .btn-send:hover, .btn-submit-auth:hover {
+      background: var(--mt-gradient-flow); background-size: 200% 200%;
+      transform: translateY(-2px) scale(1.06);
+      box-shadow: var(--mt-depth-highlight), var(--mt-depth-glow), var(--mt-depth-raised);
+      filter: saturate(1.15);
+    }
+    .btn-send:active, .btn-submit-auth:active { transform: translateY(1px) scale(0.92); transition-duration: .12s; }
+    .btn-send.generating { background: #ff3b30; animation: none; }
+    .btn-send:disabled { background: var(--bg-subtle); animation: none; box-shadow: none; filter: none; }
+    .btn-send:disabled .mi { background: var(--text-tertiary); }
+    .btn-new-chat, .btn-auth-trigger, .btn-icon-nav, .btn-attach, .btn-search-toggle, .auth-tab-btn, .btn-oauth {
+      transition: transform .4s var(--mt-spring), background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+    .btn-new-chat:hover, .btn-auth-trigger:hover, .btn-oauth:hover { transform: translateY(-1px) scale(1.03); }
+    .btn-icon-nav:hover, .btn-attach:hover { transform: scale(1.1); }
+    .btn-new-chat:active, .btn-auth-trigger:active, .btn-icon-nav:active, .btn-attach:active,
+    .btn-search-toggle:active, .btn-oauth:active { transform: scale(.92); }
+    .btn-new-chat:hover { background: var(--mt-gradient-soft); }
+    .btn-auth-trigger:hover { background: var(--mt-gradient-flow); background-size: 200% 200%;
+      animation: mt-flow var(--mt-shimmer) ease-in-out infinite; border-color: transparent; }
+
+    /* сообщения пользователя — в градиенте Mind, появление с пружиной */
+    .message-row.user .bubble {
+      background: var(--mt-gradient-flow); background-size: 200% 200%;
+      animation: mt-flow var(--mt-shimmer) ease-in-out infinite;
+      box-shadow: var(--mt-depth-highlight), 0 6px 18px rgba(91, 77, 207, 0.25);
+    }
+    .message-row { animation: mt-bounce-in .5s var(--mt-spring) both; transform-origin: left bottom; }
+    .message-row.user { transform-origin: right bottom; }
+
+    /* карточки-подсказки: глубина и наклон (mind-ui.js) */
+    .prompt-chip.mt-3d { transition: transform .5s var(--mt-spring), box-shadow .3s ease, border-color .2s ease; }
+    .prompt-chip.mt-3d:hover {
+      transform: perspective(var(--mt-perspective)) rotateX(var(--mt-rx, 0deg)) rotateY(var(--mt-ry, 0deg)) translateY(-3px);
+      box-shadow: var(--mt-depth-glow), var(--shadow-md);
+    }
+    .prompt-chip.mt-3d.mt-bounce-in { animation-fill-mode: backwards; }
+    .chips-grid .prompt-chip:nth-child(2) { animation-delay: .05s; }
+    .chips-grid .prompt-chip:nth-child(3) { animation-delay: .1s; }
+    .chips-grid .prompt-chip:nth-child(4) { animation-delay: .15s; }
+    .chips-grid .prompt-chip:nth-child(5) { animation-delay: .2s; }
+    .chips-grid .prompt-chip:nth-child(6) { animation-delay: .25s; }
+
+    /* модальные окна и тост — пружина */
+    .modal-sheet { transform: scale(0.88); transition: transform .45s var(--mt-spring); }
+    .toast-bubble { transition: transform .45s var(--mt-spring), opacity .25s ease; }
+    .model-status-dot { background: var(--mt-gradient-mind); box-shadow: 0 0 8px rgba(124, 102, 223, .6); }
+    @media (prefers-reduced-motion: reduce) {
+      .brand-icon-box, .msg-avatar.assistant, .brand-logo span, .welcome-title, .welcome-container,
+      .btn-send, .btn-submit-auth, .btn-auth-trigger:hover, .message-row, .message-row.user .bubble,
+      .prompt-chip.mt-3d { animation: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -1634,21 +1717,17 @@
       <div class="sidebar-header">
         <div class="brand-logo">
           <div class="brand-icon-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-              <polyline points="2 17 12 22 22 17"></polyline>
-              <polyline points="2 12 12 17 22 12"></polyline>
-            </svg>
+            <i class="mi mi-layers" aria-hidden="true"></i>
           </div>
           <span>AI Studio</span>
         </div>
         <button class="btn-icon-nav" onclick="toggleSidebar()" title="Скрыть панель">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <i class="mi mi-close" style="width: 16px; height: 16px;" aria-hidden="true"></i>
         </button>
       </div>
 
       <button class="btn-new-chat" onclick="createNewChat()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <i class="mi mi-plus" style="width: 15px; height: 15px;" aria-hidden="true"></i>
         <span>Новый диалог</span>
       </button>
 
@@ -1673,7 +1752,7 @@
       <header class="main-nav">
         <div class="nav-left">
           <button class="btn-icon-nav mobile-menu-btn" onclick="toggleSidebar()" title="Меню">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            <i class="mi mi-menu" style="width: 18px; height: 18px;" aria-hidden="true"></i>
           </button>
 
           <div class="model-status-badge" title="AI Studio Core: единая оптимизированная нейросеть для всех задач (текст, код, интернет-поиск, FLUX фото, видео и визуализация)">
@@ -1684,25 +1763,15 @@
 
         <div class="nav-right">
           <button class="btn-icon-nav" id="settingsToggleBtn" onclick="openSettingsModal()" title="Настройки скорости и шлюзов">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <i class="mi mi-settings" style="width: 16px; height: 16px;" aria-hidden="true"></i>
           </button>
 
           <button class="btn-icon-nav" id="themeToggleBtn" onclick="toggleTheme()" title="Светлая/Темная тема">
-            <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
+            <i class="mi mi-sun" id="themeIcon" style="width: 16px; height: 16px;" aria-hidden="true"></i>
           </button>
 
           <button class="btn-auth-trigger" id="authBtnTrigger" onclick="openAuthModal()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <i class="mi mi-user" style="width: 14px; height: 14px;" aria-hidden="true"></i>
             <span id="authBtnText">Войти / Регистрация</span>
           </button>
         </div>
@@ -1723,49 +1792,49 @@
             </p>
 
             <div class="chips-grid">
-              <div class="prompt-chip" onclick="applyPresetPrompt('Фотогенерация FLUX: создай фотореалистичный кадр заката в горах Тянь-Шань с кристальным озером в стиле National Geographic.')">
+              <div class="prompt-chip mt-3d mt-bounce-in" data-mt-tilt onclick="applyPresetPrompt('Фотогенерация FLUX: создай фотореалистичный кадр заката в горах Тянь-Шань с кристальным озером в стиле National Geographic.')">
                 <div class="prompt-chip-head">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <i class="mi mi-image" aria-hidden="true"></i>
                   <span>Фотогенерация (FLUX)</span>
                 </div>
                 <div class="prompt-chip-sub">Ультра-реализм, портреты, архитектура, природа 4K</div>
               </div>
 
-              <div class="prompt-chip" onclick="applyPresetPrompt('Генерация видео: сделай кинематографичный видеоролик полета дрона над ночным мегаполисом с неоновыми огнями и отражениями.')">
+              <div class="prompt-chip mt-3d mt-bounce-in" data-mt-tilt onclick="applyPresetPrompt('Генерация видео: сделай кинематографичный видеоролик полета дрона над ночным мегаполисом с неоновыми огнями и отражениями.')">
                 <div class="prompt-chip-head">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                  <i class="mi mi-video" aria-hidden="true"></i>
                   <span>AI Видеогенерация</span>
                 </div>
                 <div class="prompt-chip-sub">Динамика движения камеры, клипы, экспорт в WebM</div>
               </div>
 
-              <div class="prompt-chip" onclick="applyPresetPrompt('Поиск в сети: найди актуальный прогноз погоды и свежие события в Астане на сегодня со ссылками на источники.')">
+              <div class="prompt-chip mt-3d mt-bounce-in" data-mt-tilt onclick="applyPresetPrompt('Поиск в сети: найди актуальный прогноз погоды и свежие события в Астане на сегодня со ссылками на источники.')">
                 <div class="prompt-chip-head">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  <i class="mi mi-globe" aria-hidden="true"></i>
                   <span>Поиск в интернете</span>
                 </div>
                 <div class="prompt-chip-sub">Свежие факты, новости, курсы валют и погода</div>
               </div>
 
-              <div class="prompt-chip" onclick="applyPresetPrompt('Построение графика: составь наглядный график и расписание посещений секции на неделю в виде интерактивной диаграммы.')">
+              <div class="prompt-chip mt-3d mt-bounce-in" data-mt-tilt onclick="applyPresetPrompt('Построение графика: составь наглядный график и расписание посещений секции на неделю в виде интерактивной диаграммы.')">
                 <div class="prompt-chip-head">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                  <i class="mi mi-activity" aria-hidden="true"></i>
                   <span>Интерактивные графики</span>
                 </div>
                 <div class="prompt-chip-sub">Диаграммы Chart.js, таймлайны Mermaid и таблицы</div>
               </div>
 
-              <div class="prompt-chip" onclick="applyPresetPrompt('Анализ данных: подскажи, как лучше структурировать таблицу Excel и рассчитать ключевые показатели.')">
+              <div class="prompt-chip mt-3d mt-bounce-in" data-mt-tilt onclick="applyPresetPrompt('Анализ данных: подскажи, как лучше структурировать таблицу Excel и рассчитать ключевые показатели.')">
                 <div class="prompt-chip-head">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                  <i class="mi mi-table" aria-hidden="true"></i>
                   <span>Анализ таблиц и формул</span>
                 </div>
                 <div class="prompt-chip-sub">Формулы, сводные показатели, расчеты Excel</div>
               </div>
 
-              <div class="prompt-chip" onclick="applyPresetPrompt('Оптимизация кода: напиши чистую функцию на JavaScript/Python с обработкой ошибок и высокой производительностью.')">
+              <div class="prompt-chip mt-3d mt-bounce-in" data-mt-tilt onclick="applyPresetPrompt('Оптимизация кода: напиши чистую функцию на JavaScript/Python с обработкой ошибок и высокой производительностью.')">
                 <div class="prompt-chip-head">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                  <i class="mi mi-code" aria-hidden="true"></i>
                   <span>Код и алгоритмы</span>
                 </div>
                 <div class="prompt-chip-sub">Функции, парсеры данных, автоматизация</div>
@@ -1785,17 +1854,11 @@
           <div class="attachments-tray" id="attachmentsTray" style="display: none;"></div>
           <div class="input-row">
             <button class="btn-attach" id="btnAttach" type="button" onclick="document.getElementById('fileInput').click()" title="Прикрепить файл (таблицы, документы, код, изображения)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3.5 3.5 0 0 1 4.95 4.95l-9.2 9.19a1.5 1.5 0 0 1-2.12-2.12l8.49-8.48"></path>
-              </svg>
+              <i class="mi mi-attach" style="width: 18px; height: 18px;" aria-hidden="true"></i>
             </button>
             <input type="file" id="fileInput" multiple hidden accept=".txt,.md,.json,.py,.js,.ts,.html,.css,.csv,.xlsx,.xls,.pdf,image/png,image/jpeg,image/webp" onchange="handleFileSelect(this.files)">
             <button class="btn-search-toggle" id="btnSearchToggle" type="button" onclick="toggleWebSearch()" title="Поиск в интернете (актуальные новости, факты, погода, курсы)">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-              </svg>
+              <i class="mi mi-globe" style="width: 15px; height: 15px;" aria-hidden="true"></i>
               <span>Поиск</span>
               <span class="search-dot"></span>
             </button>
@@ -1808,19 +1871,14 @@
               oninput="autoResizeTextarea(this)"
             ></textarea>
             <button class="btn-send" id="btnSend" onclick="handleSendOrAbort()" title="Отправить сообщение">
-              <svg id="iconSend" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
-              <svg id="iconStop" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
-                <rect x="5" y="5" width="14" height="14" rx="2"></rect>
-              </svg>
+              <i class="mi mi-send" id="iconSend" style="width: 16px; height: 16px;" aria-hidden="true"></i>
+              <i class="mi mi-stop" id="iconStop" style="width: 14px; height: 14px; display: none;" aria-hidden="true"></i>
             </button>
           </div>
         </div>
 
         <div class="input-meta-hint">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <i class="mi mi-info" style="width: 12px; height: 12px;" aria-hidden="true"></i>
           <span>Shift + Enter — перенос строки. Поддерживаются PDF, Excel, CSV, код и изображения.</span>
         </div>
       </div>
@@ -1834,7 +1892,7 @@
       <div class="modal-header">
         <h3>Настройки AI Studio</h3>
         <button class="modal-close-btn" onclick="closeSettingsModal()" title="Закрыть">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <i class="mi mi-close" style="width: 14px; height: 14px;" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -1868,7 +1926,7 @@
           </div>
 
           <div style="background: var(--bg-subtle); padding: 12px 14px; border-radius: var(--radius-md); font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 10px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            <i class="mi mi-clock" style="width: 16px; height: 16px;" aria-hidden="true"></i>
             <div>AI Core: единый оптимизированный движок (Текст • Код • Поиск • FLUX • Видео). Без ключей и квот.</div>
           </div>
 
@@ -1886,7 +1944,7 @@
       <div class="modal-header">
         <h3 id="modalAuthTitle">Личный аккаунт AI Studio</h3>
         <button class="modal-close-btn" onclick="closeAuthModal()" title="Закрыть">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <i class="mi mi-close" style="width: 14px; height: 14px;" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -1918,12 +1976,12 @@
 
         <div class="oauth-buttons">
           <button class="btn-oauth" onclick="handleMockOAuth('Google')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2v-2zm0-10h2v8h-2V6z"/></svg>
+            <i class="mi mi-globe" style="width: 16px; height: 16px;" aria-hidden="true"></i>
             <span>Войти через Google</span>
           </button>
 
           <button class="btn-oauth" onclick="handleMockOAuth('GitHub')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            <i class="mi mi-code" style="width: 16px; height: 16px;" aria-hidden="true"></i>
             <span>Войти через GitHub</span>
           </button>
         </div>
@@ -1933,7 +1991,7 @@
 
   <!-- Toast Notification Bubble -->
   <div class="toast-bubble" id="toastBubble">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <i class="mi mi-check" style="width: 16px; height: 16px;" aria-hidden="true"></i>
     <span id="toastMsg">Уведомление</span>
   </div>
 
@@ -2164,11 +2222,11 @@
 
         item.innerHTML = `
           <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <i class="mi mi-chat" style="width: 13px; height: 13px; flex-shrink: 0;" aria-hidden="true"></i>
             <span class="history-item-title">${escapeHtml(chat.title)}</span>
           </div>
           <button style="background: none; border: none; color: var(--text-tertiary); cursor: pointer;" onclick="deleteChat(event, '${chat.id}')" title="Удалить диалог">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <i class="mi mi-close" style="width: 12px; height: 12px;" aria-hidden="true"></i>
           </button>
         `;
         list.appendChild(item);
@@ -2221,7 +2279,7 @@
         if (msg.role === 'assistant') {
           row.innerHTML = `
             <div class="msg-avatar assistant">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              <i class="mi mi-layers" aria-hidden="true"></i>
             </div>
             <div class="bubble">
               <div>${formatMarkdown(stripEmoji(msg.content))}</div>
@@ -2234,11 +2292,11 @@
               if (f.type === 'image' && f.dataUrl) {
                 return `<div class="user-file-chip img-chip"><img src="${f.dataUrl}" alt="" class="user-file-thumb"><span>${escapeHtml(f.name)}</span></div>`;
               }
-              let fIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>`;
+              let fIcon = `<i class="mi mi-file" style="width: 13px; height: 13px;" aria-hidden="true"></i>`;
               if (f.type === 'spreadsheet') {
-                fIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+                fIcon = `<i class="mi mi-file" style="width: 13px; height: 13px;" aria-hidden="true"></i>`;
               } else if (f.type === 'pdf') {
-                fIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>`;
+                fIcon = `<i class="mi mi-file" style="width: 13px; height: 13px;" aria-hidden="true"></i>`;
               }
               return `<div class="user-file-chip">${fIcon}<span>${escapeHtml(f.name)} (${f.size || ''})</span></div>`;
             }).join('') + '</div>';
@@ -2401,11 +2459,11 @@
         if (f.type === 'image' && f.dataUrl) {
           iconHtml = `<img src="${f.dataUrl}" alt="" class="chip-thumb">`;
         } else if (f.type === 'spreadsheet') {
-          iconHtml = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+          iconHtml = `<i class="mi mi-file" style="width: 13px; height: 13px;" aria-hidden="true"></i>`;
         } else if (f.type === 'pdf') {
-          iconHtml = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>`;
+          iconHtml = `<i class="mi mi-file" style="width: 13px; height: 13px;" aria-hidden="true"></i>`;
         } else {
-          iconHtml = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>`;
+          iconHtml = `<i class="mi mi-file" style="width: 13px; height: 13px;" aria-hidden="true"></i>`;
         }
 
         return `
@@ -2414,7 +2472,7 @@
             <span class="chip-name" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</span>
             <span class="chip-size">${f.size}</span>
             <button class="btn-remove-attachment" type="button" onclick="removeAttachment('${f.id}')" title="Удалить">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              <i class="mi mi-close" style="width: 12px; height: 12px;" aria-hidden="true"></i>
             </button>
           </div>
         `;
@@ -2597,7 +2655,7 @@
       streamRow.id = 'activeStreamRow';
       streamRow.innerHTML = `
         <div class="msg-avatar assistant">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          <i class="mi mi-layers" aria-hidden="true"></i>
         </div>
         <div class="bubble" id="activeStreamBubble">
           <div class="stream-content" id="activeStreamContent">
@@ -3066,7 +3124,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
               <div class="chart-card">
                 <div class="chart-header">
                   <span class="chart-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+                    <i class="mi mi-chart" style="width: 14px; height: 14px;" aria-hidden="true"></i>
                     Построение интерактивного графика...
                   </span>
                 </div>
@@ -3095,7 +3153,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
               <div class="chart-card" id="card_${chartId}">
                 <div class="chart-header">
                   <span class="chart-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+                    <i class="mi mi-chart" style="width: 14px; height: 14px;" aria-hidden="true"></i>
                     ${escapeHtml(title)}
                   </span>
                   <div class="chart-actions">
@@ -3125,7 +3183,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
               <div class="diagram-card">
                 <div class="chart-header">
                   <span class="chart-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <i class="mi mi-calendar" style="width: 14px; height: 14px;" aria-hidden="true"></i>
                     Построение диаграммы...
                   </span>
                 </div>
@@ -3141,7 +3199,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
             <div class="diagram-card" id="card_${diagId}">
               <div class="chart-header">
                 <span class="chart-title">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  <i class="mi mi-calendar" style="width: 14px; height: 14px;" aria-hidden="true"></i>
                   Интерактивная диаграмма / Расписание
                 </span>
                 <div class="chart-actions">
@@ -3166,7 +3224,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
               <div class="csv-card">
                 <div class="chart-header">
                   <span class="chart-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <i class="mi mi-file" style="width: 14px; height: 14px;" aria-hidden="true"></i>
                     Таблица данных
                   </span>
                   <button class="btn-chart-action" onclick="downloadCsv('${encodeURIComponent(rawCode)}')">Скачать CSV</button>
@@ -3192,7 +3250,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
               <div class="image-card">
                 <div class="image-card-header">
                   <span class="image-card-title">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    <i class="mi mi-image" style="width: 15px; height: 15px;" aria-hidden="true"></i>
                     Генерация изображения (Nano Banana)...
                   </span>
                   <span class="image-model-badge">Nano Banana AI</span>
@@ -3213,7 +3271,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
             <div class="image-card" id="${cardId}" data-prompt="${escapeHtml(cleanPrompt)}">
               <div class="image-card-header">
                 <span class="image-card-title">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <i class="mi mi-image" style="width: 15px; height: 15px;" aria-hidden="true"></i>
                   Изображение
                   <span class="image-model-badge">Nano Banana</span>
                 </span>
@@ -3266,7 +3324,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
             <div class="image-card" id="${svgId}">
               <div class="image-card-header">
                 <span class="image-card-title">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                  <i class="mi mi-layers" style="width: 15px; height: 15px;" aria-hidden="true"></i>
                   Векторная графика (SVG)
                   <span class="image-model-badge">Vector</span>
                 </span>
@@ -3293,7 +3351,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
         const hasPlotKeywords = /plot|plt\.|chart|graph|matplotlib|\[\s*(-?\d+(\.\d+)?\s*,\s*)+-?\d+(\.\d+)?\s*\]/i.test(rawCode);
         const vizBtn = hasPlotKeywords ? `
           <button class="btn-visualize-code" onclick="tryVisualizeCode(this)" title="Построить интерактивный график по этим данным">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+            <i class="mi mi-chart" style="width: 12px; height: 12px;" aria-hidden="true"></i>
             Построить график
           </button>
         ` : '';
@@ -3408,7 +3466,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
             Chart.defaults.borderColor = gridColor;
 
             const defaultPalette = [
-              '#0071e3', '#34c759', '#ff9500', '#af52de', '#ff2d55', '#5856d6', '#00c7be'
+              '#7c66df', '#34c759', '#ff9500', '#af52de', '#ff2d55', '#5b8dee', '#00c7be'
             ];
 
             if (config.data && config.data.datasets) {
@@ -3488,7 +3546,7 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
       card.innerHTML = `
         <div class="chart-header">
           <span class="chart-title">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+            <i class="mi mi-chart" style="width: 14px; height: 14px;" aria-hidden="true"></i>
             Интерактивный график по данным из кода
           </span>
           <div class="chart-actions">
@@ -3512,8 +3570,8 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
             datasets: [{
               label: 'Значения',
               data: numbers,
-              borderColor: '#0071e3',
-              backgroundColor: 'rgba(0, 113, 227, 0.15)',
+              borderColor: '#7c66df',
+              backgroundColor: 'rgba(124, 102, 223, 0.15)',
               fill: true,
               tension: 0.35,
               borderWidth: 2.5
@@ -3744,20 +3802,10 @@ detailed official flag of Kazakhstan, golden sun with 32 rays above soaring step
 
       const icon = document.getElementById('themeIcon');
       if (next === 'dark') {
-        icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+        icon.className = 'mi mi-moon';
         showToast('Включена темная тема');
       } else {
-        icon.innerHTML = `
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="1" x2="12" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="23"></line>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-          <line x1="1" y1="12" x2="3" y2="12"></line>
-          <line x1="21" y1="12" x2="23" y2="12"></line>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        `;
+        icon.className = 'mi mi-sun';
         showToast('Включена светлая тема');
       }
       updateChartsTheme();

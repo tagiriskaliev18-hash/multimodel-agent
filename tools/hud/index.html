@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Единый стиль Mind (MindKit: mindtagsystem/design) — иконки, градиент, 3D, bounce -->
+  <link rel="icon" href="mind-ui/mind.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="mind-ui/mind-ui.css">
+  <link rel="stylesheet" href="mind-ui/mind-icons-extra.css">
+  <script src="mind-ui/mind-ui.js" defer></script>
   <title>AI Duo • Центр управления моделями и агентами</title>
   <style>
     :root {
@@ -17,9 +22,9 @@
       --text-secondary: #6e6e73;
       --text-tertiary: #86868b;
       
-      --accent-blue: #0071e3;
-      --accent-blue-hover: #0077ed;
-      --accent-blue-subtle: rgba(0, 113, 227, 0.08);
+      --accent-blue: #7c66df;
+      --accent-blue-hover: #8b63e8;
+      --accent-blue-subtle: rgba(124, 102, 223, 0.08);
       
       --badge-green-bg: #e3f9e5;
       --badge-green-text: #1b7340;
@@ -30,7 +35,7 @@
       
       --border-light: rgba(0, 0, 0, 0.08);
       --border-subtle: rgba(0, 0, 0, 0.04);
-      --border-focus: #0071e3;
+      --border-focus: #7c66df;
       
       --radius-sm: 8px;
       --radius-md: 12px;
@@ -55,13 +60,13 @@
       --text-secondary: #a1a1a6;
       --text-tertiary: #86868b;
       
-      --accent-blue: #2997ff;
-      --accent-blue-hover: #47a6ff;
-      --accent-blue-subtle: rgba(41, 151, 255, 0.15);
+      --accent-blue: #a48cf5;
+      --accent-blue-hover: #b39df7;
+      --accent-blue-subtle: rgba(164, 140, 245, 0.15);
       
       --badge-green-bg: rgba(52, 199, 89, 0.15);
       --badge-green-text: #4cd964;
-      --badge-blue-bg: rgba(41, 151, 255, 0.15);
+      --badge-blue-bg: rgba(164, 140, 245, 0.15);
       --badge-blue-text: #5ac8fa;
       --badge-amber-bg: rgba(255, 159, 10, 0.15);
       --badge-amber-text: #ff9f0a;
@@ -138,15 +143,15 @@
       width: 28px;
       height: 28px;
       border-radius: 8px;
-      background: linear-gradient(135deg, var(--accent-blue), #5856d6);
+      background: linear-gradient(135deg, var(--accent-blue), #5b8dee);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
+      box-shadow: 0 2px 8px rgba(124, 102, 223, 0.3);
     }
 
-    .nav-brand-icon svg {
+    .nav-brand-icon svg, .nav-brand-icon .mi {
       width: 16px;
       height: 16px;
     }
@@ -457,7 +462,7 @@
       letter-spacing: 0.05em;
       padding: 3px 10px;
       border-radius: var(--radius-full);
-      box-shadow: 0 2px 6px rgba(0, 113, 227, 0.4);
+      box-shadow: 0 2px 6px rgba(124, 102, 223, 0.4);
       transform: translateZ(24px);
     }
 
@@ -481,7 +486,7 @@
       color: var(--accent-blue);
     }
 
-    .card-icon-badge svg {
+    .card-icon-badge svg, .card-icon-badge .mi {
       width: 22px;
       height: 22px;
     }
@@ -571,18 +576,18 @@
       line-height: 1.4;
     }
 
-    .checklist li svg {
+    .checklist li svg, .checklist li .mi {
       width: 14px;
       height: 14px;
       flex-shrink: 0;
       margin-top: 2px;
     }
 
-    .checklist.pros li svg {
+    .checklist.pros li svg, .checklist.pros li .mi {
       color: #34c759;
     }
 
-    .checklist.cons li svg {
+    .checklist.cons li svg, .checklist.cons li .mi {
       color: #ff3b30;
     }
 
@@ -702,7 +707,7 @@
     }
 
     .kpi-card:hover {
-      border-color: rgba(0, 113, 227, 0.3);
+      border-color: rgba(124, 102, 223, 0.3);
       transform: translateY(-1px);
     }
 
@@ -825,7 +830,7 @@
     }
 
     .legend-dot.ram {
-      background: #0071e3;
+      background: #7c66df;
     }
 
     .legend-dot.lat {
@@ -870,7 +875,7 @@
     }
 
     .chart-path-line.ram {
-      stroke: #0071e3;
+      stroke: #7c66df;
     }
 
     .chart-path-line.lat {
@@ -1143,7 +1148,7 @@
       gap: 8px;
     }
 
-    .scenario-btn-head svg {
+    .scenario-btn-head svg, .scenario-btn-head .mi {
       width: 16px;
       height: 16px;
       color: var(--accent-blue);
@@ -1228,7 +1233,7 @@
       border: none;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
+      box-shadow: 0 2px 8px rgba(124, 102, 223, 0.3);
     }
 
     .btn-apple:hover {
@@ -1428,6 +1433,57 @@
       border-top: 1px solid var(--border-light);
       padding-top: 24px;
     }
+    /* ================= Стиль Mind (MindKit) =================
+       Фиолетово-синий переливающийся градиент, 3D-вставки, пружина. */
+    .nav-brand-icon {
+      background: var(--mt-gradient-flow); background-size: 200% 200%;
+      animation: mt-flow var(--mt-shimmer) ease-in-out infinite;
+      box-shadow: var(--mt-depth-highlight), 0 4px 12px rgba(91, 77, 207, 0.35);
+    }
+    .nav-brand-icon .mi, .btn-apple .mi, .btn-card-primary .mi { background: #fff; animation: none; }
+    .hero-title {
+      background: var(--mt-gradient-flow); background-size: 200% 200%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: mt-flow var(--mt-shimmer) ease-in-out infinite;
+    }
+    /* главные кнопки — объёмные, с переливом и пружиной */
+    .btn-apple, .btn-card-primary {
+      background: var(--mt-gradient-flow); background-size: 200% 200%;
+      animation: mt-flow var(--mt-shimmer) ease-in-out infinite;
+      box-shadow: var(--mt-depth-highlight), var(--mt-depth-raised);
+      transition: transform .4s var(--mt-spring), box-shadow .25s ease, filter .2s ease;
+    }
+    .btn-apple:hover, .btn-card-primary:hover {
+      background: var(--mt-gradient-flow); background-size: 200% 200%;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: var(--mt-depth-highlight), var(--mt-depth-glow), var(--mt-depth-raised);
+      filter: saturate(1.15);
+    }
+    .btn-apple:active, .btn-card-primary:active { transform: translateY(1px) scale(0.94); transition-duration: .12s; }
+    .btn-card-secondary, .segment-btn, .scenario-btn, .btn-ping, .theme-toggle-btn {
+      transition: transform .4s var(--mt-spring), background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+    .btn-card-secondary:hover, .btn-ping:hover { transform: translateY(-1px) scale(1.03); }
+    .theme-toggle-btn:hover { transform: scale(1.1); }
+    .btn-card-secondary:active, .segment-btn:active, .scenario-btn:active, .btn-ping:active,
+    .theme-toggle-btn:active { transform: scale(.94); }
+    .card-icon-badge { box-shadow: var(--mt-depth-highlight), var(--shadow-sm); }
+    .agent-card.featured { border-color: transparent;
+      background: linear-gradient(var(--bg-surface), var(--bg-surface)) padding-box,
+                  var(--mt-gradient-flow) border-box; background-size: 100% 100%, 200% 200%;
+      animation: mt-flow var(--mt-shimmer) ease-in-out infinite; }
+    /* ярлык раньше обрезался overflow карточки — переносим внутрь, в правый верхний угол */
+    .featured-tag { top: 14px; left: auto; right: 16px; background: var(--mt-gradient-mind); box-shadow: var(--mt-depth-highlight), 0 2px 6px rgba(124, 102, 223, 0.4); }
+    /* появление карточек с пружиной (наклон остаётся на .agent-card) */
+    .card-3d-wrap { animation: mt-bounce-in .6s var(--mt-spring) both; }
+    .card-3d-wrap:nth-child(2) { animation-delay: .06s; }
+    .card-3d-wrap:nth-child(3) { animation-delay: .12s; }
+    .card-3d-wrap:nth-child(4) { animation-delay: .18s; }
+    .card-3d-wrap:nth-child(5) { animation-delay: .24s; }
+    @media (prefers-reduced-motion: reduce) {
+      .nav-brand-icon, .hero-title, .btn-apple, .btn-card-primary, .agent-card.featured,
+      .card-3d-wrap { animation: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -1437,11 +1493,7 @@
     <div class="nav-container">
       <div class="nav-brand" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <div class="nav-brand-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-            <polyline points="2 17 12 22 22 17"></polyline>
-            <polyline points="2 12 12 17 22 12"></polyline>
-          </svg>
+          <i class="mi mi-layers" aria-hidden="true"></i>
         </div>
         <span>AI Duo Architecture</span>
       </div>
@@ -1452,17 +1504,7 @@
           <span>ПК: 8 GB RAM • Intel i5 • Claude + Free APIs</span>
         </div>
         <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Переключить тему">
-          <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
+          <i class="mi mi-sun" id="themeIcon" style="width: 16px; height: 16px;" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -1480,11 +1522,11 @@
       </p>
       <div class="hero-actions">
         <button class="btn-apple" onclick="scrollToElement('agentsGrid')">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+          <i class="mi mi-arrow-down" style="width: 15px; height: 15px;" aria-hidden="true"></i>
           Выбрать агента
         </button>
         <button class="btn-card-secondary" onclick="scrollToElement('recommenderSection')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          <i class="mi mi-help" style="width: 14px; height: 14px;" aria-hidden="true"></i>
           Помощник сценариев
         </button>
       </div>
@@ -1494,7 +1536,7 @@
     <div class="hero-3d-stage">
       <canvas id="canvas3D"></canvas>
       <div class="stage-hint">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8M8 12h8"/></svg>
+        <i class="mi mi-plus" style="width: 12px; height: 12px;" aria-hidden="true"></i>
         Интерактивная 3D-модель (вращайте курсором)
       </div>
     </div>
@@ -1527,11 +1569,7 @@
           
           <div class="card-top">
             <div class="card-icon-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                <polyline points="2 17 12 22 22 17"></polyline>
-                <polyline points="2 12 12 17 22 12"></polyline>
-              </svg>
+              <i class="mi mi-layers" aria-hidden="true"></i>
             </div>
             <h3 class="card-title">Архитектор</h3>
             <div class="card-tagline">Фундамент и системное проектирование</div>
@@ -1548,11 +1586,11 @@
             <div class="checklist-title">Когда выбирать:</div>
             <ul class="checklist pros">
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" aria-hidden="true"></i>
                 <span>Старт проектов и выбор стека (консилиум)</span>
               </li>
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" aria-hidden="true"></i>
                 <span>Сложный рефакторинг монолита</span>
               </li>
             </ul>
@@ -1562,7 +1600,7 @@
             <div class="checklist-title">Когда НЕ стоит:</div>
             <ul class="checklist cons">
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <i class="mi mi-close" aria-hidden="true"></i>
                 <span>Для верстки стилей или однотипных CRUD-шаблонов</span>
               </li>
             </ul>
@@ -1575,7 +1613,7 @@
             </div>
             <div class="card-btn-group">
               <button class="btn-card-primary" onclick="selectAndCopyAgent('architect')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" style="width: 13px; height: 13px;" aria-hidden="true"></i>
                 Выбрать агента
               </button>
               <button class="btn-card-secondary" onclick="showSkillModal('architecture-audit')">
@@ -1593,12 +1631,7 @@
           
           <div class="card-top">
             <div class="card-icon-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="18" cy="18" r="3"></circle>
-                <circle cx="6" cy="6" r="3"></circle>
-                <path d="M13 6h3a2 2 0 0 1 2 2v7"></path>
-                <line x1="6" y1="9" x2="6" y2="21"></line>
-              </svg>
+              <i class="mi mi-branch" aria-hidden="true"></i>
             </div>
             <h3 class="card-title">Ревьюер кода</h3>
             <div class="card-tagline">Перекрёстный аудит изменений</div>
@@ -1615,11 +1648,11 @@
             <div class="checklist-title">Когда выбирать:</div>
             <ul class="checklist pros">
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" aria-hidden="true"></i>
                 <span>Перед коммитом в master и отправкой PR</span>
               </li>
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" aria-hidden="true"></i>
                 <span>Проверка сложного асинхронного кода</span>
               </li>
             </ul>
@@ -1629,7 +1662,7 @@
             <div class="checklist-title">Когда НЕ стоит:</div>
             <ul class="checklist cons">
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <i class="mi mi-close" aria-hidden="true"></i>
                 <span>Для поиска отступов и пунктуации (дело линтера)</span>
               </li>
             </ul>
@@ -1642,7 +1675,7 @@
             </div>
             <div class="card-btn-group">
               <button class="btn-card-primary" onclick="selectAndCopyAgent('reviewer')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" style="width: 13px; height: 13px;" aria-hidden="true"></i>
                 Выбрать агента
               </button>
               <button class="btn-card-secondary" onclick="showSkillModal('code-review')">
@@ -1660,10 +1693,7 @@
           
           <div class="card-top">
             <div class="card-icon-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="16 18 22 12 16 6"></polyline>
-                <polyline points="8 6 2 12 8 18"></polyline>
-              </svg>
+              <i class="mi mi-code" aria-hidden="true"></i>
             </div>
             <h3 class="card-title">Разработчик</h3>
             <div class="card-tagline">Спринтер быстрой генерации</div>
@@ -1680,11 +1710,11 @@
             <div class="checklist-title">Когда выбирать:</div>
             <ul class="checklist pros">
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" aria-hidden="true"></i>
                 <span>Написание бойлерплейта, классов и DTO</span>
               </li>
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" aria-hidden="true"></i>
                 <span>Генерация юнит-тестов (pytest / jest)</span>
               </li>
             </ul>
@@ -1694,7 +1724,7 @@
             <div class="checklist-title">Когда НЕ стоит:</div>
             <ul class="checklist cons">
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <i class="mi mi-close" aria-hidden="true"></i>
                 <span>Для криптографии и проектирования безопасности ядра</span>
               </li>
             </ul>
@@ -1707,7 +1737,7 @@
             </div>
             <div class="card-btn-group">
               <button class="btn-card-primary" onclick="selectAndCopyAgent('developer')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" style="width: 13px; height: 13px;" aria-hidden="true"></i>
                 Выбрать агента
               </button>
               <button class="btn-card-secondary" onclick="showSkillModal('boilerplate-gen')">
@@ -1725,9 +1755,7 @@
           
           <div class="card-top">
             <div class="card-icon-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
+              <i class="mi mi-shield" aria-hidden="true"></i>
             </div>
             <h3 class="card-title">Безопасность</h3>
             <div class="card-tagline">Защита от уязвимостей и утечек</div>
@@ -1744,11 +1772,11 @@
             <div class="checklist-title">Когда выбирать:</div>
             <ul class="checklist pros">
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" aria-hidden="true"></i>
                 <span>Перед релизом или публичным деплоем</span>
               </li>
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" aria-hidden="true"></i>
                 <span>Аудит эндпоинтов загрузки файлов и JWT</span>
               </li>
             </ul>
@@ -1758,7 +1786,7 @@
             <div class="checklist-title">Когда НЕ стоит:</div>
             <ul class="checklist cons">
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <i class="mi mi-close" aria-hidden="true"></i>
                 <span>Не пишет бизнес-логику и фронтенд</span>
               </li>
             </ul>
@@ -1771,7 +1799,7 @@
             </div>
             <div class="card-btn-group">
               <button class="btn-card-primary" onclick="selectAndCopyAgent('security_auditor')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" style="width: 13px; height: 13px;" aria-hidden="true"></i>
                 Выбрать агента
               </button>
               <button class="btn-card-secondary" onclick="showSkillModal('security-audit')">
@@ -1789,18 +1817,7 @@
           
           <div class="card-top">
             <div class="card-icon-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
-                <rect x="9" y="9" width="6" height="6"></rect>
-                <line x1="9" y1="1" x2="9" y2="4"></line>
-                <line x1="15" y1="1" x2="15" y2="4"></line>
-                <line x1="9" y1="20" x2="9" y2="23"></line>
-                <line x1="15" y1="20" x2="15" y2="23"></line>
-                <line x1="20" y1="9" x2="23" y2="9"></line>
-                <line x1="20" y1="14" x2="23" y2="14"></line>
-                <line x1="1" y1="9" x2="4" y2="9"></line>
-                <line x1="1" y1="14" x2="4" y2="14"></line>
-              </svg>
+              <i class="mi mi-cpu" aria-hidden="true"></i>
             </div>
             <h3 class="card-title">LLMOps (Soup)</h3>
             <div class="card-tagline">Тюнинг моделей под 8 GB RAM</div>
@@ -1817,11 +1834,11 @@
             <div class="checklist-title">Когда выбирать:</div>
             <ul class="checklist pros">
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" aria-hidden="true"></i>
                 <span>Офлайн работа и подбор моделей под 8 ГБ RAM</span>
               </li>
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" aria-hidden="true"></i>
                 <span>Бенчмарк скорости (TPS) и задержек</span>
               </li>
             </ul>
@@ -1831,7 +1848,7 @@
             <div class="checklist-title">Когда НЕ стоит:</div>
             <ul class="checklist cons">
               <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <i class="mi mi-close" aria-hidden="true"></i>
                 <span>Не пытайтесь запускать 70B модели без квантования</span>
               </li>
             </ul>
@@ -1844,7 +1861,7 @@
             </div>
             <div class="card-btn-group">
               <button class="btn-card-primary" onclick="selectAndCopyAgent('llmops')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <i class="mi mi-check" style="width: 13px; height: 13px;" aria-hidden="true"></i>
                 Выбрать агента
               </button>
               <button class="btn-card-secondary" onclick="showSkillModal('llmops-tuning')">
@@ -1873,11 +1890,11 @@
             <span>Телеметрия активна</span>
           </div>
           <button class="btn-card-primary" id="btnBurstLoad" onclick="triggerBurstSimulation()" title="Смоделировать пиковый всплеск запросов">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            <i class="mi mi-trending" style="width: 13px; height: 13px;" aria-hidden="true"></i>
             <span>Всплеск нагрузки</span>
           </button>
           <button class="btn-card-secondary" id="btnToggleSim" onclick="toggleWorkloadSimulation()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <i class="mi mi-play" style="width: 13px; height: 13px;" aria-hidden="true"></i>
             <span id="simBtnLabel">Пауза</span>
           </button>
         </div>
@@ -1935,7 +1952,7 @@
         <div class="chart-controls-bar">
           <div class="chart-title-group">
             <h3>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              <i class="mi mi-activity" style="width: 16px; height: 16px;" aria-hidden="true"></i>
               <span>График телеметрии и загрузки моделей в реальном времени</span>
             </h3>
             <p>Динамика за последние 30 секунд: скорость генерации токенов (TPS), занятая память (RAM) и задержка отклика</p>
@@ -1964,8 +1981,8 @@
                 <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
               </linearGradient>
               <linearGradient id="gradRam" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#0071e3" stop-opacity="0.20"/>
-                <stop offset="100%" stop-color="#0071e3" stop-opacity="0.0"/>
+                <stop offset="0%" stop-color="#7c66df" stop-opacity="0.20"/>
+                <stop offset="100%" stop-color="#7c66df" stop-opacity="0.0"/>
               </linearGradient>
             </defs>
 
@@ -2000,7 +2017,7 @@
 
             <!-- Live Points at the right edge -->
             <circle id="livePointTps" cx="780" cy="85" r="4.5" fill="#10b981" stroke="#ffffff" stroke-width="2" />
-            <circle id="livePointRam" cx="780" cy="115" r="4.5" fill="#0071e3" stroke="#ffffff" stroke-width="2" />
+            <circle id="livePointRam" cx="780" cy="115" r="4.5" fill="#7c66df" stroke="#ffffff" stroke-width="2" />
           </svg>
         </div>
       </div>
@@ -2012,7 +2029,7 @@
           <div>
             <div class="workload-header">
               <div class="workload-agent-name">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <i class="mi mi-layers" style="width: 15px; height: 15px;" aria-hidden="true"></i>
                 <span>Архитектор</span>
               </div>
               <span class="workload-state-tag active" id="wl-state-architect">Ожидание</span>
@@ -2035,7 +2052,7 @@
           <div>
             <div class="workload-header">
               <div class="workload-agent-name">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><path d="M13 6h3a2 2 0 0 1 2 2v7"></path><line x1="6" y1="9" x2="6" y2="21"></line></svg>
+                <i class="mi mi-branch" style="width: 15px; height: 15px;" aria-hidden="true"></i>
                 <span>Ревьюер</span>
               </div>
               <span class="workload-state-tag idle" id="wl-state-reviewer">В покое</span>
@@ -2058,7 +2075,7 @@
           <div>
             <div class="workload-header">
               <div class="workload-agent-name">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                <i class="mi mi-code" style="width: 15px; height: 15px;" aria-hidden="true"></i>
                 <span>Разработчик</span>
               </div>
               <span class="workload-state-tag busy" id="wl-state-developer">Groq LPU</span>
@@ -2081,7 +2098,7 @@
           <div>
             <div class="workload-header">
               <div class="workload-agent-name">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <i class="mi mi-shield" style="width: 15px; height: 15px;" aria-hidden="true"></i>
                 <span>Безопасность</span>
               </div>
               <span class="workload-state-tag idle" id="wl-state-security">Ожидание</span>
@@ -2104,7 +2121,7 @@
           <div>
             <div class="workload-header">
               <div class="workload-agent-name">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg>
+                <i class="mi mi-cpu" style="width: 15px; height: 15px;" aria-hidden="true"></i>
                 <span>LLMOps (Soup)</span>
               </div>
               <span class="workload-state-tag active" id="wl-state-llmops">8 GB RAM</span>
@@ -2127,7 +2144,7 @@
       <div class="stream-container">
         <div class="stream-head">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            <i class="mi mi-activity" style="width: 14px; height: 14px;" aria-hidden="true"></i>
             <span>Хроника операций агентов в реальном времени</span>
           </div>
           <span style="font-size: 11px; color: var(--text-tertiary);" id="streamLastPing">Синхронизировано сейчас</span>
@@ -2148,7 +2165,7 @@
       <div class="scenario-picker">
         <button class="scenario-btn active" onclick="selectScenario('new_project', this)">
           <div class="scenario-btn-head">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <i class="mi mi-layers" aria-hidden="true"></i>
             <strong>Новый проект с нуля</strong>
           </div>
           <span>Стек, структура БД, контракты API</span>
@@ -2156,7 +2173,7 @@
 
         <button class="scenario-btn" onclick="selectScenario('pr_review', this)">
           <div class="scenario-btn-head">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><path d="M13 6h3a2 2 0 0 1 2 2v7"></path><line x1="6" y1="9" x2="6" y2="21"></line></svg>
+            <i class="mi mi-branch" aria-hidden="true"></i>
             <strong>Код-ревью перед коммитом</strong>
           </div>
           <span>Поиск багов, логика, edge cases</span>
@@ -2164,7 +2181,7 @@
 
         <button class="scenario-btn" onclick="selectScenario('fast_code', this)">
           <div class="scenario-btn-head">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            <i class="mi mi-code" aria-hidden="true"></i>
             <strong>Быстрый бойлерплейт</strong>
           </div>
           <span>Функции, юнит-тесты на pytest (Free)</span>
@@ -2172,7 +2189,7 @@
 
         <button class="scenario-btn" onclick="selectScenario('security_audit', this)">
           <div class="scenario-btn-head">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <i class="mi mi-shield" aria-hidden="true"></i>
             <strong>Аудит безопасности</strong>
           </div>
           <span>Скан утечек ключей и уязвимостей</span>
@@ -2180,7 +2197,7 @@
 
         <button class="scenario-btn" onclick="selectScenario('local_ram', this)">
           <div class="scenario-btn-head">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg>
+            <i class="mi mi-cpu" aria-hidden="true"></i>
             <strong>Оптимизация под 8 GB RAM</strong>
           </div>
           <span>Квантование профилей через Soup</span>
@@ -2204,7 +2221,7 @@
         <div class="rec-action-box">
           <span class="rec-note">Готовый запрос для вставки в чат:</span>
           <button class="btn-apple" onclick="copyCurrentPrompt()">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <i class="mi mi-copy" style="width: 15px; height: 15px;" aria-hidden="true"></i>
             <span id="copyBtnText">Скопировать запрос</span>
           </button>
         </div>
@@ -2284,7 +2301,7 @@
       <div class="modal-header">
         <h3 id="modalTitle">Спецификация навыка</h3>
         <button class="modal-close-btn" onclick="closeSkillModal()" title="Закрыть">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <i class="mi mi-close" style="width: 14px; height: 14px;" aria-hidden="true"></i>
         </button>
       </div>
       <div class="modal-body" id="modalBody">
@@ -2295,7 +2312,7 @@
 
   <!-- Toast Notification -->
   <div class="toast-bubble" id="toastBubble">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <i class="mi mi-check" style="width: 16px; height: 16px;" aria-hidden="true"></i>
     <span id="toastMsg">Запрос скопирован в буфер обмена</span>
   </div>
 
@@ -2328,7 +2345,7 @@
 
     // Nodes in 3D Space
     const NODES = [
-      { name: 'Antigravity Core', x: 0, y: 0, z: 0, color: '#0071e3', radius: 10, ring: 0 },
+      { name: 'Antigravity Core', x: 0, y: 0, z: 0, color: '#7c66df', radius: 10, ring: 0 },
       { name: 'Claude 3.7', x: 0, y: -90, z: 0, color: '#a855f7', radius: 7, ring: 1 },
       { name: 'Nous Hermes 3', x: 75, y: -45, z: 45, color: '#f97316', radius: 7, ring: 1 },
       { name: 'OpenAI GPT-4o', x: -75, y: -45, z: -45, color: '#10b981', radius: 7, ring: 1 },
@@ -2377,7 +2394,7 @@
 
       const ringRadii = [90, 110];
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      const ringColor = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 113, 227, 0.15)';
+      const ringColor = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(124, 102, 223, 0.15)';
 
       ringRadii.forEach((r, idx) => {
         ctx.beginPath();
@@ -2746,18 +2763,10 @@ skills/${skillKey}/SKILL.md
       
       const icon = document.getElementById('themeIcon');
       if (next === 'dark') {
-        icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+        icon.className = 'mi mi-moon';
         showToast('Включена темная тема интерфейса');
       } else {
-        icon.innerHTML = `
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="1" x2="12" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="23"></line>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-          <line x1="1" y1="12" x2="3" y2="12"></line>
-          <line x1="21" y1="12" x2="23" y2="12"></line>
-        `;
+        icon.className = 'mi mi-sun';
         showToast('Включена светлая тема интерфейса');
       }
     }

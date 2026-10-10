@@ -12,6 +12,12 @@
   <meta name="apple-mobile-web-app-title" content="АУП Сервис">
   <meta name="theme-color" content="#000000">
 
+  <!-- Единый стиль Mind (MindKit: mindtagsystem/design) — иконки, градиент, 3D, bounce.
+       Подключается до Tailwind, чтобы утилиты Tailwind (отступы, размеры шрифта) имели приоритет. -->
+  <link rel="icon" href="mind-ui/mind.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="mind-ui/mind-ui.css">
+  <link rel="stylesheet" href="mind-ui/mind-icons-extra.css">
+  <script src="mind-ui/mind-ui.js" defer></script>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -24,12 +30,12 @@
           },
           colors: {
             apple: {
-              blue: '#0A84FF',
+              blue: '#5b8dee',      // Mind: синий градиента
               green: '#30D158',
               orange: '#FF9F0A',
               red: '#FF453A',
-              purple: '#BF5AF2',
-              teal: '#64D2FF',
+              purple: '#a46cf0',    // Mind: фиолетовый градиента
+              teal: '#49b3f7',      // Mind: голубой градиента
               yellow: '#FFD60A',
               gray: {
                 50: '#F5F5F7',
@@ -48,7 +54,7 @@
           },
           animation: {
             'blob': 'blob 18s infinite ease-in-out',
-            'island-bounce': 'islandBounce 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+            'island-bounce': 'islandBounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)'
           },
           keyframes: {
             blob: {
@@ -66,8 +72,39 @@
     }
   </script>
 
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    // Вместо Lucide: те же разметка <i data-lucide="..."> и вызов lucide.createIcons(),
+    // но рисуются собственные иконки Mind с переливающимся фиолетово-синим градиентом.
+    (function () {
+      var MAP = {
+        'layers': 'layers', 'search': 'search', 'volume-2': 'volume', 'volume-x': 'volume-off',
+        'sun': 'sun', 'moon': 'moon', 'sparkles': 'sparkles', 'users': 'users', 'clock': 'clock',
+        'car': 'car', 'navigation': 'navigation', 'inbox': 'inbox', 'activity': 'activity',
+        'alert-triangle': 'warning', 'check': 'check', 'check-check': 'check-check',
+        'building': 'building', 'map-pin': 'map-pin', 'phone': 'phone', 'phone-call': 'phone',
+        'message-square': 'chat', 'truck': 'truck', 'compass': 'compass', 'wifi': 'wifi',
+        'shield-check': 'shield', 'monitor': 'monitor', 'code-2': 'code', 'printer': 'print',
+        'wrench': 'wrench'
+      };
+      function createIcons() {
+        document.querySelectorAll('[data-lucide]').forEach(function (el) {
+          var name = MAP[el.getAttribute('data-lucide')] || 'dot';
+          // убираем прежнюю иконку (при смене data-lucide), размеры w-*/h-* остаются
+          Array.prototype.slice.call(el.classList).forEach(function (c) {
+            if (/^mi-/.test(c) && c !== 'mi-white') el.classList.remove(c);
+          });
+          el.classList.add('mi', 'mi-' + name);
+          // на цветной подложке с белым текстом иконка белая
+          var host = el.parentElement;
+          if (el.classList.contains('text-white') || (host && host.classList.contains('text-white'))) {
+            el.classList.add('mi-white');
+          }
+          el.setAttribute('aria-hidden', 'true');
+        });
+      }
+      window.lucide = { createIcons: createIcons };
+    })();
+  </script>
 
   <style>
     /* Safe Area insets for iOS / Notch / Home Indicator */
@@ -131,7 +168,7 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       color: #FFFFFF;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .dark .dynamic-island {
       background: #000000;
@@ -158,6 +195,17 @@
     .spring-button:active {
       transform: translateY(1px) scale(0.97);
     }
+
+    /* ---------- Стиль Mind: 3D-глубина, перелив, пружина ---------- */
+    .mt-raised { box-shadow: var(--mt-depth-highlight), var(--mt-depth-raised); }
+    .glass-card { transition: transform .45s var(--mt-spring), box-shadow .3s ease, border-color .3s ease; }
+    .dark .glass-card { box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 20px 50px rgba(0,0,0,.4); }
+    .glass-card.mt-3d:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,.1), var(--mt-depth-glow), 0 20px 50px rgba(0,0,0,.35); }
+    /* после появления карточка снова слушается наклона (.mt-3d) */
+    .mt-3d.mt-bounce-in { animation-fill-mode: backwards; }
+    .mt-btn .mi, .mt-gradient .mi { background: #fff; animation: none; }
+    .dynamic-island { box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 0 0 1px rgba(155,93,229,.25), 0 15px 35px rgba(0,0,0,.5); }
+    #islandIcon:empty { display: none; }
   </style>
 </head>
 <body class="font-sans antialiased min-h-screen selection:bg-apple-blue selection:text-white pb-36 transition-colors duration-300 overflow-x-hidden">
@@ -166,8 +214,8 @@
   <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
     <div class="absolute -top-32 -left-32 w-96 h-96 bg-purple-600/20 dark:bg-purple-600/25 rounded-full filter blur-[100px] animate-blob"></div>
     <div class="absolute top-1/4 -right-32 w-[28rem] h-[28rem] bg-blue-600/15 dark:bg-blue-600/20 rounded-full filter blur-[120px] animate-blob [animation-delay:4s]"></div>
-    <div class="absolute bottom-1/3 left-1/4 w-[26rem] h-[26rem] bg-emerald-600/10 dark:bg-emerald-600/15 rounded-full filter blur-[110px] animate-blob [animation-delay:8s]"></div>
-    <div class="absolute -bottom-20 right-1/4 w-80 h-80 bg-pink-600/15 dark:bg-pink-600/20 rounded-full filter blur-[100px] animate-blob [animation-delay:12s]"></div>
+    <div class="absolute bottom-1/3 left-1/4 w-[26rem] h-[26rem] bg-sky-500/10 dark:bg-sky-500/15 rounded-full filter blur-[110px] animate-blob [animation-delay:8s]"></div>
+    <div class="absolute -bottom-20 right-1/4 w-80 h-80 bg-violet-500/15 dark:bg-violet-500/20 rounded-full filter blur-[100px] animate-blob [animation-delay:12s]"></div>
   </div>
 
   <!-- Top Navigation & Apple Dynamic Island Header -->
@@ -176,7 +224,7 @@
       
       <!-- Organization Logo & Title -->
       <div class="flex items-center space-x-2.5 glass-card px-3 sm:px-4 py-2 rounded-2xl shrink-0">
-        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/25">
+        <div class="w-8 h-8 rounded-xl mt-gradient mt-raised flex items-center justify-center text-white">
           <i data-lucide="layers" class="w-4 h-4"></i>
         </div>
         <div>
@@ -188,6 +236,7 @@
       <!-- Center: Apple Dynamic Island -->
       <div id="dynamicIsland" onclick="toggleIslandDetails()" class="pointer-events-auto cursor-pointer dynamic-island rounded-full px-3.5 sm:px-4 py-2 flex items-center space-x-2.5 sm:space-x-3 min-w-0 max-w-xs sm:max-w-md hover:scale-[1.02] active:scale-[0.98]">
         <div id="islandDot" class="w-2.5 h-2.5 rounded-full bg-apple-green animate-pulse shrink-0"></div>
+        <span id="islandIcon" class="shrink-0 inline-flex"></span>
         <div class="flex-1 min-w-0 pr-1">
           <p id="islandTitle" class="text-xs font-medium text-white truncate">Система активна • Все службы онлайн</p>
           <p id="islandSubtitle" class="text-[10px] text-white/60 truncate">Нажмите для уведомлений</p>
@@ -227,7 +276,7 @@
           <div class="w-3 h-3 rounded-full bg-apple-blue"></div>
           <h3 class="text-xs font-semibold uppercase tracking-wider text-white">Информационный центр АУП</h3>
         </div>
-        <button onclick="toggleIslandDetails()" class="text-white/40 hover:text-white text-xs">Закрыть ✕</button>
+        <button onclick="toggleIslandDetails()" class="text-white/60 hover:text-white text-xs inline-flex items-center gap-1">Закрыть <i class="mi mi-close w-3.5 h-3.5"></i></button>
       </div>
       <div id="islandNotificationList" class="space-y-2.5 text-xs text-white/80">
         <!-- Live Notifications will be inserted here -->
@@ -246,7 +295,7 @@
           <span>Цифровой сервис филиала УМГ «Уральск»</span>
         </div>
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
-          Заказ услуг и координация <span class="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">АУП</span>
+          Заказ услуг и координация <span class="mt-gradient-text">АУП</span>
         </h2>
         <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-white/60 max-w-2xl font-normal">
           Единое окно для оперативного заказа ИТ-поддержки, связи с сотрудниками отделов и онлайн-мониторинга служебного транспорта.
@@ -351,7 +400,7 @@
           </h3>
           <p class="text-xs text-gray-500 dark:text-white/50">Отслеживание местоположения, текущих рейсов и заказ дежурного автомобиля</p>
         </div>
-        <button onclick="openOrderCarModal()" class="spring-button px-5 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs flex items-center space-x-2 shadow-lg shadow-blue-500/30">
+        <button onclick="openOrderCarModal()" class="spring-button px-5 py-2.5 rounded-2xl mt-btn text-white font-semibold text-xs flex items-center space-x-2">
           <i data-lucide="navigation" class="w-4 h-4"></i>
           <span>Заказать служебный автотранспорт</span>
         </button>
@@ -430,7 +479,7 @@
       <div class="w-px h-6 bg-gray-300 dark:bg-white/20 mx-1"></div>
 
       <!-- Dock Item 5: Order Quick Transport -->
-      <button onclick="openOrderCarModal()" class="relative group p-3 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white transition-all spring-button shadow-md shadow-blue-500/30" title="Быстрый вызов авто">
+      <button onclick="openOrderCarModal()" class="relative group p-3 rounded-2xl mt-btn text-white transition-all spring-button" title="Быстрый вызов авто">
         <i data-lucide="navigation" class="w-5 h-5"></i>
       </button>
     </div>
@@ -441,7 +490,7 @@
   <!-- ======================================================== -->
   <div id="modalOrderService" role="dialog" aria-modal="true" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
     <div class="glass-card bg-white dark:bg-zinc-950 rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-white/20 shadow-2xl relative animate-island-bounce">
-      <button onclick="closeModal('modalOrderService')" aria-label="Закрыть" class="absolute top-5 right-5 text-gray-400 hover:text-black dark:text-white/40 dark:hover:text-white text-xl">✕</button>
+      <button onclick="closeModal('modalOrderService')" aria-label="Закрыть" class="absolute top-5 right-5 text-gray-400 hover:text-black dark:text-white/40 dark:hover:text-white text-xl"><i class="mi mi-close w-4 h-4"></i></button>
       
       <div class="flex items-center space-x-3 mb-6">
         <div id="modalServiceIcon" class="w-12 h-12 rounded-2xl bg-blue-500/20 text-apple-blue flex items-center justify-center text-2xl">
@@ -497,7 +546,7 @@
 
         <div class="pt-2 flex justify-end space-x-3">
           <button type="button" onclick="closeModal('modalOrderService')" class="px-5 py-2.5 rounded-xl glass-card text-xs font-medium transition-all">Отмена</button>
-          <button type="submit" class="spring-button px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-blue-500/25">Отправить заявку</button>
+          <button type="submit" class="spring-button px-6 py-2.5 rounded-xl mt-btn text-white font-bold text-xs">Отправить заявку</button>
         </div>
       </form>
     </div>
@@ -508,10 +557,10 @@
   <!-- ======================================================== -->
   <div id="modalSendMessage" role="dialog" aria-modal="true" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
     <div class="glass-card bg-white dark:bg-zinc-950 rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-white/20 shadow-2xl relative animate-island-bounce">
-      <button onclick="closeModal('modalSendMessage')" aria-label="Закрыть" class="absolute top-5 right-5 text-gray-400 hover:text-black dark:text-white/40 dark:hover:text-white text-xl">✕</button>
+      <button onclick="closeModal('modalSendMessage')" aria-label="Закрыть" class="absolute top-5 right-5 text-gray-400 hover:text-black dark:text-white/40 dark:hover:text-white text-xl"><i class="mi mi-close w-4 h-4"></i></button>
 
       <div class="flex items-center space-x-3 mb-4">
-        <div id="msgEmpAvatar" class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white font-bold text-lg shrink-0">
+        <div id="msgEmpAvatar" class="w-12 h-12 rounded-2xl mt-gradient mt-raised flex items-center justify-center text-white font-bold text-lg shrink-0">
           КС
         </div>
         <div>
@@ -553,7 +602,7 @@
 
         <div class="pt-2 flex justify-end space-x-3">
           <button type="button" onclick="closeModal('modalSendMessage')" class="px-5 py-2.5 rounded-xl glass-card text-xs font-medium transition-all">Отмена</button>
-          <button type="submit" class="spring-button px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs shadow-lg shadow-purple-500/25">Отправить</button>
+          <button type="submit" class="spring-button px-6 py-2.5 rounded-xl mt-btn text-white font-bold text-xs">Отправить</button>
         </div>
       </form>
     </div>
@@ -564,7 +613,7 @@
   <!-- ======================================================== -->
   <div id="modalOrderCar" role="dialog" aria-modal="true" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
     <div class="glass-card bg-white dark:bg-zinc-950 rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-white/20 shadow-2xl relative animate-island-bounce">
-      <button onclick="closeModal('modalOrderCar')" aria-label="Закрыть" class="absolute top-5 right-5 text-gray-400 hover:text-black dark:text-white/40 dark:hover:text-white text-xl">✕</button>
+      <button onclick="closeModal('modalOrderCar')" aria-label="Закрыть" class="absolute top-5 right-5 text-gray-400 hover:text-black dark:text-white/40 dark:hover:text-white text-xl"><i class="mi mi-close w-4 h-4"></i></button>
 
       <div class="flex items-center space-x-3 mb-6">
         <div class="w-12 h-12 rounded-2xl bg-teal-500/20 text-apple-teal flex items-center justify-center text-2xl shrink-0">
@@ -623,7 +672,7 @@
 
         <div class="pt-2 flex justify-end space-x-3">
           <button type="button" onclick="closeModal('modalOrderCar')" class="px-5 py-2.5 rounded-xl glass-card text-xs font-medium transition-all">Отмена</button>
-          <button type="submit" class="spring-button px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-400 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-teal-500/25">Заказать машину</button>
+          <button type="submit" class="spring-button px-6 py-2.5 rounded-xl mt-btn text-white font-bold text-xs">Заказать машину</button>
         </div>
       </form>
     </div>
@@ -904,7 +953,7 @@
         vehicle: 'Toyota Land Cruiser Prado',
         plate: '070 AC 07',
         status: 'trip',
-        destination: 'АУП ➔ КС-2 «Чижа» (линейная станция)',
+        destination: 'АУП → КС-2 «Чижа» (линейная станция)',
         departure: '14:15',
         returnEta: '17:45',
         progress: 75,
@@ -928,7 +977,7 @@
         vehicle: 'Toyota Camry 70',
         plate: '005 AA 07',
         status: 'trip',
-        destination: 'АУП ➔ Акимат ЗКО (Доставка документов)',
+        destination: 'АУП → Акимат ЗКО (Доставка документов)',
         departure: '15:20',
         returnEta: '16:30',
         progress: 45,
@@ -1106,10 +1155,18 @@
     // ----------------------------------------------------
     // 4. DYNAMIC ISLAND & NOTIFICATIONS
     // ----------------------------------------------------
-    function setDynamicIsland(title, subtitle, type = 'normal') {
+    function setDynamicIsland(title, subtitle, type = 'normal', icon = '') {
       const elTitle = document.getElementById('islandTitle');
       const elSub = document.getElementById('islandSubtitle');
       const dot = document.getElementById('islandDot');
+      const elIcon = document.getElementById('islandIcon');
+      const island = document.getElementById('dynamicIsland');
+
+      // значок Mind вместо эмодзи + пружинка «острова» при новом событии
+      if (elIcon) elIcon.innerHTML = icon ? `<i class="mi mi-${icon} w-4 h-4" aria-hidden="true"></i>` : '';
+      if (island && window.matchMedia && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        island.classList.remove('mt-bouncing'); void island.offsetWidth; island.classList.add('mt-bouncing');
+      }
 
       if (elTitle) elTitle.textContent = title;
       if (elSub) elSub.textContent = subtitle;
@@ -1218,10 +1275,10 @@
     function renderServices(list = state.services) {
       const grid = document.getElementById('servicesGrid');
       grid.innerHTML = list.map(svc => `
-        <div class="glass-card rounded-3xl p-5 hover:border-gray-400 dark:hover:border-white/30 transition-all duration-300 flex flex-col justify-between group">
+        <div class="glass-card rounded-3xl p-5 hover:border-gray-400 dark:hover:border-white/30 transition-all duration-300 flex flex-col justify-between group mt-3d mt-bounce-in" data-mt-tilt>
           <div>
             <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${svc.color} flex items-center justify-center text-white shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+              <div class="w-12 h-12 rounded-2xl mt-gradient mt-raised flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-500 [transition-timing-function:var(--mt-spring)]">
                 <i data-lucide="${svc.icon}" class="w-6 h-6"></i>
               </div>
               <span class="text-[10px] font-mono font-medium px-2.5 py-1 rounded-full bg-black/5 dark:bg-white/10 text-gray-600 dark:text-white/70">
@@ -1239,7 +1296,7 @@
           <div class="mt-5 pt-4 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
             <span class="text-[11px] text-gray-500 dark:text-white/40 font-medium">Отдел: ${esc(svc.dept)}</span>
             <button onclick="handleServiceClick('${svc.id}')" class="spring-button px-4 py-2 rounded-xl bg-gray-900/10 dark:bg-white/10 hover:bg-apple-blue hover:text-white dark:hover:bg-apple-blue text-xs font-semibold text-gray-900 dark:text-white transition-all">
-              Заказать ➔
+              <span class="inline-flex items-center gap-1">Заказать <i class="mi mi-chevron-right w-3.5 h-3.5"></i></span>
             </button>
           </div>
         </div>
@@ -1296,11 +1353,11 @@
         const initials = emp.name.split(' ').slice(0, 2).map(w => w[0]).join('');
 
         return `
-          <div class="glass-card rounded-3xl p-5 hover:border-gray-400 dark:hover:border-white/30 transition-all duration-300 flex flex-col justify-between">
+          <div class="glass-card rounded-3xl p-5 hover:border-gray-400 dark:hover:border-white/30 transition-all duration-300 flex flex-col justify-between mt-3d mt-bounce-in" data-mt-tilt>
             <div>
               <div class="flex items-start justify-between mb-3">
                 <div class="flex items-center space-x-3">
-                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-md shrink-0">
+                  <div class="w-12 h-12 rounded-2xl mt-gradient mt-raised flex items-center justify-center text-white font-bold text-base shrink-0">
                     ${initials}
                   </div>
                   <div>
@@ -1314,7 +1371,7 @@
               <div class="flex items-center justify-between my-2.5 p-2 rounded-xl bg-black/5 dark:bg-white/5">
                 ${statusBadge}
                 <button onclick="toggleEmployeeStatus('${emp.id}')" class="text-[10px] text-gray-600 dark:text-white/60 hover:text-black dark:hover:text-white underline font-medium" title="Переключить статус для теста">
-                  Сменить статус ⇄
+                  <span class="inline-flex items-center gap-1">Сменить статус <i class="mi mi-refresh w-3 h-3"></i></span>
                 </button>
               </div>
 
@@ -1386,7 +1443,7 @@
         emp.status = 'busy';
         emp.note = 'Занят: срочное поручение / совещание';
         showToast(emp.name, 'Статус изменён на «ЗАНЯТ». Новые сообщения пойдут в очередь.', 'clock');
-        setDynamicIsland(`⚠️ ${emp.name.split(' ')[0]} занят`, 'Сообщения встают в очередь доставки', 'warning');
+        setDynamicIsland(`${emp.name.split(' ')[0]} занят`, 'Сообщения встают в очередь доставки', 'warning', 'warning');
       } else {
         emp.status = 'free';
         emp.note = 'На рабочем месте';
@@ -1400,10 +1457,10 @@
             m.deliveredAt = nowTime;
           });
           showToast(`Доставлено (${queuedForEmp.length})`, `Сотрудник ${emp.name} освободился! Отложенные сообщения доставлены.`, 'check-check');
-          setDynamicIsland(`🎉 Сообщения доставлены!`, `${emp.name} освободился (${queuedForEmp.length} в очереди)`, 'success');
+          setDynamicIsland(`Сообщения доставлены!`, `${emp.name} освободился (${queuedForEmp.length} в очереди)`, 'success', 'check-check');
         } else {
           showToast(emp.name, 'Статус изменён на «СВОБОДЕН».', 'check');
-          setDynamicIsland(`🟢 ${emp.name.split(' ')[0]} свободен`, 'Доступен для прямого контакта', 'success');
+          setDynamicIsland(`${emp.name.split(' ')[0]} свободен`, 'Доступен для прямого контакта', 'success', 'user');
         }
       }
 
@@ -1433,7 +1490,7 @@
         }
 
         return `
-          <div class="glass-card rounded-3xl p-5 hover:border-gray-400 dark:hover:border-white/30 transition-all duration-300 flex flex-col justify-between">
+          <div class="glass-card rounded-3xl p-5 hover:border-gray-400 dark:hover:border-white/30 transition-all duration-300 flex flex-col justify-between mt-3d mt-bounce-in" data-mt-tilt>
             <div>
               <div class="flex items-start justify-between mb-3">
                 <div>
@@ -1471,7 +1528,7 @@
                       <span>${drv.progress}%</span>
                     </div>
                     <div class="w-full bg-black/10 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
-                      <div class="bg-gradient-to-r from-blue-500 to-teal-400 h-1.5 rounded-full" style="width: ${drv.progress}%"></div>
+                      <div class="mt-gradient h-1.5 rounded-full" style="width: ${drv.progress}%"></div>
                     </div>
                   </div>
                 ` : ''}
@@ -1480,7 +1537,7 @@
 
             <div class="mt-4 pt-3 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
               <span class="text-[11px] text-gray-400 dark:text-white/40">${drv.status === 'free' ? 'Готов к подаче' : drv.status === 'trip' ? 'В движении' : 'На ремонте'}</span>
-              <button onclick="orderSpecificDriver('${drv.id}')" class="spring-button px-4 py-2 rounded-xl ${drv.status === 'free' ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-white/30 cursor-not-allowed'} text-xs font-semibold" ${drv.status !== 'free' ? 'disabled' : ''}>
+              <button onclick="orderSpecificDriver('${drv.id}')" class="spring-button px-4 py-2 rounded-xl ${drv.status === 'free' ? 'mt-btn text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-white/30 cursor-not-allowed'} text-xs font-semibold" ${drv.status !== 'free' ? 'disabled' : ''}>
                 ${drv.status === 'free' ? 'Заказать машину' : 'Занят'}
               </button>
             </div>
@@ -1522,9 +1579,7 @@
             <span class="px-3 py-1 rounded-full text-xs font-semibold ${t.status === 'Выполнено' ? 'bg-emerald-500/20 text-apple-green' : 'bg-blue-500/20 text-apple-blue animate-pulse'}">
               ${esc(t.status)}
             </span>
-            <button onclick="toggleTicketStatus('${t.id}')" aria-label="Сменить статус" class="p-1.5 rounded-lg glass-card text-gray-500 dark:text-white/60 text-xs" title="Сменить статус (демо)">
-              ✓
-            </button>
+            <button onclick="toggleTicketStatus('${t.id}')" aria-label="Сменить статус" class="p-1.5 rounded-lg glass-card text-gray-500 dark:text-white/60 text-xs" title="Сменить статус (демо)"><i class="mi mi-check w-3.5 h-3.5"></i></button>
           </div>
         </div>
       `).join('');
@@ -1709,10 +1764,10 @@
       document.getElementById('sendMessageForm').reset();
 
       if (isBusy) {
-        setDynamicIsland(`⏳ Сообщение в очереди`, `Доставится, как только ${targetEmp.name.split(' ')[0]} освободится`, 'warning');
+        setDynamicIsland(`Сообщение в очереди`, `Доставится, как только ${targetEmp.name.split(' ')[0]} освободится`, 'warning', 'clock');
         showToast('Поставлено в очередь', `Сотрудник ${targetEmp.name} сейчас занят. Сообщение будет доставлено при освобождении!`, 'clock');
       } else {
-        setDynamicIsland(`✓✓ Сообщение доставлено`, `${targetEmp.name} получил ваше обращение`, 'success');
+        setDynamicIsland(`Сообщение доставлено`, `${targetEmp.name} получил ваше обращение`, 'success', 'check-check');
         showToast('Доставлено мгновенно', `Сотрудник ${targetEmp.name} получил сообщение.`, 'check-check');
       }
 
@@ -1766,7 +1821,7 @@
       }
 
       assignedDriver.status = 'trip';
-      assignedDriver.destination = `АУП ➔ ${dest}`;
+      assignedDriver.destination = `АУП → ${dest}`;
       assignedDriver.departure = time;
       
       const depHour = parseInt(time.split(':')[0]) || 15;
@@ -1792,7 +1847,7 @@
       closeModal('modalOrderCar');
       document.getElementById('orderCarForm').reset();
 
-      setDynamicIsland(`🚗 Машина назначена!`, `${assignedDriver.vehicle} (${assignedDriver.plate}) • Подача: ${time}`, 'success');
+      setDynamicIsland(`Машина назначена!`, `${assignedDriver.vehicle} (${assignedDriver.plate}) • Подача: ${time}`, 'success', 'car');
       showToast(`Автомобиль заказан!`, `Водитель ${assignedDriver.name} принял заказ. Гос. номер: ${assignedDriver.plate}`, 'navigation');
 
       renderDrivers();
